@@ -2,9 +2,9 @@ package controllers;
 
 import java.util.Calendar;
 public class OurDate {
-   int year ;
-   int month;
-   int day;
+   private int year ;
+   private int month;
+   private int day;
 
    public OurDate(int day ,int month ,int  year ) {
       this.day = day;
