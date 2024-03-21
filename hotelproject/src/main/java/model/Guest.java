@@ -1,5 +1,6 @@
 package model;
 
+import controllers.KeyNotFoundException;
 import controllers.OurDate;
 import controllers.Reservation;
 
@@ -30,7 +31,7 @@ public class Guest extends User{
      * @param roomNumber String
      *
      * */
-    public void modifyReservation(String roomNumber,RoomType type) throws KeyNotFoundException{
+    public void modifyReservation(String roomNumber,RoomType type) throws KeyNotFoundException {
         Reservation toBeModified = reservations.get(roomNumber);
         if (toBeModified==null){
             throw new KeyNotFoundException("Room number: "+roomNumber+" not found");

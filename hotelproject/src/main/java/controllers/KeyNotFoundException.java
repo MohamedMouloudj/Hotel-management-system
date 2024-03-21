@@ -1,4 +1,4 @@
-package model;
+package controllers;
 
 public class KeyNotFoundException extends Exception{
     public KeyNotFoundException(String message){
