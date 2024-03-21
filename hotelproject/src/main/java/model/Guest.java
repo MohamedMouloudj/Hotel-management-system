@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-class Guest extends User{
+public class Guest extends User{
     private static int idCounter = 0;
     private HashMap<String, Reservation> reservations = new HashMap<>();
     Guest(String firstName, String lastName, String password, String email, int phone) {
@@ -103,8 +103,3 @@ class Guest extends User{
     }
 }
 
-class KeyNotFoundException extends Exception{
-    public KeyNotFoundException(String message){
-        super(message);
-    }
-}
