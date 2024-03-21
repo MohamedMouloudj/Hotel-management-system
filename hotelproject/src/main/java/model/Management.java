@@ -1,6 +1,9 @@
-package controllers;
-public abstract class Management {
+package model;
+public abstract class Management extends User{
 
+    public Management(String firstName, String lastName, String password, String email) {
+        super(firstName, lastName, password, email);
+    }
     //void addGuest (Geust guest) {
         // add guest to the database
     //}

@@ -6,12 +6,21 @@ public class OurDate {
    private int month;
    private int day;
 
+   /**
+    *
+    * @param day the day of the month
+    * @param month the month of the year
+    * @param year the year
+    * */
    public OurDate(int day ,int month ,int  year ) {
       this.day = day;
       this.month = month;
       this.month = month ;
       this.validate();
    }
+   /**
+    * if no date is provided then the current date is used (Calendar class is used to get the current date)
+    * */
    public OurDate(){
      this.MakeTodaydate();
    }
