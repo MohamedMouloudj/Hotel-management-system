@@ -1,5 +1,5 @@
 package controllers;
-
+import java.time.LocalDate;
 import java.util.Calendar;
 class InvalidDateException extends Exception {
     public InvalidDateException(String message) {
@@ -9,30 +9,42 @@ class InvalidDateException extends Exception {
 
 public class OurDate {
 
-   private  int year ;
+   private int year ;
    private int month;
    private int day;
 
+   /**
+    *
+    * @param day the day of the month
+    * @param month the month of the year
+    * @param year the year
+    * */
    public OurDate(int day ,int month ,int  year ) {
       this.day = day;
       this.month = month;
       this.month = month ;
-      this.validate();
+      try {
+          this.validate();
+      }catch (InvalidDateException e) {
+        System.out.println("error : " + e.getMessage());
+      }
+
    }
+   /**
+    * if no date is provided then the current date is used (Calendar class is used to get the current date)
+    * */
    public OurDate(){
      this.MakeTodaydate();
    }
+   /**
+   makeTodaydate() is a function that return the current date **/
 
    void MakeTodaydate(){
 
-       long currentTimeMillis = System.currentTimeMillis();
-
-       Calendar calendar = Calendar.getInstance();
-       calendar.setTimeInMillis(currentTimeMillis);
-
-       this.year = calendar.get(Calendar.YEAR);
-       this.month = calendar.get(Calendar.MONTH) + 1;
-       this.day = calendar.get(Calendar.DAY_OF_MONTH);
+       LocalDate today = LocalDate.now();
+       this.year = today.getYear();
+       this.month = today.getMonthValue();
+       this.day = today.getDayOfMonth();
 
    }
 

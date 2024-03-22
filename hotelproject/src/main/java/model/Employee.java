@@ -1,10 +1,7 @@
 package model;
-enum Role {
-    Hotel_manager,RECEPTIONIST, OtherEmployee
-}
+import model.Role;
 public class Employee extends User{
     Role role;
-
     public void setRole(Role role) {
         this.role = role;
     }
