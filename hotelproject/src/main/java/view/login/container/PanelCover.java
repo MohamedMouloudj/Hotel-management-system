@@ -12,11 +12,9 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import view.login.component.MyButtonOutLine;
-
 import javax.swing.GroupLayout;
 import net.miginfocom.swing.MigLayout;
+import view.login.components.MyButtonOutLine;
 
 public class PanelCover extends JPanel {
 
