@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "hotelproject",
+			"path": "."
+		},
+		{
+			"name": "Mouloudj",
+			"path": "../../Mouloudj"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

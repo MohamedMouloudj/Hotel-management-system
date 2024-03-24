@@ -1,14 +1,7 @@
 package controllers;
-import java.time.LocalDate;
+
 import java.util.Calendar;
-class InvalidDateException extends Exception {
-    public InvalidDateException(String message) {
-        super(message);
-    }
-}
-
 public class OurDate {
-
    private int year ;
    private int month;
    private int day;
@@ -23,12 +16,7 @@ public class OurDate {
       this.day = day;
       this.month = month;
       this.month = month ;
-      try {
-          this.validate();
-      }catch (InvalidDateException e) {
-        System.out.println("error : " + e.getMessage());
-      }
-
+      this.validate();
    }
    /**
     * if no date is provided then the current date is used (Calendar class is used to get the current date)
@@ -36,18 +24,19 @@ public class OurDate {
    public OurDate(){
      this.MakeTodaydate();
    }
-   /**
-   makeTodaydate() is a function that return the current date **/
 
    void MakeTodaydate(){
+       long currentTimeMillis = System.currentTimeMillis();
 
-       LocalDate today = LocalDate.now();
-       this.year = today.getYear();
-       this.month = today.getMonthValue();
-       this.day = today.getDayOfMonth();
+       Calendar calendar = Calendar.getInstance();
+       calendar.setTimeInMillis(currentTimeMillis);
+
+
+       this.year = calendar.get(Calendar.YEAR);
+       this.month = calendar.get(Calendar.MONTH) + 1;
+       this.day = calendar.get(Calendar.DAY_OF_MONTH);
 
    }
-
    /*
        System.currentTimeMillis(); to get the current date in milleseconds
        Calendar
@@ -59,18 +48,18 @@ public class OurDate {
    */
 
 
-   void validate() throws InvalidDateException{
-      if (this.year < 2024 && this.year > 2025 ) {
-          throw new InvalidDateException("Invalid year : year  must be between 2024 and 2025 ");
+   void validate(){
+      if (this.year < 1) {
+         throw new Error("Invalid year: Year must be positive.");
       }
-
+      // Check for valid month
       if (this.month < 1 || this.month > 12) {
-          throw new InvalidDateException("Invalid day: Day must be between 1 and  12 ");
+         throw new Error("Invalid month: Month must be between 1 and 12.");
       }
 
     int  daysInMonth = this.getDaysInMonth();
       if (this.day < 1 || this.day > daysInMonth) {
-          throw new InvalidDateException("Invalid day: Day must be between 1 and " + daysInMonth + " for this month.");
+         throw new Error("Invalid day: Day must be between 1 and "+ daysInMonth +" for this month.");
       }
    }
    /*
@@ -93,36 +82,7 @@ public class OurDate {
       return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
    }
 
-    public int compareTo(OurDate otherDate) {
-
-        if (this.year < otherDate.year) {
-            return -1; // This date is older
-        } else if (this.year > otherDate.year) {
-            return 1; // This date is newer
-        }
-
-
-        if (this.month < otherDate.month) {
-            return -1; // This date is older
-        } else if (this.month > otherDate.month) {
-            return 1; // This date is newer
-        }
-
-
-        if (this.day < otherDate.day) {
-            return -1;
-        } else if (this.day > otherDate.day) {
-            return 1;
-        }
-
-        return 0;
-    }
-    /*
-    compare years then monthes than days
-    */
-
-
-    int getDay(){
+   int getDay(){
       return this.day;
    }
    int getMonth(){
