@@ -9,7 +9,7 @@ public class Room {
 
     public Room(RoomType roomType, boolean isAvailable) {
         idCounter++;
-        this.roomNumber = roomType+""+idCounter;
+        this.roomNumber = "Room " + idCounter;
         this.roomType = roomType;
         this.isAvailable = isAvailable;
     }
@@ -21,15 +21,19 @@ public class Room {
     public RoomType getRoomType() {
         return roomType;
     }
-    public double getRoomPrice(){
+
+    public double getRoomPrice() {
         return roomType.getPrice();
     }
+
     public boolean isAvailable() {
         return isAvailable;
     }
+
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
     }
+
     public void setAvailable(boolean available) {
         isAvailable = available;
     }

@@ -13,11 +13,10 @@ public class Reservation {
         this.guestId = guestId;
         this.checkInDate = checkInDate;
         OurDate today = new OurDate();
-        if(today.getMonth()==checkInDate.getMonth() && today.getYear()==checkInDate.getYear()){
-            this.cutOffDays= Math.floor((double)(checkInDate.getDay()-today.getDay())*0.2);
-        }
-        else{
-            //TODO : use designed methode to calculate days number between two dates
+        if (today.getMonth() == checkInDate.getMonth() && today.getYear() == checkInDate.getYear()) {
+            this.cutOffDays = Math.floor((double) (checkInDate.getDay() - today.getDay()) * 0.2);
+        } else {
+            // TODO : use designed methode to calculate days number between two dates
         }
         this.checkOutDate = checkOutDate;
         this.isPaid = false;
@@ -46,11 +45,10 @@ public class Reservation {
     public void setCheckInDate(OurDate checkInDate) {
         this.checkInDate = checkInDate;
         OurDate today = new OurDate();
-        if(today.getMonth()==checkInDate.getMonth() && today.getYear()==checkInDate.getYear()){
-            this.cutOffDays= Math.floor((double)(checkInDate.getDay()-today.getDay())*0.2);
-        }
-        else{
-            //TODO : use designed methode to calculate days number between two dates
+        if (today.getMonth() == checkInDate.getMonth() && today.getYear() == checkInDate.getYear()) {
+            this.cutOffDays = Math.floor((double) (checkInDate.getDay() - today.getDay()) * 0.2);
+        } else {
+            // TODO : use designed methode to calculate days number between two dates
         }
     }
 
@@ -59,9 +57,10 @@ public class Reservation {
     }
 
     /*
-   *
-   * @return the number of days (20%) before the check in date that the guest can cancel the reservation or must confirm the reservation
-   * */
+     *
+     * @return the number of days (20%) before the check in date that the guest can
+     * cancel the reservation or must confirm the reservation
+     */
     public double getCutOffDays() {
         return cutOffDays;
     }

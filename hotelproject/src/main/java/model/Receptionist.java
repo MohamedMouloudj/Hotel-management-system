@@ -1,14 +1,16 @@
 package model;
 
-import model.Role;
+import org.bson.Document;
 
-public class Employee extends User {
-    public Employee(String firstName, String lastName, String password, String email) {
+public class Receptionist extends User {
+    // private static int idCounter = 0;
+    // private final char type = 'R';
+    private Role role;
+
+    public Receptionist(String firstName, String lastName, String password, String email) {
         super(firstName, lastName, password, email);
-        // TODO Auto-generated constructor stub
+        // setId(++idCounter, type);
     }
-
-    Role role;
 
     public void setRole(Role role) {
         this.role = role;
@@ -23,4 +25,5 @@ public class Employee extends User {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inser'");
     }
+
 }
