@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 controllers\Main.class
 controllers\Manager.class
 view\login\container\PanelCover$1.class
@@ -32,3 +33,10 @@ view\login\main\LogInForm$5.class
 view\login\component\MyButton$2.class
 controllers\KeyNotFoundException.class
 model\Receptionist.class
+=======
+controllers\Reservation.class
+controllers\OurDate.class
+controllers\InvalidDateException.class
+model\Room.class
+model\RoomType.class
+>>>>>>> 53b4b9b99370979ba4de5e75162a23388e4963be
