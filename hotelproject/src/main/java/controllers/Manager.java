@@ -19,18 +19,13 @@ public class Manager {
         MongoClient mongoClient = null;
         try {
 
-            // Accessing the User database
-            System.out.println("Database Name = " + userDatabase.getName());
-
             // Retrieving the Receptionists collection
             MongoCollection<Document> collection = userDatabase.getCollection("Receptionists");
 
             // Create a document for the receptionist
-            Document receptionistDocument = new Document("id", receptionist.getId())
-                    .append("firstName", receptionist.getFirstName())
+            Document receptionistDocument = new Document("firstName", receptionist.getFirstName())
                     .append("lastName", receptionist.getLastName())
                     .append("email", receptionist.getEmail())
-                    .append("phone-number", receptionist.getPhone())
                     .append("password", receptionist.getPassword())
                     .append("Role", receptionist.getRole());
 

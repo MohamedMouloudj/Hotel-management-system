@@ -9,23 +9,61 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+// import controllers.Hotel;
 
-import view.login.component.MyButton;
-import view.login.component.MyPasswordField;
-import view.login.component.MyTextField;
-import view.login.donne.User;
+import org.bson.Document;
+
+import view.login.components.MyButton;
+import view.login.components.MyPasswordField;
+import view.login.components.MyTextField;
+import model.*;
 
 import net.miginfocom.swing.MigLayout;
 
 public class PanelLoginAndRegister extends JLayeredPane {
-    public User user;
+    private User registerData;
+    private User logInData;
+    private String LoginErreurMsg;
+    private String registerErreurMsg;
 
     public PanelLoginAndRegister(ActionListener actEventRegister, ActionListener actEventLogin) {
-        initComponents();
-        initRegister(actEventRegister);
-        initLogin(actEventLogin);
+        this.initComponents();
+        this.initRegister(actEventRegister);
+        this.initLogin(actEventLogin);
         login.setVisible(false);
         register.setVisible(true);
+    }
+
+    public User getRegisterData() {
+        return registerData;
+    }
+
+    public void setRegisterData(User registerData) {
+        this.registerData = registerData;
+    }
+
+    public User getLogInData() {
+        return logInData;
+    }
+
+    public void setLogInData(User logInData) {
+        this.logInData = logInData;
+    }
+
+    public String getLoginErreurMsg() {
+        return LoginErreurMsg;
+    }
+
+    public void setLoginErreurMsg(String loginErreurMsg) {
+        LoginErreurMsg = loginErreurMsg;
+    }
+
+    public String getRegisterErreurMsg() {
+        return registerErreurMsg;
+    }
+
+    public void setRegisterErreurMsg(String registerErreurMsg) {
+        this.registerErreurMsg = registerErreurMsg;
     }
 
     private void initRegister(ActionListener actEventRegister) {
@@ -50,26 +88,38 @@ public class PanelLoginAndRegister extends JLayeredPane {
         txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
         txtPass.setHint("Password");
         register.add(txtPass, "w 70%");
-        MyButton cmd = new MyButton();
-        cmd.setBackground(new Color(0x1E90FF));
-        cmd.setForeground(new Color(250, 250, 250));
-        cmd.setText("SIGN UP");
-        cmd.addActionListener(actEventRegister);
+        MyButton btnRegister = new MyButton();
+        btnRegister.setBackground(new Color(0x1E90FF));
+        btnRegister.setForeground(new Color(250, 250, 250));
+        btnRegister.setText("Register");
+        btnRegister.addActionListener(actEventRegister);
 
-        cmd.addActionListener(new ActionListener() {
+        btnRegister.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == cmd) {
-                    System.out.println("Name: " + txtName.getText());
-                    System.out.println("Lastname: " + txtLastName.getText());
-                    System.out.println("Email: " + txtEmail.getText());
-                    System.out.println("Password: " + String.valueOf(txtPass.getPassword()));
-                    user = new User(txtName.getText(), txtLastName.getText(), txtEmail.getText(),
-                            String.valueOf(txtPass.getPassword()));
+                if (e.getSource() == btnRegister) {
+                    String name = txtName.getText();
+                    String lastName = txtLastName.getText();
+                    String email = txtEmail.getText();
+                    String password = String.valueOf(txtPass.getPassword());
+                    if (name.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                        registerErreurMsg = "All the Fields Are Required";
+                    } else if (!Guest.isValidEmail(email)) {
+                        registerErreurMsg = "Invalide Email";
+                    } else if (Guest.researchByEmail(email) != null) {
+                        registerErreurMsg = "Guest with email " + email + " already exists.";
+                    } else {
+                        registerData = new Guest(name, lastName, email, password);
+                        txtName.setText("");
+                        txtLastName.setText("");
+                        txtEmail.setText("");
+                        txtPass.setText("");
+                    }
                 }
+
             }
         });
-        register.add(cmd, "w 40%, h 40");
+        register.add(btnRegister, "w 40%, h 40");
     }
 
     private void initLogin(ActionListener actEventLogin) {
@@ -86,27 +136,53 @@ public class PanelLoginAndRegister extends JLayeredPane {
         txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
         txtPass.setHint("Password");
         login.add(txtPass, "w 60%");
-        JButton cmdForget = new JButton("Forgot your password ?");
-        cmdForget.setForeground(new Color(100, 100, 100));
-        cmdForget.setFont(new Font("sansserif", 1, 12));
-        cmdForget.setContentAreaFilled(false);
-        cmdForget.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        login.add(cmdForget);
-        MyButton cmd = new MyButton();
-        cmd.setBackground(new Color(0x1E90FF));
-        cmd.setForeground(new Color(250, 250, 250));
-        cmd.setText("SIGN IN");
-        cmd.addActionListener(new ActionListener() {
+        JButton btnRegisterForget = new JButton("Forgot your password ?");
+        btnRegisterForget.setForeground(new Color(100, 100, 100));
+        btnRegisterForget.setFont(new Font("sansserif", 1, 12));
+        btnRegisterForget.setContentAreaFilled(false);
+        btnRegisterForget.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        login.add(btnRegisterForget);
+        MyButton btnLogIn = new MyButton();
+        btnLogIn.setBackground(new Color(0x1E90FF));
+        btnLogIn.setForeground(new Color(250, 250, 250));
+        btnLogIn.setText("SIGN IN");
+        btnLogIn.addActionListener(actEventLogin);
+        btnLogIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == cmd) {
-                    System.out.println("Email: " + txtEmail.getText());
-                    System.out.println("Password: " + String.valueOf(txtPass.getPassword()));
+                if (e.getSource() == btnLogIn) {
+                    String email = txtEmail.getText();
+                    String password = String.valueOf(txtPass.getPassword());
+                    Document guest = Guest.researchByEmail(email);
+
+                    if (email.isEmpty() || password.isEmpty()) {
+                        LoginErreurMsg = "All the Fields Are Required";
+                    } else if (!Guest.isValidEmail(email)) {
+                        LoginErreurMsg = "Invalide Email";
+                    } else if (guest == null) {
+                        LoginErreurMsg = "There's no account with this Email ";
+                    } else {
+                        if (!guest.get("password")
+                                .equals(password)) {
+                            LoginErreurMsg = "incorrect password";
+                        } else {
+
+                            logInData = new Guest(guest.getString("firstName"), guest.getString("lastName"),
+                                    guest.getString("email"),
+                                    guest.getString("password"));
+                            txtEmail.setText("");
+                            txtPass.setText("");
+                        }
+
+                    }
+                    // }else if () {
+
+                    // }
 
                 }
             }
         });
-        login.add(cmd, "w 40%, h 40");
+        login.add(btnLogIn, "w 40%, h 40");
     }
 
     public void showRegister(boolean show) {

@@ -12,4 +12,5 @@ public enum RoomType {
     public double getPrice() {
         return price;
     }
+
 }

@@ -13,6 +13,8 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
+import model.Guest;
+import model.User;
 import view.login.container.Message;
 import view.login.container.PanelCover;
 import view.login.container.PanelLoginAndRegister;
@@ -36,10 +38,6 @@ public class LogInForm extends JFrame {
         init();
     }
 
-    public void logIn() {
-
-    }
-
     private void init() {
         layout = new MigLayout("fill, insets 0");
         cover = new PanelCover();
@@ -55,6 +53,7 @@ public class LogInForm extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                logIn();
             }
 
         };
@@ -126,24 +125,9 @@ public class LogInForm extends JFrame {
         });
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         bg = new javax.swing.JLayeredPane();
-        // try {
-        // // Load the image using getResourceAsStream() for better resource management
-        // ImageIcon backgroundImaage = new
-        // ImageIcon(getClass().getResource("Gns38.png"));
-        // setIconImage(backgroundImage); // This line is unnecessary if you're setting
-        // the icon for the panel, not the frame
-        //
-        // } catch (NullPointerException e) {
-        // JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),
-        // "Error",
-        // JOptionPane.ERROR_MESSAGE);
-        // }
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         // setUndecorated(true);
         setResizable(false);
@@ -181,15 +165,30 @@ public class LogInForm extends JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     public void register() {
-        // User user = loginAndRegister.user;
-        if (loginAndRegister.user.isValid()) {
+        // Guest user = loginAndRegister.guest;
+        // Guest guest = loginAndRegister.getLogInData();
+        User guest = loginAndRegister.getRegisterData();
+        if (guest != null) {
+
             showMessage(MessageType.SUCCESS, "nice test");
-            loginAndRegister.user.inser();
+            guest.inser();
+            loginAndRegister.setRegisterData(null);
         } else {
-            showMessage(MessageType.ERROR, "Bad test");
+            showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg());
+
+        }
+    }
+
+    public void logIn() {
+        if (loginAndRegister.getLogInData() != null) {
+            showMessage(MessageType.SUCCESS, "Welcome back " + loginAndRegister.getLogInData().getFirstName());
+            loginAndRegister.setLogInData(null);
+        } else {
+            showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg());
+
         }
     }
 
@@ -250,15 +249,6 @@ public class LogInForm extends JFrame {
 
     public static void runForm() {
 
-        /* Set the Nimbus look and feel */
-        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
-        // (optional) ">
-        /*
-         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
-         * look and feel.
-         * For details see
-         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -275,7 +265,6 @@ public class LogInForm extends JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(LogInForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        // </editor-fold>
 
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
@@ -285,6 +274,4 @@ public class LogInForm extends JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    // End of variables declaration//GEN-END:variables
 }

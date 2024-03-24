@@ -1,23 +1,29 @@
 package model;
 
-import controllers.KeyNotFoundException;
+// import controllers.KeyNotFoundException;
 import controllers.OurDate;
 import controllers.Reservation;
-import controllers.Hotel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bson.Document;
+
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 public class Guest extends User {
-    private static int idCounter = 0;
-    private final char type = 'G';
+
+    // private static int idCounter = 0;
+    // private final char type = 'G';
 
     private HashMap<String, Reservation> reservations = new HashMap<>();
 
-    Guest(String firstName, String lastName, String password, String email, int phone) {
-        super(firstName, lastName, password, email, phone);
-        setId(++idCounter, type);
+    public Guest(String firstName, String lastName, String email, String password) {
+        super(firstName, lastName, password, email);
+        // setId(++idCounter, type);
     }
 
     public void requestReservation(RoomType type, OurDate checkInDate, OurDate checkOutDate) {
@@ -32,6 +38,66 @@ public class Guest extends User {
         // Hotel.cancelReservation(roomNumber);
     }
 
+    public boolean isValid() {
+        return !super.firstName.isEmpty() && !super.lastName.isEmpty() && !super.email.isEmpty()
+                && !super.password.isEmpty();
+    }
+
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+    private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
+
+    public static boolean isValidEmail(String email) {
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    @Override
+    public void inser() {
+        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+            // Accessing the User database
+            MongoDatabase userDatabase = mongoClient.getDatabase("User");
+            System.out.println("Database Name = " + userDatabase.getName());
+
+            // Retrieving the Client collection
+            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
+            System.out.println("Client Collection selected successfully");
+
+            // Creating a document for the new guest
+            Document guestDocument = new Document("firstName", this.firstName)
+                    .append("lastName", this.lastName)
+                    .append("email", this.email)
+                    .append("password", this.password);
+
+            // Inserting the guest document into the collection
+            clientCollection.insertOne(guestDocument);
+            System.out.println("Document inserted successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Document researchByEmail(String email) {
+        Document existingGuest = null; // Initialize to null outside try block
+        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+            // Accessing the User database
+            MongoDatabase userDatabase = mongoClient.getDatabase("User");
+            System.out.println("Database Name = " + userDatabase.getName());
+
+            // Retrieving the Client collection
+            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
+            System.out.println("Client Collection selected successfully");
+
+            // Check if the email already exists in the collection
+            existingGuest = clientCollection.find(new Document("email", email)).first();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return existingGuest; // Return outside finally block
+    }
+
+    // public static
+
     /**
      *
      * This method is used to modify a reservation of a guest by changing the room
@@ -41,34 +107,34 @@ public class Guest extends User {
      * @param roomNumber String
      *
      */
-    public void modifyReservation(String roomNumber, RoomType type) throws KeyNotFoundException {
-        // Reservation toBeModified = reservations.get(roomNumber);
-        // if (toBeModified == null) {
-        // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
-        // }
+    // public void modifyReservation(String roomNumber, RoomType type) throws
+    // KeyNotFoundException {
+    // Reservation toBeModified = reservations.get(roomNumber);
+    // if (toBeModified == null) {
+    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
+    // }
 
-        // ArrayList<Room> rooms = Hotel.getRoomByType(type);
-        // Room room = null;
-        // for (Room r : rooms) {
-        // if (r.isAvailable()) {
-        // room = r;
-        // break;
-        // }
-        // }
-        // if (room == null) {
-        // System.out.println("No available rooms");
-        // return;
-        // }
-        // OurDate checkInDate = toBeModified.getCheckInDate();
-        // OurDate checkOutDate = toBeModified.getCheckOutDate();
-        // reservations.remove(roomNumber);
-        // Hotel.cancelReservation(roomNumber);
-        // room.setAvailable(false);
-        // Reservation reservation = new Reservation(room.getRoomNumber(), this.getId(),
-        // checkInDate, checkOutDate);
-        // reservations.put(room.getRoomNumber(), reservation);
-        // Hotel.addReservation(this);
-    }
+    // ArrayList<Room> rooms = Hotel.getRoomByType(type);
+    // Room room = null;
+    // for (Room r : rooms) {
+    // if (r.isAvailable()) {
+    // room = r;
+    // break;
+    // }
+    // }
+    // if (room == null) {
+    // System.out.println("No available rooms");
+    // return;
+    // }
+    // OurDate checkInDate = toBeModified.getCheckInDate();
+    // OurDate checkOutDate = toBeModified.getCheckOutDate();
+    // reservations.remove(roomNumber);
+    // Hotel.cancelReservation(roomNumber);
+    // room.setAvailable(false);
+    // Reservation reservation = new Reservation(room.getRoomNumber(), this.getId(),
+    // checkInDate, checkOutDate);
+    // reservations.put(room.getRoomNumber(), reservation);
+    // Hotel.addReservation(this);
 
     public void modifyCheckIn(String roomNumber, OurDate checkIn) {
         reservations.get(roomNumber).setCheckInDate(checkIn);
@@ -90,16 +156,17 @@ public class Guest extends User {
         reservations.put(reservation.getRoomNumber(), reservation);
     }
 
-    public void removeReservation(String roomNumber) throws KeyNotFoundException {
-        if (!reservations.get(roomNumber).isPaid()) {
-            System.out.println("You can't remove a paid reservation");
-            return;
-        }
-        if (reservations.get(roomNumber) == null) {
-            throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
-        }
-        reservations.remove(roomNumber);
-    }
+    // public void removeReservation(String roomNumber) throws KeyNotFoundException
+    // {
+    // if (!reservations.get(roomNumber).isPaid()) {
+    // System.out.println("You can't remove a paid reservation");
+    // return;
+    // }
+    // if (reservations.get(roomNumber) == null) {
+    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
+    // }
+    // reservations.remove(roomNumber);
+    // }
 
     /**
      * This method is used to calculate the total cost of the reservations of a
