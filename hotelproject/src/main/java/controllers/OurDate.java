@@ -1,11 +1,18 @@
 package controllers;
 
 import java.util.Calendar;
+import java.time.LocalDate;
+class InvalidDateException extends Exception {
+    public InvalidDateException(String message) {
+        super(message);
+    }
+}
+
 public class OurDate {
    private int year ;
    private int month;
    private int day;
-
+   final int  currentYear = 2024;
    /**
     *
     * @param day the day of the month
@@ -15,8 +22,12 @@ public class OurDate {
    public OurDate(int day ,int month ,int  year ) {
       this.day = day;
       this.month = month;
-      this.month = month ;
-      this.validate();
+      this.year = year;
+       try {
+           this.validate();
+       }catch (InvalidDateException e) {
+           System.out.println("error : " + e.getMessage());
+       }
    }
    /**
     * if no date is provided then the current date is used (Calendar class is used to get the current date)
@@ -25,18 +36,15 @@ public class OurDate {
      this.MakeTodaydate();
    }
 
-   void MakeTodaydate(){
-       long currentTimeMillis = System.currentTimeMillis();
+       void MakeTodaydate(){
 
-       Calendar calendar = Calendar.getInstance();
-       calendar.setTimeInMillis(currentTimeMillis);
+           LocalDate today = LocalDate.now();
+           this.year = today.getYear();
+           this.month = today.getMonthValue();
+           this.day = today.getDayOfMonth();
 
+       }
 
-       this.year = calendar.get(Calendar.YEAR);
-       this.month = calendar.get(Calendar.MONTH) + 1;
-       this.day = calendar.get(Calendar.DAY_OF_MONTH);
-
-   }
    /*
        System.currentTimeMillis(); to get the current date in milleseconds
        Calendar
@@ -48,20 +56,20 @@ public class OurDate {
    */
 
 
-   void validate(){
-      if (this.year < 1) {
-         throw new Error("Invalid year: Year must be positive.");
-      }
-      // Check for valid month
-      if (this.month < 1 || this.month > 12) {
-         throw new Error("Invalid month: Month must be between 1 and 12.");
-      }
+    void validate() throws InvalidDateException{
+        if (this.year < currentYear ) {
+            throw new InvalidDateException("Invalid year : year  must be between 2024 and 2025 ");
+        }
 
-    int  daysInMonth = this.getDaysInMonth();
-      if (this.day < 1 || this.day > daysInMonth) {
-         throw new Error("Invalid day: Day must be between 1 and "+ daysInMonth +" for this month.");
-      }
-   }
+        if (this.month < 1 || this.month > 12) {
+            throw new InvalidDateException("Invalid day: Day must be between 1 and  12 ");
+        }
+
+        int  daysInMonth = this.getDaysInMonth();
+        if (this.day < 1 || this.day > daysInMonth) {
+            throw new InvalidDateException("Invalid day: Day must be between 1 and " + daysInMonth + " for this month.");
+        }
+    }
    /*
    validate the input date , year and day and month should be in specified ranges
    consider leap years , if leap year or not then verify  the month if it is february
@@ -81,6 +89,9 @@ public class OurDate {
    boolean isLeapYear() {
       return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
    }
+    /* verify the input year if it is leap or not <s
+    /*to treat the all cases
+     */
 
    int getDay(){
       return this.day;
@@ -91,12 +102,36 @@ public class OurDate {
     int getYear(){
         return this.year;
     }
-
     String tostring(){
-        return  this.day + "/" + this.year + "/" + this.month;
+        return  this.day + "/" + this.month + "/" + this.year;
     }
-   /* verify the input year if it is leap or not <s
-   */
+
+    static  boolean Compare(OurDate date1 , OurDate date2){
+
+        // Compare years
+        if (date1.year < date2.year) {
+            return true;
+        } else if (date1.year > date2.year) {
+            return false;
+        }
+
+        // Years are equal, compare months
+        if (date1.month < date2.month) {
+            return true;
+        } else if (date1.month > date2.month) {
+            return false;
+        }
+
+
+        return date1.day < date2.day;
+    }
+
+
+   public static void main(String[] args) {
+       OurDate a = new OurDate();
+       System.out.println(a.tostring());
+
+   }
 
 
 }

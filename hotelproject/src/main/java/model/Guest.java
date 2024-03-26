@@ -2,6 +2,7 @@ package model;
 
 // import controllers.KeyNotFoundException;
 import controllers.OurDate;
+import controllers.PasswordHashing;
 import controllers.Reservation;
 
 import java.util.HashMap;
@@ -63,11 +64,14 @@ public class Guest extends User {
             MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
             System.out.println("Client Collection selected successfully");
 
+
+            //hashing the password
+            String HashedPassword = PasswordHashing.hashPassword(this.password);
             // Creating a document for the new guest
             Document guestDocument = new Document("firstName", this.firstName)
                     .append("lastName", this.lastName)
                     .append("email", this.email)
-                    .append("password", this.password);
+                    .append("password", HashedPassword);
 
             // Inserting the guest document into the collection
             clientCollection.insertOne(guestDocument);
@@ -94,6 +98,10 @@ public class Guest extends User {
             e.printStackTrace();
         }
         return existingGuest; // Return outside finally block
+    }
+    @Override
+    public String getPassword (){
+        return password;
     }
 
     // public static
