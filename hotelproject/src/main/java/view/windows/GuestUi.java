@@ -1,11 +1,11 @@
 package view.windows;
 
-import view.components.*;
+import view.basicComponents.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class GuestUiSidebar extends JFrame{
-    public GuestUiSidebar(){
+public class GuestUi extends JFrame{
+    public GuestUi(){
         setSize(1000, 500);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

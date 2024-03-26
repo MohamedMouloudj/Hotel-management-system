@@ -1,6 +1,6 @@
 package controllers;
 
-import view.windows.GuestUiSidebar;
+import view.windows.GuestUi;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,6 +10,6 @@ public class Main {
         // Manager.removeEmployee("chakib", "Doe");
 
         //LogInForm.runForm();
-        new GuestUiSidebar();
+        new GuestUi();
     }
 }
