@@ -5,10 +5,9 @@ import model.Role;
 public class Employee extends User {
     public Employee(String firstName, String lastName, String password, String email) {
         super(firstName, lastName, password, email);
-        // TODO Auto-generated constructor stub
     }
 
-    Role role;
+    private Role role;
 
     public void setRole(Role role) {
         this.role = role;

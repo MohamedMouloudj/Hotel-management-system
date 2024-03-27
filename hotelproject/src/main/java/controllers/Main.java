@@ -1,5 +1,6 @@
 package controllers;
 
+<<<<<<< HEAD
 import view.login.main.LogInForm;
 
 // import java.util.*;
@@ -14,6 +15,9 @@ import view.login.main.LogInForm;
 // import model.Guest;
 
 // import static view.login.main.LogInForm.*;
+=======
+import view.windows.GuestUi;
+>>>>>>> d6eda4a6e47d9e3f813247645d01f3e90afdee77
 
 public class Main {
     public static void main(String[] args) {
@@ -21,9 +25,15 @@ public class Main {
         // "john@example.com", 222);
         // Manager.addEmployee(receptionist);
         // Manager.removeEmployee("chakib", "Doe");
+<<<<<<< HEAD
         LogInForm.runForm();
 
         // System.out.println(Guest.isValidEmail("uu"));
+=======
+
+        //LogInForm.runForm();
+        new GuestUi();
+>>>>>>> d6eda4a6e47d9e3f813247645d01f3e90afdee77
     }
 
 }
