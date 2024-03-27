@@ -16,6 +16,7 @@ import javax.swing.GroupLayout;
 import net.miginfocom.swing.MigLayout;
 import view.login.loginComponents.MyButtonOutLine;
 
+
 public class PanelCover extends JPanel {
 
     private final DecimalFormat df = new DecimalFormat("##0.###", DecimalFormatSymbols.getInstance(Locale.US));

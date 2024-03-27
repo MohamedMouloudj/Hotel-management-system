@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.lang.String;
-import java.util.Objects;
 
 public class PasswordHashing {
 
@@ -19,7 +18,7 @@ public class PasswordHashing {
         }
     }
     public static Boolean verifyPassword(String password, String hashedPassword) {
-        return Objects.equals(hashPassword(password), hashedPassword);
+        return hashPassword(password).equals(hashedPassword);
     }
 
 }

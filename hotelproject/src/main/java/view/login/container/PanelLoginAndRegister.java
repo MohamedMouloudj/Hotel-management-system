@@ -5,18 +5,15 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-<<<<<<< HEAD
 import javax.swing.ImageIcon;
-=======
-
-// import javax.swing.ImageIcon;
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 // import controllers.Hotel;
 
+import controllers.PasswordHashing;
 import org.bson.Document;
+
 
 import model.*;
 
@@ -25,12 +22,8 @@ import view.login.loginComponents.MyButton;
 import view.login.loginComponents.MyPasswordField;
 import view.login.loginComponents.MyTextField;
 
+
 public class PanelLoginAndRegister extends JLayeredPane {
-<<<<<<< HEAD
-=======
-    private javax.swing.JPanel login;
-    private javax.swing.JPanel register;
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
     private User registerData;
     private User logInData;
     private String LoginErreurMsg;
@@ -83,12 +76,12 @@ public class PanelLoginAndRegister extends JLayeredPane {
         label.setForeground(new Color(0x1E90FF));
         register.add(label);
         MyTextField txtName = new MyTextField();
-<<<<<<< HEAD
-        //txtName.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/user.png")));
+        txtName.setPrefixIcon(new ImageIcon(getClass().getResource("hotelproject/src/main/java/view/icons/person.png")));
+
         txtName.setHint("Name");
         register.add(txtName, "w 70%");
         MyTextField txtLastName = new MyTextField();
-        //txtLastName.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/user.png")));
+        txtLastName.setPrefixIcon(new ImageIcon(getClass().getResource("hotelproject/src/main/java/view/icons/person.png")));
         txtLastName.setHint("Lastname");
         register.add(txtLastName, "w 70%");
         MyTextField txtEmail = new MyTextField();
@@ -97,25 +90,6 @@ public class PanelLoginAndRegister extends JLayeredPane {
         register.add(txtEmail, "w 70%");
         MyPasswordField txtPass = new MyPasswordField();
        // txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
-=======
-        // txtName.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/user.png")));
-        txtName.setHint("Name");
-        register.add(txtName, "w 70%");
-        MyTextField txtLastName = new MyTextField();
-        // txtLastName.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/user.png")));
-        txtLastName.setHint("Lastname");
-        register.add(txtLastName, "w 70%");
-        MyTextField txtEmail = new MyTextField();
-        // txtEmail.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/mail.png")));
-        txtEmail.setHint("Email");
-        register.add(txtEmail, "w 70%");
-        MyPasswordField txtPass = new MyPasswordField();
-        // txtPass.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
         txtPass.setHint("Password");
         register.add(txtPass, "w 70%");
         MyButton btnRegister = new MyButton();
@@ -159,21 +133,11 @@ public class PanelLoginAndRegister extends JLayeredPane {
         label.setForeground(new Color(0x1E90FF));
         login.add(label);
         MyTextField txtEmail = new MyTextField();
-<<<<<<< HEAD
         // txtEmail.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/mail.png")));
         txtEmail.setHint("Email");
         login.add(txtEmail, "w 60%");
         MyPasswordField txtPass = new MyPasswordField();
        // txtPass.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
-=======
-        // txtEmail.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/mail.png")));
-        txtEmail.setHint("Email");
-        login.add(txtEmail, "w 60%");
-        MyPasswordField txtPass = new MyPasswordField();
-        // txtPass.setPrefixIcon(new
-        // ImageIcon(getClass().getResource("/view/login/icon/pass.png")));
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
         txtPass.setHint("Password");
         login.add(txtPass, "w 60%");
         JButton btnRegisterForget = new JButton("Forgot your password ?");
@@ -202,13 +166,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
                     } else if (guest == null) {
                         LoginErreurMsg = "There's no account with this Email ";
                     } else {
-<<<<<<< HEAD
                        String A = guest.getString("password");
                         if (PasswordHashing.verifyPassword(password ,A)) {
-=======
-                        if (!guest.get("password")
-                                .equals(password)) {
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
                             LoginErreurMsg = "incorrect password";
                         } else {
 
@@ -278,12 +237,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-<<<<<<< HEAD
     private javax.swing.JPanel login;
     private javax.swing.JPanel register;
-=======
-
->>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
     // End of variables declaration//GEN-END:variables
 
 }

@@ -38,8 +38,8 @@ public class ManagerUI extends JFrame {
         setResizable(false);
 
         try {
-            Image backgroundImage = new ImageIcon(getClass().getResource("user.png")).getImage();
-            setIconImage(backgroundImage);
+            ImageIcon icon=new ImageIcon("hotelproject/src/main/java/view/icons/person.png");
+            setIconImage(icon.getImage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class ManagerUI extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ManagerUi().setVisible(true);
+                new ManagerUI().setVisible(true);
             }
         });
     }
