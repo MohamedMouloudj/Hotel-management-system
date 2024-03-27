@@ -2,48 +2,48 @@ package controllers;
 
 import java.util.Calendar;
 import java.time.LocalDate;
+
 class InvalidDateException extends Exception {
     public InvalidDateException(String message) {
         super(message);
     }
 }
-
 public class OurDate {
-   private int year ;
-   private int month;
-   private int day;
-   final int  currentYear = 2024;
-   /**
-    *
-    * @param day the day of the month
-    * @param month the month of the year
-    * @param year the year
-    * */
-   public OurDate(int day ,int month ,int  year ) {
-      this.day = day;
-      this.month = month;
-      this.year = year;
-       try {
-           this.validate();
-       }catch (InvalidDateException e) {
-           System.out.println("error : " + e.getMessage());
-       }
-   }
-   /**
-    * if no date is provided then the current date is used (Calendar class is used to get the current date)
-    * */
-   public OurDate(){
-     this.MakeTodaydate();
-   }
+    private int year ;
+    private int month;
+    private int day;
+    final int  currentYear = 2024;
+    /**
+     *
+     * @param day the day of the month
+     * @param month the month of the year
+     * @param year the year
+     * */
+    public OurDate(int day ,int month ,int  year ) {
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        try {
+            this.validate();
+        }catch (InvalidDateException e) {
+            System.out.println("error : " + e.getMessage());
+        }
+    }
+    /**
+     * if no date is provided then the current date is used (Calendar class is used to get the current date)
+     * */
+    public OurDate(){
+        this.MakeTodaydate();
+    }
 
-       void MakeTodaydate(){
+    void MakeTodaydate(){
 
-           LocalDate today = LocalDate.now();
-           this.year = today.getYear();
-           this.month = today.getMonthValue();
-           this.day = today.getDayOfMonth();
+        LocalDate today = LocalDate.now();
+        this.year = today.getYear();
+        this.month = today.getMonthValue();
+        this.day = today.getDayOfMonth();
 
-       }
+    }
 
    /*
        System.currentTimeMillis(); to get the current date in milleseconds
@@ -77,26 +77,26 @@ public class OurDate {
 
     */
 
-   int getDaysInMonth() {
-    int[] daysInMonthLookup = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-      if (this.isLeapYear() && this.month == 2) {
-         return 29; // February has 29 days in a leap year
-      } else {
-         return daysInMonthLookup[this.month - 1];
-      }
-   }
+    int getDaysInMonth() {
+        int[] daysInMonthLookup = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if (this.isLeapYear() && this.month == 2) {
+            return 29; // February has 29 days in a leap year
+        } else {
+            return daysInMonthLookup[this.month - 1];
+        }
+    }
 
-   boolean isLeapYear() {
-      return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
-   }
+    boolean isLeapYear() {
+        return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
+    }
     /* verify the input year if it is leap or not <s
     /*to treat the all cases
      */
 
-   int getDay(){
-      return this.day;
-   }
-   int getMonth(){
+    int getDay(){
+        return this.day;
+    }
+    int getMonth(){
         return this.month;
     }
     int getYear(){
@@ -126,12 +126,6 @@ public class OurDate {
         return date1.day < date2.day;
     }
 
-
-   public static void main(String[] args) {
-       OurDate a = new OurDate();
-       System.out.println(a.tostring());
-
-   }
 
 
 }
