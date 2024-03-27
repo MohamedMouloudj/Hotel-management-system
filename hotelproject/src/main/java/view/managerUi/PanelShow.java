@@ -13,8 +13,6 @@ public class PanelShow extends JPanel {
     private JScrollPane scrollPane;
 
     public PanelShow() {
-        // addAllreceptionist();
-        // removeAllreceptionist();
 
     }
 
@@ -65,22 +63,7 @@ public class PanelShow extends JPanel {
                 { 2, "Jane", "jane@example.com", "Smith", "password2" },
                 { 2, "Jane", "jane@example.com", "Smith", "password2" },
                 { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                { 2, "Jane", "jane@example.com", "Smith", "password2" },
-                // Add more data as needed
+
         };
 
         table = new JTable(data, columnNames);

@@ -1,8 +1,6 @@
 package view.managerUi;
 
 import java.awt.*;
-// import java.awt.event.ActionEvent;
-// import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -16,7 +14,6 @@ public class Main extends JFrame {
     private final double panelShowSize = 75;
     private final double loginSize = 25;
     private JLayeredPane bg;
-    // int a = 0;
 
     public Main() {
         initComponents();
@@ -71,19 +68,6 @@ public class Main extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-
-    // public void showAllReceptionist() {
-    // // if (a % 2 == 0) {
-    // // a++;
-    // // panelShow.addAllreceptionist();
-    // // } else {
-    // // a++;
-
-    // panelShow.removeAllreceptionist();
-    // // panelShow.revalidate();
-    // // }
-    // // System.out.println(a);
-    // }
 
     public static void main(String[] args) {
         /* Create and display the form */
