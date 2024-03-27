@@ -45,16 +45,6 @@ public class OurDate {
 
        }
 
-   /*
-       System.currentTimeMillis(); to get the current date in milleseconds
-       Calendar
-       .setTimeInMillis(currentTimeMillis) =>
-        .get(Calendar.YEAR) =>
-       .get(Calendar.MONTH) + 1 => // Adjust for 0-based month index
-       .get(Calendar.DAY_OF_MONTH) =>
-
-   */
-
 
     void validate() throws InvalidDateException{
         if (this.year < currentYear ) {
@@ -86,8 +76,8 @@ public class OurDate {
       }
    }
 
-   boolean isLeapYear() {
-      return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
+   boolean  isLeapYear() {
+      return (this.year % 4 == 0 && this.year % 100 != 0) || (this.year % 400 == 0);
    }
     /* verify the input year if it is leap or not <s
     /*to treat the all cases
@@ -102,6 +92,25 @@ public class OurDate {
     int getYear(){
         return this.year;
     }
+
+    public void setDay(int day) throws  InvalidDateException{
+        if (day < 1 || day > 31) {
+            throw new InvalidDateException("day is invalid");
+        }
+        this.day = day;
+    }
+
+    public void setMonth(int month) throws InvalidDateException {
+        if (month < 1 || month > 12) {
+            throw new InvalidDateException("month no valid number");
+        }
+        this.month = month;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
     String tostring(){
         return  this.day + "/" + this.month + "/" + this.year;
     }
@@ -127,9 +136,80 @@ public class OurDate {
     }
 
 
+
+    public static long getDaysBetweenDates(OurDate date1 , OurDate date2 ) throws  InvalidDateException {
+
+        if (date1.month < 1 || date1.month > 12 || date2.month < 1 || date2.month > 12) {
+            throw new InvalidDateException("Invalid date") ;
+        }
+
+        // Ensure date1 is before date2 (swap if needed)
+        if (!Compare(date1 ,date2)) {
+            int tempDay = date1.getDay();
+            int tempMonth = date1.getMonth();
+            int tempYear = date1.getYear();
+
+            date1.setDay(date2.getDay());
+            date1.setMonth(date2.getMonth());
+            date1.setYear(date2.getYear());
+
+            date2.setDay(tempDay);
+            date2.setMonth(tempMonth);
+            date2.setYear(tempYear);
+        }
+
+        long totalDays = 0;
+
+        // Handle year difference (including leap years)
+        for (int y = date1.year; y < date2.year; y++) {
+            totalDays += (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0) ? 366 : 365;
+        }
+
+        // Handle month difference
+        for (int m = date1.getMonth(); m < date2.getMonth(); m++) {
+            int daysInMonth;
+            switch (m) {
+                case 1:  // January
+                case 3:  // March
+                case 5:  // May
+                case 7:  // July
+                case 8:  // August
+                case 10: // October
+                case 12: // December
+                    daysInMonth = 31;
+                    break;
+                case 4:  // April
+                case 6:  // June
+                case 9:  // September
+                case 11: // November
+                    daysInMonth = 30;
+                    break;
+                case 2:  // February
+                    daysInMonth = (date2.year % 4 == 0 && date2.year % 100 != 0) || (date2.year % 400 == 0) ? 29 : 28;  // Use year from date2
+                    break;
+                default:
+                    daysInMonth = 0;
+            }
+            totalDays += daysInMonth;
+        }
+
+        // Handle day difference within the same month
+        totalDays += date2.day - date1.day;
+
+        return totalDays;
+    }
+
+
+
    public static void main(String[] args) {
        OurDate a = new OurDate();
-       System.out.println(a.tostring());
+       OurDate b = new OurDate(30,2,2024);
+       try{
+           System.out.println("the difference is " + OurDate.getDaysBetweenDates(a,b) );
+       }catch (InvalidDateException e) {
+           System.out.println(e.getMessage());
+       }
+
 
    }
 

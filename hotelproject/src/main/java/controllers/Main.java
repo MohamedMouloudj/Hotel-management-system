@@ -22,7 +22,6 @@ public class Main {
         // Manager.addEmployee(receptionist);
         // Manager.removeEmployee("chakib", "Doe");
         LogInForm.runForm();
-
         // System.out.println(Guest.isValidEmail("uu"));
 
     }
