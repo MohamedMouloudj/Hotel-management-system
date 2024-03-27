@@ -15,7 +15,9 @@ public class OurButton extends JButton {
         setForeground(Color.WHITE);
         setBackground(new Color(0x1E90FF));
         setFocusPainted(false);
-        setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        setBorder(BorderFactory.createEmptyBorder(15, 25, 15, 25));
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
+        setHorizontalAlignment(JButton.CENTER);
     }
 
     /**
@@ -45,6 +47,6 @@ public class OurButton extends JButton {
         setFont(new Font(fontName,style,size));
     }
     public void setWidth(int width){
-        setPreferredSize(new Dimension(width, 50));
+        setPreferredSize(new Dimension(width, 60));
     }
 }

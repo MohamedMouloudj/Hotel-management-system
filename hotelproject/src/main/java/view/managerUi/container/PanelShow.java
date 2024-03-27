@@ -11,8 +11,7 @@ public class PanelShow extends JPanel {
 
     public PanelShow() {
         initComponents();
-        setBackground(Color.WHITE); 
-
+        setBackground(Color.WHITE);
     }
 
 

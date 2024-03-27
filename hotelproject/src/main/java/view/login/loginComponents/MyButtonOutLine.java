@@ -1,4 +1,4 @@
-package view.components;
+package view.login.loginComponents;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -12,7 +12,7 @@ public class MyButtonOutLine extends JButton {
 
     public MyButtonOutLine() {
         setContentAreaFilled(false);
-        setBorder(new EmptyBorder(5, 0, 5, 0));
+        setBorder(new EmptyBorder(5, 5, 5, 5));
         setBackground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }

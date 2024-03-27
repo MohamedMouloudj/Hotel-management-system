@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
 
-public class Main extends JFrame {
+public class ManagerUI extends JFrame {
 
     private MigLayout layout;
     private PanelShow cover;
@@ -16,7 +16,7 @@ public class Main extends JFrame {
     private final double loginSize = 25;
     private JLayeredPane bg;
 
-    public Main() {
+    public ManagerUI() {
         initComponents();
         init();
     }
@@ -76,7 +76,7 @@ public class Main extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new ManagerUI().setVisible(true);
             }
         });
     }

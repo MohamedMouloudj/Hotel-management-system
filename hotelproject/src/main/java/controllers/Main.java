@@ -2,7 +2,7 @@ package controllers;
 
 // import view.login.main.LogInForm;
 
-import view.windows.GuestUi;
+import view.windows.*;
 
 public class Main {
         public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class Main {
 
                 // System.out.println(Guest.isValidEmail("uu"));
 
-                // LogInForm.runForm();
+                //LogInForm.runForm();
                 new GuestUi();
         }
 

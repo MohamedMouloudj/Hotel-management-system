@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import controllers.PasswordHashing;
 // import controllers.Hotel;
 
 import org.bson.Document;
@@ -18,9 +17,9 @@ import org.bson.Document;
 import model.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.MyButton;
-import view.components.MyPasswordField;
-import view.components.MyTextField;
+import view.login.loginComponents.MyButton;
+import view.login.loginComponents.MyPasswordField;
+import view.login.loginComponents.MyTextField;
 
 public class PanelLoginAndRegister extends JLayeredPane {
     private javax.swing.JPanel login;
