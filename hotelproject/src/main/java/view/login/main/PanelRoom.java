@@ -67,7 +67,7 @@ public class PanelRoom extends JPanel {
         bookButton.setFont(new Font("sansserif", Font.BOLD, 15));
 
         infoPanel.add(bookButton , "w 30%, h 40");
-       //  JPanel buttonPanel = new JPanel();
+       //JPanel buttonPanel = new JPanel();
 
 
         //JButton myButton = new JButton("Click Me");
