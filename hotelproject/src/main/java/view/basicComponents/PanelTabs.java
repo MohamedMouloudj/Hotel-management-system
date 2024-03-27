@@ -1,9 +1,10 @@
-package view.managerUi;
+package view.basicComponents;
 
 import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
 import view.login.loginComponents.MyButton;
+import view.managerUi.PanelShow;
 
 import javax.swing.border.Border;
 
@@ -63,6 +64,8 @@ public class PanelTabs extends JLayeredPane {
 
     }
 
+
+
     private MyButton createStyledButton(String text) {
         MyButton button = new MyButton() {
             @Override
@@ -119,8 +122,9 @@ public class PanelTabs extends JLayeredPane {
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
         Graphics2D g2 = (Graphics2D) grphcs;
-        GradientPaint gra = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
-        g2.setPaint(gra);
+        GradientPaint gradientPaint = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
+        g2.setPaint(gradientPaint);
         g2.fillRect(0, 0, getWidth(), getHeight());
+
     }
 }

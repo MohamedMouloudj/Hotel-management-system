@@ -47,6 +47,6 @@ public class OurButton extends JButton {
         setFont(new Font(fontName,style,size));
     }
     public void setWidth(int width){
-        setPreferredSize(new Dimension(width, 60));
+        setPreferredSize(new Dimension(width, 35));
     }
 }

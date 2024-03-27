@@ -4,10 +4,15 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class SideBar extends JPanel{
     private JPanel sideTabs;
+    /*Color fancyColor = new Color(0x0377FF);
+    Color lightColor = new Color(0x4FB5FF);*/
     public SideBar(){
+
         setSize(1000, 500);
         setLayout(new BorderLayout());
 
@@ -28,14 +33,21 @@ public class SideBar extends JPanel{
         container.setBackground(new Color(0x1E90FF));
         container.setPreferredSize(new Dimension(200,0));
 
-        container.add(logo,"wrap");
+        container.add(logo,"wrap, gapbottom 50");
         container.add(sideTabs,"wrap, growy, pushy");
         container.add(quitButton);
         add(container,BorderLayout.WEST);
         setVisible(true);
+
     }
-    public void addTab(String tabName){
-        SideLabel tab=new SideLabel(tabName);
+
+    /**
+     * This method adds a tab to the sidebar, its purpose is to use different sidebars to accommodate different windows
+     * @param tab the tab to be added
+     *
+     * @autor Mouloudj
+     * */
+    public void addTab(SideLabel tab){
         sideTabs.add(tab,"right");
     }
 }

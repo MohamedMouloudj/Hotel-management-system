@@ -5,10 +5,8 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
-
 public class SideLabel extends JLabel implements MouseListener {
-
+    boolean isClicked = false;
     /**
      * To create side tab that must be added to a container (Like tab  container)
      *
@@ -29,6 +27,12 @@ public class SideLabel extends JLabel implements MouseListener {
         setOpaque(true);
     }
 
+    /**
+     *
+     * When the label is clicked, the background color of that label is changed to white and the color is changed to black, and the other labels are changed to the primary color
+     * @param e MouseEvent
+     * @autor Mouloudj
+     * */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() == this) {
@@ -37,6 +41,7 @@ public class SideLabel extends JLabel implements MouseListener {
                 component.setBackground(new Color(0x1E90FF));
                 component.setForeground(Color.white);
             }
+            isClicked = true;
             this.setForeground(Color.BLACK);
             this.setBackground(Color.WHITE);
         }
@@ -54,11 +59,19 @@ public class SideLabel extends JLabel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Do nothing
+        setForeground(Color.black);
     }
 
+    /**
+     * When the mouse exits the label, the color of the label is changed to white, if the background is white, the color is changed to black
+     * @param e MouseEvent
+     * @author Mouloudj
+     * */
     @Override
     public void mouseExited(MouseEvent e) {
-        // Do nothing
+        setForeground(Color.white);
+        if(getBackground().equals(Color.WHITE)){
+            setForeground(Color.BLACK);
+        }
     }
 }
