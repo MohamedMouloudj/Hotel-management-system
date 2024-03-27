@@ -1,4 +1,4 @@
-package view.managerUi.container;
+package view.managerUi;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +11,15 @@ import java.awt.event.*;
 
 public class PanelTabs extends JLayeredPane {
 
-    public PanelShow cover;
     public MyButton btn3;
 
-    public PanelTabs(PanelShow cover) { // Receive panelShow reference
+    private PanelShow panelShow;
+    int a = 0;
+
+    public PanelTabs(PanelShow panelShow) {
         initComponents();
         initRegister();
-        this.cover = cover;
+        this.panelShow = panelShow;
 
     }
 
@@ -26,7 +28,7 @@ public class PanelTabs extends JLayeredPane {
 
         JLabel title = new JLabel("L'Oasis");
         title.setFont(new Font("Ink free", Font.BOLD, 55));
-        add(title, "alignx center, wrap, gaptop 20"); // Added gaptop 20 for 20px top margin
+        add(title, "alignx center, wrap, gaptop 20");
 
         MyButton btn1 = createStyledButton("Add Reciptionist");
         MyButton btn2 = createStyledButton("Delate Reciptionist");
@@ -46,8 +48,15 @@ public class PanelTabs extends JLayeredPane {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                cover.add(cover.scrollPane, "grow");
-                cover.revalidate();
+
+                if (a % 2 == 0) {
+                    panelShow.addAllreceptionist();
+
+                } else {
+                    panelShow.removeAllComponents();
+                }
+                a++;
+
             }
 
         });
@@ -61,7 +70,7 @@ public class PanelTabs extends JLayeredPane {
                 if (getModel().isArmed()) {
                     g.setColor(Color.white);
                 } else {
-                    g.setColor(new Color(0, 0, 0, 0)); // Transparent background
+                    g.setColor(new Color(0, 0, 0, 0));
                 }
                 g.fillRect(0, 0, getWidth(), getHeight());
                 super.paintComponent(g);

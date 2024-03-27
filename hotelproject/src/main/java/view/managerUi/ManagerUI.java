@@ -1,4 +1,4 @@
-package view.managerUi.container;
+package view.managerUi;
 
 import java.awt.*;
 
@@ -9,10 +9,9 @@ import net.miginfocom.swing.MigLayout;
 public class ManagerUI extends JFrame {
 
     private MigLayout layout;
-    private PanelShow cover;
-    private PanelTabs loginAndRegister;
-    private boolean isLogin = true;
-    private final double coverSize = 75;
+    private PanelShow panelShow;
+    private PanelTabs panelTabs;
+    private final double panelShowSize = 75;
     private final double loginSize = 25;
     private JLayeredPane bg;
 
@@ -23,14 +22,14 @@ public class ManagerUI extends JFrame {
 
     private void init() {
         layout = new MigLayout("fill, insets 0");
-        cover = new PanelShow();
-        loginAndRegister = new PanelTabs(cover);
+        panelShow = new PanelShow();
 
-        loginAndRegister.addAncestorListener(null);
+        panelTabs = new PanelTabs(panelShow);
+        panelTabs.addAncestorListener(null);
 
         bg.setLayout(layout);
-        bg.add(cover, "width " + coverSize + "%, pos " + (isLogin ? "1al" : "0al") + " 0 n 100%");
-        bg.add(loginAndRegister, "width " + loginSize + "%, pos " + (isLogin ? "0al" : "1al") + " 0 n 100%");
+        bg.add(panelShow, "width " + panelShowSize + "%, pos " + "1al" + " 0 n 100%");
+        bg.add(panelTabs, "width " + loginSize + "%, pos " + "0al" + " 0 n 100%");
     }
 
     private void initComponents() {
@@ -39,12 +38,10 @@ public class ManagerUI extends JFrame {
         setResizable(false);
 
         try {
-            Image backgroundImage = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
+            Image backgroundImage = new ImageIcon(getClass().getResource("user.png")).getImage();
             setIconImage(backgroundImage);
-
-        } catch (NullPointerException e) {
-
-            System.out.println(22);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
@@ -76,7 +73,7 @@ public class ManagerUI extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ManagerUI().setVisible(true);
+                new ManagerUi().setVisible(true);
             }
         });
     }

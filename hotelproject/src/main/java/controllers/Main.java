@@ -1,6 +1,5 @@
 package controllers;
 
-// import view.login.main.LogInForm;
 
 import view.windows.*;
 
@@ -16,5 +15,6 @@ public class Main {
                 //LogInForm.runForm();
                 new GuestUi();
         }
+
 
 }
