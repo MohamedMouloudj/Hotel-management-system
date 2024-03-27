@@ -2,18 +2,18 @@ package controllers;
 
 import view.login.main.LogInForm;
 
-import java.util.*;
+// import java.util.*;
 
-import org.bson.Document;
+// import org.bson.Document;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+// import com.mongodb.MongoClient;
+// import com.mongodb.client.MongoClients;
+// import com.mongodb.client.MongoCollection;
+// import com.mongodb.client.MongoDatabase;
 
-import model.Guest;
+// import model.Guest;
 
-import static view.login.main.LogInForm.*;
+// import static view.login.main.LogInForm.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -22,7 +22,8 @@ public class Main {
         // Manager.addEmployee(receptionist);
         // Manager.removeEmployee("chakib", "Doe");
         LogInForm.runForm();
-        // System.out.println(Guest.isValidEmail("uu"));
 
+        // System.out.println(Guest.isValidEmail("uu"));
     }
+
 }

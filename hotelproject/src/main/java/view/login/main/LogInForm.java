@@ -13,7 +13,6 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-import model.Guest;
 import model.User;
 import view.login.container.Message;
 import view.login.container.PanelCover;
@@ -97,6 +96,7 @@ public class LogInForm extends JFrame {
                 layout.setComponentConstraints(loginAndRegister,
                         "width " + loginSize + "%, pos " + fractionLogin + "al 0 n 100%");
                 bg.revalidate();
+                // System.out.println(fractionCover + " " + fractionLogin + " " + size);
             }
 
             @Override
@@ -139,9 +139,10 @@ public class LogInForm extends JFrame {
             setIconImage(backgroundImage);
 
         } catch (NullPointerException e) {
-            JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            // JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),
+            // "Error",
+            // JOptionPane.ERROR_MESSAGE);
+            System.out.println(22);
         }
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
@@ -283,7 +284,6 @@ public class LogInForm extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LogInForm().setVisible(true);
                 new LogInForm().setVisible(true);
             }
         });
