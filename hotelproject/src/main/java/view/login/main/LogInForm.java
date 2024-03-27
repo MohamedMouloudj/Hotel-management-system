@@ -13,6 +13,10 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
+<<<<<<< HEAD
+import model.Guest;
+=======
+>>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
 import model.User;
 import view.login.container.Message;
 import view.login.container.PanelCover;
@@ -96,7 +100,10 @@ public class LogInForm extends JFrame {
                 layout.setComponentConstraints(loginAndRegister,
                         "width " + loginSize + "%, pos " + fractionLogin + "al 0 n 100%");
                 bg.revalidate();
+<<<<<<< HEAD
+=======
                 // System.out.println(fractionCover + " " + fractionLogin + " " + size);
+>>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
             }
 
             @Override
@@ -139,10 +146,16 @@ public class LogInForm extends JFrame {
             setIconImage(backgroundImage);
 
         } catch (NullPointerException e) {
+<<<<<<< HEAD
+            JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+=======
             // JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),
             // "Error",
             // JOptionPane.ERROR_MESSAGE);
             System.out.println(22);
+>>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
         }
 
         bg.setBackground(new java.awt.Color(255, 255, 255));
@@ -285,6 +298,10 @@ public class LogInForm extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LogInForm().setVisible(true);
+<<<<<<< HEAD
+                new LogInForm().setVisible(true);
+=======
+>>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
             }
         });
     }

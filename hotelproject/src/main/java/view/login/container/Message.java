@@ -28,6 +28,13 @@ public class Message extends javax.swing.JPanel {
     public void showMessage(MessageType messageType, String message) {
         this.messageType = messageType;
         lbMessage.setText(message);
+<<<<<<< HEAD
+        if (messageType == MessageType.SUCCESS) {
+            lbMessage.setIcon(new ImageIcon(getClass().getResource("/view/login/icon/success.png")));
+        } else {
+            lbMessage.setIcon(new ImageIcon(getClass().getResource("/view/login/icon/error.png")));
+        }
+=======
         // if (messageType == MessageType.SUCCESS) {
         // lbMessage.setIcon(new
         // ImageIcon(getClass().getResource("/view/login/icon/success.png")));
@@ -35,6 +42,7 @@ public class Message extends javax.swing.JPanel {
         // lbMessage.setIcon(new
         // ImageIcon(getClass().getResource("/view/login/icon/error.png")));
         // }
+>>>>>>> 0929ef637fa0c8386be9d72e285e04dda524f0b8
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated
