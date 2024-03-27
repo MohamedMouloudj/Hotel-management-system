@@ -14,9 +14,9 @@ import controllers.PasswordHashing;
 
 import org.bson.Document;
 
-import view.login.components.MyButton;
-import view.login.components.MyPasswordField;
-import view.login.components.MyTextField;
+import view.components.MyButton;
+import view.components.MyPasswordField;
+import view.components.MyTextField;
 import model.*;
 
 import net.miginfocom.swing.MigLayout;

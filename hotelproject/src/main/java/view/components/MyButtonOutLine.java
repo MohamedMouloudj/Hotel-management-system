@@ -1,4 +1,4 @@
-package view.login.components;
+package view.components;
 
 import java.awt.Color;
 import java.awt.Cursor;

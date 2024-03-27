@@ -1,4 +1,4 @@
-package view.login.components;
+package view.components;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
