@@ -4,67 +4,43 @@ import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
 import view.login.loginComponents.MyButton;
-import view.managerUi.PanelShow;
 
 import javax.swing.border.Border;
 
 import java.awt.event.*;
+import java.util.HashMap;
 
 public class PanelTabs extends JLayeredPane {
 
-    public MyButton btn3;
-
-    private PanelShow panelShow;
-    int a = 0;
-
-    public PanelTabs(PanelShow panelShow) {
-        initComponents();
-        initRegister();
-        this.panelShow = panelShow;
+    public PanelTabs(HashMap<String, ActionListener> map, String rowsConstraints) {
+        setLayout(new java.awt.CardLayout());
+        init(map, rowsConstraints);
 
     }
 
-    public void initRegister() {
-        setLayout(new MigLayout("wrap", "push[center]push", "[]30[]20[]20[]20[]20[]20[]push"));
+    private void init(HashMap<String, ActionListener> map, String rowsConstraints) {
+        setLayout(new MigLayout("wrap", "push[center]push", rowsConstraints));
 
         JLabel title = new JLabel("L'Oasis");
         title.setFont(new Font("Ink free", Font.BOLD, 55));
         add(title, "alignx center, wrap, gaptop 20");
 
-        MyButton btn1 = createStyledButton("Add Reciptionist");
-        MyButton btn2 = createStyledButton("Delate Reciptionist");
-        btn3 = createStyledButton("All Reciptionists");
-        MyButton btn4 = createStyledButton("Add Room");
-        MyButton btn5 = createStyledButton("Delete Room");
-        MyButton btn6 = createStyledButton("All Rooms");
+        for (String text : map.keySet()) {
+            MyButton btn = createStyledButton(text);
+            btn.addActionListener(map.get(text));
+            // btn.addActionListener(new ActionListener() {
 
-        add(btn1, "w 70%, h 38, alignx right");
-        add(btn2, "w 70%, h 38, alignx right");
-        add(btn3, "w 70%, h 38, alignx right");
-        add(btn4, "w 70%, h 38, alignx right");
-        add(btn5, "w 70%, h 38, alignx right");
-        add(btn6, "w 70%, h 38, alignx right");
+            // @Override
+            // public void actionPerformed(ActionEvent arg0) {
+            // // TODO Auto-generated method stub
+            // contect.setidex();
+            // }
 
-        btn3.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-
-                if (a % 2 == 0) {
-                    panelShow.addAllreceptionist();
-
-                } else {
-                    panelShow.removeAllComponents();
-                }
-                a++;
-
-            }
-
-        });
+            // });
+            add(btn, "w 70%, h 38, alignx center");
+        }
 
     }
-
-
 
     private MyButton createStyledButton(String text) {
         MyButton button = new MyButton() {
@@ -92,12 +68,7 @@ public class PanelTabs extends JLayeredPane {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                for (Component component : getParent().getComponents()){
-                    component.setBackground(new Color(0x1E90FF));
-                    component.setForeground(Color.WHITE);
-                }
-                button.setForeground(Color.BLACK);
-                setBackground(Color.WHITE);
+                button.setForeground(Color.black);
             }
 
             @Override
@@ -114,17 +85,43 @@ public class PanelTabs extends JLayeredPane {
         return button;
     }
 
-    private void initComponents() {
-        setLayout(new java.awt.CardLayout());
-    }
-
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
-        Graphics2D g2 = (Graphics2D) grphcs;
-        GradientPaint gradientPaint = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
-        g2.setPaint(gradientPaint);
-        g2.fillRect(0, 0, getWidth(), getHeight());
 
+        Graphics2D g2 = (Graphics2D) grphcs;
+        GradientPaint gra = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
+        g2.setPaint(gra);
+        g2.fillRect(0, 0, getWidth(), getHeight());
     }
 }
+
+// MyButton btn1 = createStyledButton("Add Reciptionist");
+// MyButton btn2 = createStyledButton("Delate Reciptionist");
+// btn3 = createStyledButton("All Reciptionists");
+// MyButton btn4 = createStyledButton("Add Room");
+// MyButton btn5 = createStyledButton("Delate Room");
+// MyButton btn6 = createStyledButton("All Rooms");
+
+// add(btn1, "w 70%, h 38, alignx center");
+// add(btn2, "w 70%, h 38, alignx center");
+// add(btn3, "w 70%, h 38, alignx center");
+// add(btn4, "w 70%, h 38, alignx center");
+// add(btn5, "w 70%, h 38, alignx center");
+// add(btn6, "w 70%, h 38, alignx center");
+
+// btn3.addActionListener(new ActionListener() {
+
+// @Override
+// public void actionPerformed(ActionEvent arg0) {
+// // if (a % 2 == 0) {
+// // panelShow.addAllreceptionist();
+
+// // } else {
+// // panelShow.removeAllComponents();
+// // }
+// // a++;
+
+// }
+
+// });

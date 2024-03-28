@@ -1,6 +1,6 @@
 package controllers;
 
-
+import view.login.main.LogInForm;
 import view.windows.*;
 
 public class Main {
@@ -12,8 +12,8 @@ public class Main {
 
                 // System.out.println(Guest.isValidEmail("uu"));
 
-                //LogInForm.runForm();
-                new GuestUi();
+                LogInForm.runForm();
+                // new GuestUi();
         }
 
 }
