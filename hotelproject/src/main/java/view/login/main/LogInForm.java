@@ -135,8 +135,8 @@ public class LogInForm extends JFrame {
         setResizable(false);
 
         try {
-            Image backgroundImage = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
-            setIconImage(backgroundImage);
+            ImageIcon icon=new ImageIcon("hotelproject/src/main/java/view/icons/palm-tree.jpg");
+            setIconImage(icon.getImage());
 
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(this, "Image not found: " + e.getMessage(),

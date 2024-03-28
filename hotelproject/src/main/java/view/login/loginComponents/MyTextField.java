@@ -1,4 +1,4 @@
-package view.components;
+package view.login.loginComponents;
 
 import java.awt.Color;
 import java.awt.FontMetrics;

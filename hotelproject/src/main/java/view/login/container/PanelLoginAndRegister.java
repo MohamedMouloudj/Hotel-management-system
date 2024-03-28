@@ -9,17 +9,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import controllers.PasswordHashing;
 // import controllers.Hotel;
 
+import controllers.PasswordHashing;
 import org.bson.Document;
 
-import view.components.MyButton;
-import view.components.MyPasswordField;
-import view.components.MyTextField;
+
 import model.*;
 
 import net.miginfocom.swing.MigLayout;
+import view.login.loginComponents.MyButton;
+import view.login.loginComponents.MyPasswordField;
+import view.login.loginComponents.MyTextField;
+
 
 public class PanelLoginAndRegister extends JLayeredPane {
     private User registerData;
@@ -74,11 +76,12 @@ public class PanelLoginAndRegister extends JLayeredPane {
         label.setForeground(new Color(0x1E90FF));
         register.add(label);
         MyTextField txtName = new MyTextField();
-        //txtName.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/user.png")));
+        txtName.setPrefixIcon(new ImageIcon(getClass().getResource("hotelproject/src/main/java/view/icons/person.png")));
+
         txtName.setHint("Name");
         register.add(txtName, "w 70%");
         MyTextField txtLastName = new MyTextField();
-        //txtLastName.setPrefixIcon(new ImageIcon(getClass().getResource("/view/login/icon/user.png")));
+        txtLastName.setPrefixIcon(new ImageIcon(getClass().getResource("hotelproject/src/main/java/view/icons/person.png")));
         txtLastName.setHint("Lastname");
         register.add(txtLastName, "w 70%");
         MyTextField txtEmail = new MyTextField();

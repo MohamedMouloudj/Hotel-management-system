@@ -1,9 +1,10 @@
-package view.managerUi;
+package view.basicComponents;
 
 import javax.swing.*;
 import java.awt.*;
 import net.miginfocom.swing.MigLayout;
-import view.components.MyButton;
+import view.login.loginComponents.MyButton;
+import view.managerUi.PanelShow;
 
 import javax.swing.border.Border;
 
@@ -34,20 +35,21 @@ public class PanelTabs extends JLayeredPane {
         MyButton btn2 = createStyledButton("Delate Reciptionist");
         btn3 = createStyledButton("All Reciptionists");
         MyButton btn4 = createStyledButton("Add Room");
-        MyButton btn5 = createStyledButton("Delate Room");
+        MyButton btn5 = createStyledButton("Delete Room");
         MyButton btn6 = createStyledButton("All Rooms");
 
-        add(btn1, "w 70%, h 38, alignx center");
-        add(btn2, "w 70%, h 38, alignx center");
-        add(btn3, "w 70%, h 38, alignx center");
-        add(btn4, "w 70%, h 38, alignx center");
-        add(btn5, "w 70%, h 38, alignx center");
-        add(btn6, "w 70%, h 38, alignx center");
+        add(btn1, "w 70%, h 38, alignx right");
+        add(btn2, "w 70%, h 38, alignx right");
+        add(btn3, "w 70%, h 38, alignx right");
+        add(btn4, "w 70%, h 38, alignx right");
+        add(btn5, "w 70%, h 38, alignx right");
+        add(btn6, "w 70%, h 38, alignx right");
 
         btn3.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
+
                 if (a % 2 == 0) {
                     panelShow.addAllreceptionist();
 
@@ -61,6 +63,8 @@ public class PanelTabs extends JLayeredPane {
         });
 
     }
+
+
 
     private MyButton createStyledButton(String text) {
         MyButton button = new MyButton() {
@@ -88,7 +92,12 @@ public class PanelTabs extends JLayeredPane {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                button.setForeground(Color.black);
+                for (Component component : getParent().getComponents()){
+                    component.setBackground(new Color(0x1E90FF));
+                    component.setForeground(Color.WHITE);
+                }
+                button.setForeground(Color.BLACK);
+                setBackground(Color.WHITE);
             }
 
             @Override
@@ -112,10 +121,10 @@ public class PanelTabs extends JLayeredPane {
     @Override
     protected void paintComponent(Graphics grphcs) {
         super.paintComponent(grphcs);
-
         Graphics2D g2 = (Graphics2D) grphcs;
-        GradientPaint gra = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
-        g2.setPaint(gra);
+        GradientPaint gradientPaint = new GradientPaint(0, 0, new Color(0, 112, 255), 0, getHeight(), new Color(0x00BFFF));
+        g2.setPaint(gradientPaint);
         g2.fillRect(0, 0, getWidth(), getHeight());
+
     }
 }

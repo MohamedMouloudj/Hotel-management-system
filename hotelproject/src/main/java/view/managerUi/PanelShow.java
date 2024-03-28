@@ -13,6 +13,7 @@ public class PanelShow extends JPanel {
     private JScrollPane scrollPane;
 
     public PanelShow() {
+        setBackground(Color.WHITE);
 
     }
 
@@ -82,7 +83,7 @@ public class PanelShow extends JPanel {
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         table.setDefaultRenderer(Object.class, centerRenderer);
 
-        // Customize header
+        // Customize header2
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 14)); // Set header font
         header.setForeground(Color.WHITE); // Set header text color

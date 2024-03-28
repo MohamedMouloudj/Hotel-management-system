@@ -1,44 +1,93 @@
 package view.windows;
 
-import view.basicComponents.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class GuestUi extends JFrame{
-    public GuestUi(){
+import net.miginfocom.swing.MigLayout;
+import view.basicComponents.*;
+public class GuestUi extends JFrame implements MouseListener {
+    SideBar sideBar;
+    SideLabel roomsTab;
+    SideLabel reservationsTab;
+    SideLabel profileTab;
+    JPanel content;
+    CardLayout cardLayout;
+    private boolean isRoomsPanelVisible = true;
+    Color fancyColor = new Color(0x0377FF);
+    Color lightColor = new Color(0x4FB5FF);
+    public GuestUi() {
         setSize(1000, 500);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Logo logo=new Logo();
+        setLayout(new BorderLayout(10,0));
 
-        SideLabelContainer rooms=new SideLabelContainer("Rooms");
-        SideLabelContainer reservations=new SideLabelContainer("Reservations");
-        SideLabelContainer profile=new SideLabelContainer("Profile");
+        sideBar = new SideBar();
+        roomsTab = new SideLabel("Rooms");
+        reservationsTab = new SideLabel("Reservations");
+        profileTab = new SideLabel("Profile");
 
-        JPanel sideTabs=new JPanel();
-        sideTabs.setPreferredSize(new Dimension(170,180));
-        sideTabs.setBackground(null);
-        sideTabs.setLayout(new FlowLayout(FlowLayout.TRAILING,0,20));
+        sideBar.addTab(roomsTab);
+        sideBar.addTab(reservationsTab);
+        sideBar.addTab(profileTab);
+        roomsTab.addMouseListener(this);
 
-        OurButton quitButton=new OurButton("Log out");
-        quitButton.setIconToButton("hotelproject/src/main/java/view/icons/quit.png",5,4);
-        quitButton.setWidth(200);
+        add(sideBar, BorderLayout.WEST);
 
-        JPanel container=new JPanel();
-        container.setLayout(new FlowLayout(FlowLayout.TRAILING,0,20));
-        container.setBackground(new Color(0x1E90FF));
-        container.setPreferredSize(new Dimension(200,0));
+        RoomsPanel roomsPanel = new RoomsPanel();
 
-        sideTabs.add(rooms);
-        sideTabs.add(reservations);
-        sideTabs.add(profile);
+        cardLayout = new CardLayout();
+        content = new JPanel();
+        content.setLayout(cardLayout);
 
-        container.add(logo);
-        container.add(sideTabs,BorderLayout.EAST);
-        container.add(quitButton);
-        add(container,BorderLayout.WEST);
+        JPanel emptyTMPPanel=new JPanel();
+        emptyTMPPanel.setBackground(Color.WHITE);
+
+        content.add(roomsPanel, "roomsPanel");
+        content.add(emptyTMPPanel,"emptyPanel");//Temporary
+        add(content, BorderLayout.CENTER);
+        isRoomsPanelVisible = true;
         setVisible(true);
+    }
+
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() != roomsTab) {
+            isRoomsPanelVisible=false;
+        }else {
+            isRoomsPanelVisible=true;
+        }
+        System.out.println(isRoomsPanelVisible);
+        if(isRoomsPanelVisible){
+            cardLayout.show(content,"roomsPanel");
+        }
+        if (isRoomsPanelVisible==false){
+            cardLayout.show(content,"emptyPanel");
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //Do nothing
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //Do nothing
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //Do nothing
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // Do nothing
     }
 }

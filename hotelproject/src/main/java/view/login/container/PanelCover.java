@@ -14,7 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import net.miginfocom.swing.MigLayout;
-import view.components.MyButtonOutLine;
+import view.login.loginComponents.MyButtonOutLine;
+
 
 public class PanelCover extends JPanel {
 

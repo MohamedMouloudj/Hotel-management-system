@@ -9,7 +9,7 @@ public class Logo extends JPanel {
         ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/OasisLogo.png");
         label.setIcon(icon);
         setBackground(null);
-        setPreferredSize(new Dimension(200, 70));
+        setPreferredSize(new Dimension(200, 60));
         add(label);
     }
 }

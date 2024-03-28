@@ -5,8 +5,9 @@ import java.awt.*;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
+import view.basicComponents.PanelTabs;
 
-public class Main extends JFrame {
+public class ManagerUI extends JFrame {
 
     private MigLayout layout;
     private PanelShow panelShow;
@@ -15,7 +16,7 @@ public class Main extends JFrame {
     private final double loginSize = 25;
     private JLayeredPane bg;
 
-    public Main() {
+    public ManagerUI() {
         initComponents();
         init();
     }
@@ -38,8 +39,8 @@ public class Main extends JFrame {
         setResizable(false);
 
         try {
-            Image backgroundImage = new ImageIcon(getClass().getResource("user.png")).getImage();
-            setIconImage(backgroundImage);
+            ImageIcon icon=new ImageIcon("hotelproject/src/main/java/view/icons/person.png");
+            setIconImage(icon.getImage());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +74,7 @@ public class Main extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new ManagerUI().setVisible(true);
             }
         });
     }
