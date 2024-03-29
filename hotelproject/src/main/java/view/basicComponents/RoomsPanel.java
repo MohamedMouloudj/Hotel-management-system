@@ -12,28 +12,24 @@ import java.awt.*;
 public class RoomsPanel extends JPanel {
     public RoomsPanel(){
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200));
-        JPanel panel=new JPanel();
+
         setBorder(BorderFactory.createTitledBorder(border,"Rooms",TitledBorder.LEFT,TitledBorder.TOP,new Font("Lucida Handwriting",Font.BOLD,20),new Color(0xC1A200)));
 
-        panel.setLayout(new GridLayout(4,2,20,30));
+        setLayout(new GridLayout(3,2,20,20));
 
-        Room room1 = new Room(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","Single Room with a single bed");
+        RoomDetail room = new RoomDetail(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","Single Room with a single bed");
+
+
+        /*Room room1 = new Room(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","Single Room with a single bed");
         Room room2 = new Room(RoomType.Double,"hotelproject/src/main/java/view/icons/doubleRoom.jpg","Double Room with a double bed");
         Room room3 = new Room(RoomType.Suite,"hotelproject/src/main/java/view/icons/suitRoom.jpg","Suite Room with a double bed and a living room");
         Room room4 = new Room(RoomType.Family,"hotelproject/src/main/java/view/icons/familyRoom.jpg","Family Room with a double bed and two single beds");
 
-        panel.add(room1);
-        panel.add(room2);
-        panel.add(room4);
-        panel.add(room3);
+        add(room1);
+        add(room2);
+        add(room4);*/
+        add(room);
 
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setPreferredSize(new Dimension(700, 600)); // Set preferred size
-        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
-
-        add(scrollPane);
     }
 }
 
@@ -47,9 +43,11 @@ class Room extends JPanel {
         imageLabel.setPreferredSize(new Dimension(250,150));
         add(imageLabel);
 
-        JPanel roomInfo = new JPanel(new GridBagLayout());
+        /*JPanel roomInfo = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        add(roomInfo,BorderLayout.EAST);
+        add(roomInfo,BorderLayout.EAST);*/
+        setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
 
         /////////// Room Info ///////////
         JLabel roomTypeLabel = new JLabel(roomType.toString());
@@ -57,38 +55,41 @@ class Room extends JPanel {
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets=new Insets(0,10,10,10);
-        roomInfo.add(roomTypeLabel,constraints);
+        add(roomTypeLabel,constraints);
 
         JLabel isAvailableLabel = new JLabel("Available");
         isAvailableLabel.setFont(new Font("Inter",Font.PLAIN,15));
         isAvailableLabel.setForeground(new Color(0x00A000));
         constraints.gridy = 0;
         constraints.gridx = 1;
-        roomInfo.add(isAvailableLabel,constraints);
+        add(isAvailableLabel,constraints);
 
         JLabel roomDescriptionLabel = new JLabel(roomDescription);
         roomDescriptionLabel.setFont(new Font("Inter",Font.PLAIN,8));
         constraints.gridy = 1;
         constraints.gridx = 0;
         constraints.gridwidth = 2;
-        roomInfo.add(roomDescriptionLabel,constraints);
+       add(roomDescriptionLabel,constraints);
 
         JLabel priceLabel = new JLabel("Price: "+roomType.getPrice()+"DZD/Night");
         priceLabel.setFont(new Font("Inter",Font.PLAIN,10));
         constraints.gridy = 2;
         constraints.gridx = 0;
         constraints.insets=new Insets(10,0,10,30);
-        roomInfo.add(priceLabel,constraints);
+        add(priceLabel,constraints);
 
         OurButton bookButton = new OurButton("Book now");
         bookButton.setWidth(110);
         constraints.gridx=0;
         constraints.gridy=3;
         constraints.gridwidth=2;
-        roomInfo.add(bookButton,constraints);
+        add(bookButton,constraints);
         /////////////////////////////////
 
     }
+
+
+
     public void setAvailable(boolean available){
         if(available){
             ((JLabel)((JPanel)getComponent(1)).getComponent(1)).setText("Available");

@@ -14,6 +14,8 @@
     </properties>
 
     <dependencies>
+
+
         <!-- https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -34,6 +36,12 @@
             <version>1.0-201002281504</version>
             <type>nbm</type>
         </dependency>
+
+
+
+
+
+
 
         <!--        <dependency>-->
         <!--            <groupId>org.mongodb</groupId>-->
