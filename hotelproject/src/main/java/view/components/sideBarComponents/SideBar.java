@@ -1,13 +1,16 @@
-package view.components;
+package view.components.sideBarComponents;
 
 import net.miginfocom.swing.MigLayout;
+import view.components.DynamicButton;
 import view.login.loginMain.LogInForm;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class SideBar extends JPanel {
-    private JPanel sideTabs;
+    private SideTabsContainer sideTabs;
     private JLabel logo;
     JPanel container;
     private int width = 250;
@@ -17,7 +20,7 @@ public class SideBar extends JPanel {
     private Color startColor= new Color(0x00BFFF);
 
 
-    public SideBar(){
+    public SideBar(HashMap<String, ActionListener> map , JTabbedPane tabbedContent){
 
         setSize(width, height);
         setLayout(new BorderLayout());
@@ -30,11 +33,11 @@ public class SideBar extends JPanel {
         //////////////////////////////////////////
 
         /////////////// sideTabs //////////////////
-        sideTabs=new JPanel();
-        sideTabs.setPreferredSize(new Dimension(width-20,200));
+        sideTabs=new SideTabsContainer(map,tabbedContent);
+//        sideTabs.setPreferredSize(new Dimension(width-20,200));
         sideTabs.setBackground(null);
-//      sideTabs.setLayout(new FlowLayout(FlowLayout.CENTER,0,20));
-        sideTabs.setLayout(new MigLayout("fillx,wrap 1 , inset 0 ","0[]0","[]"));
+//        sideTabs.setLayout(new FlowLayout(FlowLayout.CENTER,0,20));
+//        sideTabs.setLayout(new MigLayout("fillx,wrap 1 , inset 0 ","0[]0","[]"));
         //////////////////////////////////////////
 
         /////////////// quitButton //////////////////
@@ -64,16 +67,16 @@ public class SideBar extends JPanel {
     }
 
 
-    /**
-     * This method adds a tab to the sidebar, its purpose is to use different sidebars to accommodate different windows
-     *
-     * @param tab the tab to be added
-     *
-     * @autor Mouloudj
-     */
-    public void addTab(SideButton tab) {
-        sideTabs.add(tab, "right");
-    }
+//    /**
+//     * This method adds a tab to the sidebar, its purpose is to use different sidebars to accommodate different windows
+//     *
+//     * @param tab the tab to be added
+//     *
+//     * @autor Mouloudj
+//     */
+//    public void addTab(SideButton tab) {
+//        sideTabs.add(tab, "right");
+//    }
 
     public void setWidth(int width) {
         this.width = width;

@@ -8,31 +8,35 @@ import java.util.HashMap;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.PanelTabs;
+import view.components.sideBarComponents.SideBar;
+import view.components.sideBarComponents.SideTabsContainer;
 
 public class ManagerUI extends JFrame {
 
-    private MigLayout layout;
     private ManagerShow panelShow;
-    private PanelTabs panelTabs;
+    HashMap<String, ActionListener> map = new HashMap<>();
+    private SideBar sideBar;
+    private JTabbedPane TabbedContent; //TODO : Add all the panel to be shown to this tabbed content , the add it to the sideBar
     private final double panelShowSize = 75;
     private final double loginSize = 25;
-    private JLayeredPane bg;
     private ActionListener actAllrecip;
     private ActionListener actAddRecip;
     int a = 0;
     int b = 0;
 
     public ManagerUI() {
-        initComponents();
+        //TODO: Check GuestUi to understand the pattern, DON'T CHANGE GuestUi
+
         act();
         init();
     }
 
     private void init() {
-        layout = new MigLayout("fill, insets 0");
+        setLayout(new BorderLayout(5,0));
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
         panelShow = new ManagerShow();
-        HashMap<String, ActionListener> map = new HashMap<>();
+
         map.put("Add Reciptionist", actAddRecip);
         map.put("Delate Reciptionist", actAddRecip);
         map.put("All Reciptionists", actAllrecip);
@@ -40,12 +44,14 @@ public class ManagerUI extends JFrame {
         map.put("Delate Room", null);
         map.put("All Rooms", null);
 
-        panelTabs = new PanelTabs(map, "[]30[]20[]20[]20[]20[]20[]push");
-        panelTabs.addAncestorListener(null);
+        sideBar = new SideBar(map, TabbedContent);
+        sideBar.setWidth(800);
 
-        bg.setLayout(layout);
-        bg.add(panelShow, "width " + panelShowSize + "%, pos " + "1al" + " 0 n 100%");
-        bg.add(panelTabs, "width " + loginSize + "%, pos " + "0al" + " 0 n 100%");
+
+        add(sideBar, BorderLayout.WEST);
+        add(panelShow, BorderLayout.CENTER);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     private void act() {
@@ -70,43 +76,7 @@ public class ManagerUI extends JFrame {
         };
     }
 
-    private void initComponents() {
-        bg = new javax.swing.JLayeredPane();
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
-        try {
-            Image backgroundImage = new ImageIcon(
-                    getClass().getResource("/view/icons/OasisLogo.png")).getImage();
-            setIconImage(backgroundImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        bg.setBackground(new java.awt.Color(255, 255, 255));
-        bg.setOpaque(true);
-
-        GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
-        bg.setLayout(bgLayout);
-        bgLayout.setHorizontalGroup(
-                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 933, Short.MAX_VALUE));
-        bgLayout.setVerticalGroup(
-                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 537, Short.MAX_VALUE));
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(bg, GroupLayout.Alignment.TRAILING));
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(bg));
-
-        pack();
-        setLocationRelativeTo(null);
-    }
 
     private void showAllRecipt() {
         if (a % 2 == 0) {
@@ -118,12 +88,4 @@ public class ManagerUI extends JFrame {
         a++;
     }
 
-    public static void main(String[] args) {
-        /* Create and display the form */
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ManagerUI().setVisible(true);
-            }
-        });
-    }
 }

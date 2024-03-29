@@ -1,3 +1,4 @@
+/*
 package view.receptionistUi;
 
 import java.awt.*;
@@ -8,13 +9,13 @@ import java.util.HashMap;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.PanelTabs;
+import view.components.sideBarComponents.SideTabsContainer;
 
 public class ReceptionistUi extends JFrame {
 
     private MigLayout layout;
     private ReceptionistShow ReceptionistShow;
-    private PanelTabs panelTabs;
+    private SideTabsContainer sideTabsContainer;
     private final double ReceptionistShowSize = 75;
     private final double panelTabsSize = 25;
     private JLayeredPane bg;
@@ -36,12 +37,12 @@ public class ReceptionistUi extends JFrame {
         map.put("Reservations", null);
         map.put("Profile", null);
 
-        panelTabs = new PanelTabs(map, "[]30[]18[]18[]18[]18[]18[]18push");
-        panelTabs.addAncestorListener(null);
+        sideTabsContainer = new SideTabsContainer(map, "[]30[]18[]18[]18[]18[]18[]18push");
+        sideTabsContainer.addAncestorListener(null);
 
         bg.setLayout(layout);
         bg.add(ReceptionistShow, "width " + ReceptionistShowSize + "%, pos " + "1al" + " 0 n 100%");
-        bg.add(panelTabs, "width " + panelTabsSize + "%, pos " + "0al" + " 0 n 100%");
+        bg.add(sideTabsContainer, "width " + panelTabsSize + "%, pos " + "0al" + " 0 n 100%");
     }
 
     private void act() {
@@ -87,7 +88,9 @@ public class ReceptionistUi extends JFrame {
     }
 
     public static void main(String[] args) {
-        /* Create and display the form */
+        */
+/* Create and display the form *//*
+
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ReceptionistUi().setVisible(true);
@@ -95,3 +98,4 @@ public class ReceptionistUi extends JFrame {
         });
     }
 }
+*/

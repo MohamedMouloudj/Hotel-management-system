@@ -1,12 +1,14 @@
-package view.components;
+package view.components.sideBarComponents;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class SideButton extends JLabel implements MouseListener {
-    boolean isClicked = false;
+public class SideButton extends JButton implements MouseListener, ActionListener {
+
     /**
      * To create side tab that must be added to a container (Like tab  container)
      *
@@ -15,6 +17,8 @@ public class SideButton extends JLabel implements MouseListener {
      */
     public SideButton(String text) {
         setText(text);
+        setFocusable(false);
+        setBorderPainted(false);
         setHorizontalAlignment(SwingConstants.CENTER);
         setHorizontalTextPosition(SwingConstants.CENTER);
         setVerticalAlignment(SwingConstants.CENTER);
@@ -41,7 +45,6 @@ public class SideButton extends JLabel implements MouseListener {
                 component.setBackground(new Color(0x1E90FF));
                 component.setForeground(Color.white);
             }
-            isClicked = true;
             this.setForeground(Color.BLACK);
             this.setBackground(Color.WHITE);
         }
@@ -73,5 +76,10 @@ public class SideButton extends JLabel implements MouseListener {
         if(getBackground().equals(Color.WHITE)){
             setForeground(Color.BLACK);
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

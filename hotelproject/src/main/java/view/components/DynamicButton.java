@@ -12,6 +12,7 @@ public class DynamicButton extends JButton {
     private Image icon;
 
     /**
+     * (For content buttons)
      * Will create a button with the given text and set the default font to Arial, bold, 14pt.
      * It provides a default background color of blue and white text color and round border
      * @param text String
