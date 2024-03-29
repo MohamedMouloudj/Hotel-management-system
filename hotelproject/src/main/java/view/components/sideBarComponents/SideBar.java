@@ -14,7 +14,7 @@ public class SideBar extends JPanel {
     private JLayeredPane sideTabs;
     private JLabel logo;
 //    private JPanel container;
-    private int width = 250;
+    private int width = 230;
     private int height = 650;
 
     Color startColor = new Color(0x0377FF); // Dark blue
@@ -28,7 +28,7 @@ public class SideBar extends JPanel {
      */
     public SideBar(HashMap<String, ActionListener> map , JTabbedPane tabbedContent){
         setSize(width, height);
-        setLayout(new MigLayout("fillx,wrap 1 , inset 0","[right]","30[]60[]push[]30"));
+        setLayout(new MigLayout("fillx,wrap 1 , inset 0","[right]","20[]70[]push[]30"));
 
 
         ///////////// logo ///////////////////////
@@ -46,7 +46,7 @@ public class SideBar extends JPanel {
         for (String text : map.keySet()) {
             SideButton btn = new SideButton(text);
             btn.addActionListener(map.get(text));
-            sideTabs.add(btn, "right");
+            sideTabs.add(btn, "right, growx, pushx, wrap, h 40!, gapx 0,gapbottom 10");
         }
         sideTabs.setBackground(null);
         /////////////////////////////////////////////

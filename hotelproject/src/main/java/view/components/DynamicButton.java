@@ -6,8 +6,8 @@ import javax.swing.*;
 
 public class DynamicButton extends JButton {
 
-    private int arcWidth=20;
-    private int arcHeight=20;
+    private int arcWidth=25;
+    private int arcHeight=25;
 
     private boolean bgFilled=false;
     private Image icon;
@@ -30,7 +30,7 @@ public class DynamicButton extends JButton {
     }
 
 
-    // These 2 methods are used to paint the button with a round border
+    // These 2 methods are used to paint the button with a round border and armed color when clicked
     @Override
     protected void paintComponent(Graphics g) {
         if (!bgFilled){
@@ -112,8 +112,6 @@ public class DynamicButton extends JButton {
                     Math.max(getPreferredSize().height, iconHeight)));
         }
     }
-
-
     public void addActionListener(ActionListener listener) {
         super.addActionListener(listener);
     }

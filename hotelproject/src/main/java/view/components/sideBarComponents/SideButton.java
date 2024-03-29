@@ -8,8 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class SideButton extends JButton implements MouseListener, ActionListener {
-    private int width = 180;
-    private int height = 40;
     /**
      * To create side tab that must be added to a container (Like tab  container)
      *
@@ -26,7 +24,6 @@ public class SideButton extends JButton implements MouseListener, ActionListener
         setVerticalAlignment(SwingConstants.CENTER);
         setForeground(Color.WHITE);
         setFont(new Font("Inter", Font.PLAIN, 16));
-        setPreferredSize(new Dimension(width, height));
         addMouseListener(this);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }

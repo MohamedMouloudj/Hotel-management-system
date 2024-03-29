@@ -1,4 +1,4 @@
-package view.components;
+package view.login.loginComponents;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -41,6 +41,7 @@ public class MyButton extends JButton {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
         setBackground(Color.WHITE);
+        setFocusPainted(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         addMouseListener(new MouseAdapter() {
             @Override

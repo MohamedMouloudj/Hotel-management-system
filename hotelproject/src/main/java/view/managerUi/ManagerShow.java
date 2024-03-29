@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.MyButton;
+import view.login.loginComponents.MyButton;
 import view.login.loginComponents.MyPasswordField;
 import view.login.loginComponents.MyTextField;
 

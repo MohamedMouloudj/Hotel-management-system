@@ -17,7 +17,7 @@ import org.bson.Document;
 import model.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.MyButton;
+import view.login.loginComponents.MyButton;
 import view.login.loginComponents.MyPasswordField;
 import view.login.loginComponents.MyTextField;
 
@@ -185,6 +185,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         btnRegisterForget.setForeground(new Color(100, 100, 100));
         btnRegisterForget.setFont(new Font("sansserif", 1, 12));
         btnRegisterForget.setContentAreaFilled(false);
+        btnRegisterForget.setFocusPainted(false);
+        btnRegisterForget.setBorderPainted(false);
         btnRegisterForget.setCursor(new Cursor(Cursor.HAND_CURSOR));
         login.add(btnRegisterForget);
         MyButton btnLogIn = new MyButton();
