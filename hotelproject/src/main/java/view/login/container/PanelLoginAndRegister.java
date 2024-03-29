@@ -3,7 +3,6 @@ package view.login.container;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -18,7 +17,7 @@ import org.bson.Document;
 import model.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.login.loginComponents.MyButton;
+import view.components.MyButton;
 import view.login.loginComponents.MyPasswordField;
 import view.login.loginComponents.MyTextField;
 
