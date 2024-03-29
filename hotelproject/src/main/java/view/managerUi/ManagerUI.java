@@ -8,7 +8,7 @@ import java.util.HashMap;
 import javax.swing.*;
 
 import net.miginfocom.swing.MigLayout;
-import view.basicComponents.PanelTabs;
+import view.components.PanelTabs;
 
 public class ManagerUI extends JFrame {
 

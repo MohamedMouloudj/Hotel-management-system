@@ -78,8 +78,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         // Name field
         MyTextField txtName = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
-            txtName.setPrefixIcon(new ImageIcon(prefixIcon));
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/user.png");
+            txtName.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,8 +89,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         // LastName field
         MyTextField txtLastName = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
-            txtLastName.setPrefixIcon(new ImageIcon(prefixIcon));
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/user.png");
+            txtLastName.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,8 +100,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         // Email Field
         MyTextField txtEmail = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/mail.png")).getImage();
-            txtEmail.setPrefixIcon(new ImageIcon(prefixIcon));
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/mail.png");
+            txtEmail.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,8 +112,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         // Password field
         MyPasswordField txtPass = new MyPasswordField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/pass.png")).getImage();
-            txtPass.setPrefixIcon(new ImageIcon(prefixIcon));
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/pass.png");
+            txtPass.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -164,8 +164,9 @@ public class PanelLoginAndRegister extends JLayeredPane {
         MyTextField txtEmail = new MyTextField();
 
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/mail.png")).getImage();
-            txtEmail.setPrefixIcon(new ImageIcon(prefixIcon));
+
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/mail.png");
+            txtEmail.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -173,8 +174,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         login.add(txtEmail, "w 60%");
         MyPasswordField txtPass = new MyPasswordField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/pass.png")).getImage();
-            txtPass.setPrefixIcon(new ImageIcon(prefixIcon));
+            ImageIcon prefixIcon=new ImageIcon("hotelproject/src/main/java/view/icons/pass.png");
+            txtPass.setPrefixIcon(prefixIcon);
         } catch (Exception e) {
             e.printStackTrace();
         }

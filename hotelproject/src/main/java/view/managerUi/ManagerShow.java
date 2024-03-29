@@ -36,7 +36,7 @@ public class ManagerShow extends JPanel {
 
         MyTextField txtName = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
+            Image prefixIcon = new ImageIcon(getClass().getResource("/view/icons/user.png")).getImage();
             txtName.setPrefixIcon(new ImageIcon(prefixIcon));
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +46,7 @@ public class ManagerShow extends JPanel {
 
         MyTextField txtLastName = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/user.png")).getImage();
+            Image prefixIcon = new ImageIcon(getClass().getResource("/view/icons/user.png")).getImage();
             txtLastName.setPrefixIcon(new ImageIcon(prefixIcon));
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class ManagerShow extends JPanel {
 
         MyTextField txtEmail = new MyTextField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/mail.png")).getImage();
+            Image prefixIcon = new ImageIcon(getClass().getResource("/view/icons/mail.png")).getImage();
             txtEmail.setPrefixIcon(new ImageIcon(prefixIcon));
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +66,7 @@ public class ManagerShow extends JPanel {
 
         MyPasswordField txtPass = new MyPasswordField();
         try {
-            Image prefixIcon = new ImageIcon(getClass().getResource("/view/login/icon/pass.png")).getImage();
+            Image prefixIcon = new ImageIcon(getClass().getResource("/view/icons/pass.png")).getImage();
             txtPass.setPrefixIcon(new ImageIcon(prefixIcon));
         } catch (Exception e) {
             e.printStackTrace();

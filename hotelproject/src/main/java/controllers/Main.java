@@ -1,7 +1,7 @@
 package controllers;
 
-import view.login.main.LogInForm;
-import view.windows.*;
+import view.gustUi.*;
+import view.login.loginMain.*;
 
 public class Main {
         public static void main(String[] args) {
@@ -12,8 +12,8 @@ public class Main {
 
                 // System.out.println(Guest.isValidEmail("uu"));
 
-                LogInForm.runForm();
-                // new GuestUi();
+                //LogInForm.runForm();
+                new GuestUi();
         }
 
 }
