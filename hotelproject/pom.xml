@@ -34,6 +34,11 @@
             <version>1.0-201002281504</version>
             <type>nbm</type>
         </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>org.mongodb</groupId>-->

@@ -49,16 +49,9 @@ public class DynamicButton extends JButton {
         } else {
             g2d.setColor(getBackground());
         }
-        g2d.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight);
+        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arcWidth, arcHeight);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);// Anti-aliasing, make the border smoother
         super.paintComponent(g);
-    }
-    @Override
-    public boolean contains(int x, int y) {
-        int width = getWidth();
-        int height = getHeight();
-        return ((x - width / 2) * (x - width / 2) / ((width / 2 - arcWidth / 2) * (width / 2 - arcWidth / 2)) +
-                (y - height / 2) * (y - height / 2) / ((height / 2 - arcHeight / 2) * (height / 2 - arcHeight / 2))) <= 1;
     }
 
     public void setButtonText(String text) {
@@ -96,7 +89,6 @@ public class DynamicButton extends JButton {
      * @param horizontalTextPosition int
      *                               The position of the text in relation to the icon
      *                               LEFT=2, RIGHT=4, CENTER=0
-     * @author Mouloudj
      * */
     public void setIconToButton(ImageIcon icon,int gap, int horizontalTextPosition) {
         if (icon != null) {

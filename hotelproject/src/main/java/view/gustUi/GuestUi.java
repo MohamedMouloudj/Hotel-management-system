@@ -39,7 +39,7 @@ public class GuestUi extends JFrame {
 
         /////////////////// Right Content /////////////////////////////////
         tabbedContent = new JTabbedPane();
-        RoomsPanel roomsPanel = new RoomsPanel();
+        RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
         JPanel emptyTMPPanel=new JPanel();
         emptyTMPPanel.setBackground(Color.WHITE);
         JPanel profilePanel=new JPanel();

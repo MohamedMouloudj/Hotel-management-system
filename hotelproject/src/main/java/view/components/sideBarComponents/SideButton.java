@@ -7,12 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class SideButton extends JButton implements MouseListener, ActionListener {
+public class SideButton extends JButton implements MouseListener {
     /**
      * To create side tab that must be added to a container (Like tab  container)
      *
      * @param text tab name title.
-     * @author Mouloudj
      */
     public SideButton(String text) {
         setText(text);
@@ -23,7 +22,7 @@ public class SideButton extends JButton implements MouseListener, ActionListener
         setHorizontalTextPosition(SwingConstants.CENTER);
         setVerticalAlignment(SwingConstants.CENTER);
         setForeground(Color.WHITE);
-        setFont(new Font("Inter", Font.PLAIN, 16));
+        setFont(new Font("Inter", Font.ITALIC, 16));
         addMouseListener(this);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
@@ -32,7 +31,6 @@ public class SideButton extends JButton implements MouseListener, ActionListener
      *
      * When the label is clicked, the background color of that label is changed to white and the color is changed to black, and the other labels are changed to the primary color
      * @param e MouseEvent
-     * @autor Mouloudj
      * */
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -48,7 +46,6 @@ public class SideButton extends JButton implements MouseListener, ActionListener
             setContentAreaFilled(true);
         }
     }
-
     @Override
     public void mousePressed(MouseEvent e) {
         // Do nothing
@@ -67,7 +64,6 @@ public class SideButton extends JButton implements MouseListener, ActionListener
     /**
      * When the mouse exits the label, the color of the label is changed to white, if the background is white, the color is changed to black
      * @param e MouseEvent
-     * @author Mouloudj
      * */
     @Override
     public void mouseExited(MouseEvent e) {
@@ -75,10 +71,5 @@ public class SideButton extends JButton implements MouseListener, ActionListener
         if(getBackground().equals(Color.WHITE)){
             setForeground(Color.BLACK);
         }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
     }
 }
