@@ -1,7 +1,7 @@
 package controllers;
 
-
-import view.windows.*;
+import view.gustUi.*;
+import view.login.loginMain.*;
 
 public class Main {
         public static void main(String[] args) {
