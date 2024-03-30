@@ -3,7 +3,6 @@ package view.login.container;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
@@ -186,6 +185,8 @@ public class PanelLoginAndRegister extends JLayeredPane {
         btnRegisterForget.setForeground(new Color(100, 100, 100));
         btnRegisterForget.setFont(new Font("sansserif", 1, 12));
         btnRegisterForget.setContentAreaFilled(false);
+        btnRegisterForget.setFocusPainted(false);
+        btnRegisterForget.setBorderPainted(false);
         btnRegisterForget.setCursor(new Cursor(Cursor.HAND_CURSOR));
         login.add(btnRegisterForget);
         MyButton btnLogIn = new MyButton();

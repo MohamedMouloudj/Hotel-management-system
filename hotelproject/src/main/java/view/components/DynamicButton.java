@@ -7,15 +7,16 @@ import java.awt.event.ActionListener;
 
 public class DynamicButton extends JButton {
 
-    private int arcWidth=20;
-    private int arcHeight=20;
+    private int arcWidth=25;
+    private int arcHeight=25;
 
+    private boolean bgFilled=false;
     private Image icon;
 
     /**
      * (For content buttons)
      * Will create a button with the given text and set the default font to Arial, bold, 14pt.
-     * It provides a default background color of blue and white text color and round border
+     * It provides a default transparent background and black text color and round border
      * @param text String
      *             The text to be displayed on the button
      * @author Mouloudj
@@ -27,13 +28,17 @@ public class DynamicButton extends JButton {
         setFocusPainted(false);
         setFont(new Font("Arial", Font.BOLD, 14)); // Set default font
         setForeground(Color.WHITE);
-        setBackground(new Color(0x1E90FF));
     }
 
 
-    // These 2 methods are used to paint the button with a round border
+    // These 2 methods are used to paint the button with a round border and armed color when clicked
     @Override
     protected void paintComponent(Graphics g) {
+        if (!bgFilled){
+            super.paintComponent(g);
+            return;
+        }
+
         Graphics2D g2d = (Graphics2D) g;
         if (getModel().isArmed()) {
             // Workaround for getArmedBorderColor():
@@ -61,9 +66,16 @@ public class DynamicButton extends JButton {
         super.setText(text);
     }
 
-    public void setButtonColor(Color bgColor, Color textColor) {
+    public void setButtonBgColor(Color bgColor ) {
         setBackground(bgColor);
-        setForeground(textColor);
+        bgFilled = true;
+        repaint();
+    }
+    public void setButtonTxtColor(Color txtColor) {
+        setForeground(txtColor);
+    }
+    public void removeRoundBorder() {
+        setContentAreaFilled(true);
         repaint();
     }
 
@@ -101,7 +113,6 @@ public class DynamicButton extends JButton {
                     Math.max(getPreferredSize().height, iconHeight)));
         }
     }
-
     public void addActionListener(ActionListener listener) {
         super.addActionListener(listener);
     }

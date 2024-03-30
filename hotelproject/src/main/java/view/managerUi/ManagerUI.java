@@ -7,9 +7,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-import net.miginfocom.swing.MigLayout;
 import view.components.sideBarComponents.SideBar;
-import view.components.sideBarComponents.SideTabsContainer;
 
 public class ManagerUI extends JFrame {
 
@@ -45,7 +43,7 @@ public class ManagerUI extends JFrame {
         map.put("All Rooms", null);
 
         sideBar = new SideBar(map, TabbedContent);
-        sideBar.setWidth(800);
+
 
 
         add(sideBar, BorderLayout.WEST);
