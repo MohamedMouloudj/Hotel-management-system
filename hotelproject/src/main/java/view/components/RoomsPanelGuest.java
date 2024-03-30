@@ -12,7 +12,7 @@ public class RoomsPanelGuest extends JPanel {
     public RoomsPanelGuest(){
         JPanel panel = new JPanel();
 
-        panel.setLayout(new MigLayout("wrap 1,center, insets 10","[grow]","[]10[]"));
+        panel.setLayout(new MigLayout("wrap 1,center ","[grow]","push[]10[]push"));
 
         Room room1 = new Room(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","-Single Room with a single bed.");
         Room room2 = new Room(RoomType.Double,"hotelproject/src/main/java/view/icons/doubleRoom.jpg","-Double Room with a double bed.");
@@ -30,7 +30,7 @@ public class RoomsPanelGuest extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Increase scroll speed
         scrollPane.setPreferredSize(new Dimension(600, 500)); // Set preferred size
 
-        setLayout(new MigLayout("insets 0, fill"));
+        setLayout(new MigLayout("insets 10, fill"));
         add(scrollPane, "grow, growy, push");
 
     }
@@ -42,7 +42,7 @@ class Room extends JPanel {
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200),2);
         setBorder(border);
 
-        setLayout(new MigLayout("wrap 2, center, insets 0 5 0 5","[][]","[grow,fill]"));
+        setLayout(new MigLayout("wrap 2, center, insets 0 5 0 5,gap 5% 5%","[][]","[grow,fill]"));
 
         ImageIcon icon =new ImageIcon(roomPicture);
         JLabel imageLabel = new JLabel();

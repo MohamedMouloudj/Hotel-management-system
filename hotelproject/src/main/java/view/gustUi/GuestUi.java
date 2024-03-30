@@ -1,6 +1,7 @@
 package view.gustUi;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -39,14 +40,15 @@ public class GuestUi extends JFrame {
 
         /////////////////// Right Content /////////////////////////////////
         tabbedContent = new JTabbedPane();
+        tabbedContent.setUI(new HiddenTabTitleUI());
         RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
         JPanel emptyTMPPanel=new JPanel();
         emptyTMPPanel.setBackground(Color.WHITE);
         JPanel profilePanel=new JPanel();
         profilePanel.setBackground(Color.WHITE);
-        tabbedContent.add(roomsPanel, "roomsPanel");
-        tabbedContent.add(emptyTMPPanel,"emptyPanel");//Temporary
-        tabbedContent.add(profilePanel,"profilePanel");//Temporary
+        tabbedContent.addTab("roomsPanel", roomsPanel);
+        tabbedContent.addTab("emptyPanel",emptyTMPPanel);//Temporary
+        tabbedContent.addTab("profilePanel",profilePanel);//Temporary
         ////////////////////////////////////////////////////////////////////
 
         /////////////////// SideBar ////////////////////////////////////////
@@ -60,5 +62,18 @@ public class GuestUi extends JFrame {
         add(tabbedContent, BorderLayout.CENTER);
         setVisible(true);
     }
+}
+class HiddenTabTitleUI extends BasicTabbedPaneUI {
 
+    @Override
+    protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
+        // Return 0 to hide the tab titles
+        return 0;
+    }
+
+    @Override
+    protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
+        // Return 0 to hide the tab area (adjust for padding if needed)
+        return 0;
+    }
 }
