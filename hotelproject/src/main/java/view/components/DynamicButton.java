@@ -1,8 +1,9 @@
 package view.components;
 
+import javax.swing.*;
+import java.awt.Image;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class DynamicButton extends JButton {
 

@@ -19,6 +19,11 @@
     <remote-repository>
       <option name="id" value="unknown-jars-temp-repo" />
       <option name="name" value="A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository." />
+      <option name="url" value="file:C:\Hotel-management-\hotelproject/lib" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="unknown-jars-temp-repo" />
+      <option name="name" value="A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository." />
       <option name="url" value="file:E:\Desktop_files\java_projects\OOP2_Exam-TP\Hotel-management-\hotelproject/lib" />
     </remote-repository>
   </component>
