@@ -1,6 +1,7 @@
 package view.gustUi;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -39,20 +40,26 @@ public class GuestUi extends JFrame {
 
         /////////////////// Right Content /////////////////////////////////
         tabbedContent = new JTabbedPane();
-        RoomsPanel roomsPanel = new RoomsPanel();
+        tabbedContent.setUI(new HiddenTabTitleUI()); //Hide tab titles
+
+        RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
         JPanel emptyTMPPanel=new JPanel();
         emptyTMPPanel.setBackground(Color.WHITE);
-        JPanel profilePanel=new JPanel();
+        ProfileUi profilePanel=new ProfileUi();
         profilePanel.setBackground(Color.WHITE);
-        tabbedContent.add(roomsPanel, "roomsPanel");
-        tabbedContent.add(emptyTMPPanel,"emptyPanel");//Temporary
-        tabbedContent.add(profilePanel,"profilePanel");//Temporary
+        profilePanel.addFirstName("John");
+        profilePanel.addLastName("Doe");
+        profilePanel.addEmail("mdlc@gmail.com");
+        profilePanel.addPassword("password123");
+        tabbedContent.addTab("roomsPanel", roomsPanel);
+        tabbedContent.addTab("emptyPanel",emptyTMPPanel);//Temporary
+        tabbedContent.addTab("profilePanel",profilePanel);//Temporary
         ////////////////////////////////////////////////////////////////////
 
         /////////////////// SideBar ////////////////////////////////////////
         map.put("Rooms", e -> tabbedContent.setSelectedIndex(0));
         map.put("Reservations", e -> tabbedContent.setSelectedIndex(1));//Temporary
-        map.put("Profile", e -> tabbedContent.setSelectedIndex(2));//Temporary
+        map.put("ProfileUi", e -> tabbedContent.setSelectedIndex(2));//Temporary
         sideBar = new SideBar(map, tabbedContent);
 
         ////////////////////////////////////////////////////////////////////
@@ -60,5 +67,22 @@ public class GuestUi extends JFrame {
         add(tabbedContent, BorderLayout.CENTER);
         setVisible(true);
     }
+}
 
+/**
+ * Override the default tabbed pane UI to hide the tab titles and tab area
+ * */
+class HiddenTabTitleUI extends BasicTabbedPaneUI {
+
+    @Override
+    protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
+        // Return 0 to hide the tab titles
+        return 0;
+    }
+
+    @Override
+    protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
+        // Return 0 to hide the tab area (adjust for padding if needed)
+        return 0;
+    }
 }

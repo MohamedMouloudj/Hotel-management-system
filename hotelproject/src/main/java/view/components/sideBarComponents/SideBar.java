@@ -13,9 +13,8 @@ import java.util.HashMap;
 public class SideBar extends JPanel {
     private JLayeredPane sideTabs;
     private JLabel logo;
-//    private JPanel container;
-    private int width = 230;
-    private int height = 650;
+
+    private int width = 250;
 
     Color startColor = new Color(0x0377FF); // Dark blue
     Color endColor = new Color(0x4FB5FF); // Light blue
@@ -27,8 +26,7 @@ public class SideBar extends JPanel {
      *                      The container of all the panel to be shown. It must be instantiated in UI class (like GuestUi, ManagerUi, etc)
      */
     public SideBar(HashMap<String, ActionListener> map , JTabbedPane tabbedContent){
-        setSize(width, height);
-        setLayout(new MigLayout("fillx,wrap 1 , inset 0","[right]","20[]70[]push[]30"));
+        setLayout(new MigLayout("fillx,wrap 1 , inset 0","[right,"+width+"!]","20[]70[]push[]30"));
 
 
         ///////////// logo ///////////////////////
@@ -40,13 +38,13 @@ public class SideBar extends JPanel {
 
         /////////////// sideTabs //////////////////
         sideTabs=new JLayeredPane();
-        sideTabs.setLayout(new MigLayout("fillx,wrap 1 , inset 0 ", "0[]0", "[]"));
+        sideTabs.setLayout(new MigLayout("fillx, wrap 1 , inset 0 ", "0[left,"+(width-55)+"!]0", "[]"));
         sideTabs.setBackground(null);
 
         for (String text : map.keySet()) {
             SideButton btn = new SideButton(text);
             btn.addActionListener(map.get(text));
-            sideTabs.add(btn, "right, growx, pushx, wrap, h 40!, gapx 0,gapbottom 10");
+            sideTabs.add(btn, "right,growx, pushx, h 40!, w 100% ,gapbottom 10");
         }
         sideTabs.setBackground(null);
         /////////////////////////////////////////////
@@ -67,7 +65,7 @@ public class SideBar extends JPanel {
 
 
         add(logo,"center");
-        add(sideTabs,"wrap, growy, pushy,gapx 60!");
+        add(sideTabs,"wrap, growy, pushy");
         add(quitButton,"center");
 
         setVisible(true);
