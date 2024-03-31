@@ -40,12 +40,17 @@ public class GuestUi extends JFrame {
 
         /////////////////// Right Content /////////////////////////////////
         tabbedContent = new JTabbedPane();
-        tabbedContent.setUI(new HiddenTabTitleUI());
+        tabbedContent.setUI(new HiddenTabTitleUI()); //Hide tab titles
+
         RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
         JPanel emptyTMPPanel=new JPanel();
         emptyTMPPanel.setBackground(Color.WHITE);
-        JPanel profilePanel=new JPanel();
+        ProfileUi profilePanel=new ProfileUi();
         profilePanel.setBackground(Color.WHITE);
+        profilePanel.addFirstName("John");
+        profilePanel.addLastName("Doe");
+        profilePanel.addEmail("mdlc@gmail.com");
+        profilePanel.addPassword("password123");
         tabbedContent.addTab("roomsPanel", roomsPanel);
         tabbedContent.addTab("emptyPanel",emptyTMPPanel);//Temporary
         tabbedContent.addTab("profilePanel",profilePanel);//Temporary
@@ -54,7 +59,7 @@ public class GuestUi extends JFrame {
         /////////////////// SideBar ////////////////////////////////////////
         map.put("Rooms", e -> tabbedContent.setSelectedIndex(0));
         map.put("Reservations", e -> tabbedContent.setSelectedIndex(1));//Temporary
-        map.put("Profile", e -> tabbedContent.setSelectedIndex(2));//Temporary
+        map.put("ProfileUi", e -> tabbedContent.setSelectedIndex(2));//Temporary
         sideBar = new SideBar(map, tabbedContent);
 
         ////////////////////////////////////////////////////////////////////
@@ -63,6 +68,10 @@ public class GuestUi extends JFrame {
         setVisible(true);
     }
 }
+
+/**
+ * Override the default tabbed pane UI to hide the tab titles and tab area
+ * */
 class HiddenTabTitleUI extends BasicTabbedPaneUI {
 
     @Override
