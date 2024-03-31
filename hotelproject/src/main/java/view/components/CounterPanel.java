@@ -7,42 +7,39 @@ import java.awt.event.ActionListener;
 
 public class CounterPanel extends JPanel {
     int counter = 0;
-    CounterPanel(){
+    CounterPanel(String text){
         //some styling
         setBackground(Color.GRAY);
-        setPreferredSize(new Dimension(110, 30));
+        setPreferredSize(new Dimension(30, 10));
 
         setLayout(new FlowLayout());
 
-        JLabel CounterTypeAdults = new JLabel("Adults");
+        JLabel CounterTypeAdults = new JLabel(text);
         CounterTypeAdults.setFont(new Font("Inter",Font.PLAIN,10));
         add(CounterTypeAdults);
 
-        JLabel CounterTypeChildren = new JLabel("Children");
-        CounterTypeChildren.setFont(new Font("Inter",Font.PLAIN,10));
-        add(CounterTypeChildren);
-
         JLabel counterLabel = new JLabel(String.valueOf(counter));
-        counterLabel.setBackground(Color.darkGray);
+        counterLabel.setBackground(Color.lightGray);
         counterLabel.setSize(new Dimension(30,30));
 
-        add(counterLabel );
+        add(counterLabel);
 
 
         ImageIcon incrementIcon = new ImageIcon("./view/icons/add.png");
-        JButton incrementButton = new JButton();
+        DynamicButton incrementButton = new DynamicButton("+");
+        incrementButton.setPreferredSize(new Dimension(5,5));
         incrementButton.setBackground(new Color(0, 0, 0, 0)); // Set background color to transparent
-        incrementButton.setOpaque(false); // Allow transparency
-        incrementButton.setBorderPainted(false); //
+        incrementButton.setBorderPainted(false);
+        incrementButton.setIconToButton(incrementIcon , 20, SwingConstants.CENTER);
         // incrementButton.setIcon(incrementIcon);
 
         ImageIcon decrementIcon = new ImageIcon("./view/icons/close.png");
-        JButton decrementButton = new JButton("");
-        // decrementButton.setIconToButton(decrementIcon , 20, 20);
+        DynamicButton decrementButton = new DynamicButton("-");
+        decrementButton.setIconToButton(decrementIcon , 20, SwingConstants.CENTER);
         decrementButton.setPreferredSize(new Dimension(20,20));
 
 
-
+         //action listeners for buttons
         incrementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,5 +67,8 @@ public class CounterPanel extends JPanel {
         add(decrementButton );
 
 
+    }
+    int getCount(){
+        return this.counter;
     }
 }
