@@ -11,6 +11,7 @@ public class ProfileUi extends JPanel {
     private JLabel FirstName;
     private JLabel LastName;
     private JLabel Password;
+    DynamicButton editButton = new DynamicButton("Edit");
     public ProfileUi() {
         initComponents();
     }
@@ -24,12 +25,16 @@ public class ProfileUi extends JPanel {
         Password = new JLabel();
         Email = new JLabel();
 
+        editButton.setButtonBgColor(new Color(0x0069EF));
+        editButton.setForeground(Color.BLACK);
+        editButton.setIconToButton(new ImageIcon("hotelproject/src/main/java/view/icons/edit.png"),15,4);
+
         setLayout(new MigLayout("wrap 1,center", "[]", "push[]push"));
 
         Container.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2, true));
         Container.setAutoscrolls(true);
         Container.setPreferredSize(new Dimension(500, 400));
-        Container.setLayout(new MigLayout("wrap 2,center", "20[]20[grow,fill]20", "20[grow,fill]20"));
+        Container.setLayout(new MigLayout("center", "20[]20[grow,fill]20", "20[grow]20"));
 
         FirstName.setFont(new Font("Arial", Font.BOLD, 12)); // NOI18N
         FirstName.setHorizontalAlignment(SwingConstants.LEFT);
@@ -53,6 +58,7 @@ public class ProfileUi extends JPanel {
         Password.setText("Password:");
         Container.add(Password,"cell 0 3");
 
+        Container.add(editButton,"cell 0 5,alignx center,spanx 2");
 
 //        GroupLayout layout = new GroupLayout(this);
 //        this.setLayout(layout);

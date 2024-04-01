@@ -27,6 +27,7 @@ public class DynamicButton extends JButton {
         setFocusPainted(false);
         setFont(new Font("Arial", Font.BOLD, 14)); // Set default font
         setForeground(Color.WHITE);
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
 
