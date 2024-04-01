@@ -151,7 +151,7 @@ public class RoomUI extends JPanel {
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
             JPanel rooms = (JPanel) this.getParent();
 
-            for (Component component : roomsPanel.rooms) {
+            for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof Room) {
                     rooms.add(component);
                 }
