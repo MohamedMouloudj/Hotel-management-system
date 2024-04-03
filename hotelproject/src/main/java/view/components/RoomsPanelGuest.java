@@ -19,6 +19,7 @@ public class RoomsPanelGuest extends JPanel {
     HashMap<RoomType, Room> rooms = new HashMap<RoomType , Room>();
     Set<RoomType> keys = rooms.keySet(); // get the keys (roomType)
     //used a set to avoid duplicates
+    public JPanel filter;
 
     /*
         using the hashmap to index all the rooms by their type
@@ -43,7 +44,7 @@ public class RoomsPanelGuest extends JPanel {
         rooms.put(room4.getRoomType(),room4);
 
         //filter for filtering the rooms by type
-        JPanel filter = new JPanel();
+        filter = new JPanel();
         filter.setLayout(new FlowLayout());
 
         JComboBox<RoomType> comboBox = new JComboBox<>();
@@ -73,25 +74,36 @@ public class RoomsPanelGuest extends JPanel {
         comboBox.setSelectedItem(null);
         filter.add(comboBox);
 
-
-
         DynamicButton FilterButton = new DynamicButton("filter");
         FilterButton.setButtonBgColor(new Color(0x0377FF));
         FilterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RoomType selectedRoomType = (RoomType) comboBox.getSelectedItem();
-                ArrayList<Room> roomsToRemove = new ArrayList<>();
-                for (Component component : panel.getComponents()) {
-                    if (component instanceof Room) {
-                        Room room = (Room) component;
-                        if (selectedRoomType != null && room.getRoomType() != selectedRoomType) {
-                            roomsToRemove.add(room);
+                ArrayList<Room> roomsToAdd = new ArrayList<>();
+
+                for (Room room : rooms.values()) {
+                        if (selectedRoomType != null && room.getRoomType() == selectedRoomType) {
+                            roomsToAdd.add(room);
                         }
-                    }
                 }
-                for (Room room : roomsToRemove) {
-                    panel.remove(room);
+                //remove all the rooms and add those who have the same type as the selected one
+                panel.removeAll();
+                panel.add(filter , "center");
+                if (!roomsToAdd.isEmpty()) {
+                    for (Room room : roomsToAdd) {
+                        panel.add(room , "center");
+                    }
+                }else {
+                   // add a panel for no rooms found
+                    JLabel noRoomsFound = new JLabel("No rooms found with this type");
+                    panel.add(noRoomsFound , "center , wrap");
+                    DynamicButton JoinWaitlist = new DynamicButton("Join Waitlist");
+                    JoinWaitlist.setButtonBgColor(new Color(0x0377FF));
+                    JoinWaitlist.setButtonSize(new Dimension(110,40));
+                    panel.add(JoinWaitlist , "center");
+
+
                 }
                 panel.revalidate();
                 panel.repaint();
@@ -101,13 +113,14 @@ public class RoomsPanelGuest extends JPanel {
 
        //another button to show all the rooms again
         DynamicButton resetButton = new DynamicButton("show all");
-        FilterButton.setButtonBgColor(new Color(0x0377FF));
+        resetButton.setForeground(new Color(0x0377FF));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
+                panel.add(filter ,"center");
                 for (Room room : rooms.values()) { // assuming allRooms is a list that contains all the Room objects
-                    panel.add(room);
+                    panel.add(room , "center");
                 }
                 panel.revalidate();
                 panel.repaint();
@@ -116,7 +129,6 @@ public class RoomsPanelGuest extends JPanel {
         filter.add(resetButton);
 
         panel.add(filter, "center");
-
 
         for (Room room : rooms.values()) {
             panel.add(room , "center");
