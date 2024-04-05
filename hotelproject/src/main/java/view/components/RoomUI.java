@@ -18,7 +18,6 @@ public class RoomUI extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         add(roomInfo,BorderLayout.EAST);*/
 
-
         setLayout(new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]"));
 
 
@@ -150,21 +149,18 @@ public class RoomUI extends JPanel {
             // Show the RoomsPanel again
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
             JPanel rooms = (JPanel) this.getParent();
-
+            rooms.add(roomsPanel.filter , "center");
             for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof Room) {
-                    rooms.add(component);
+                    rooms.add(component , "center");
                 }
             }
-
             // Revalidate and repaint the RoomsPanel for layout updates
             roomsPanel.revalidate();
             roomsPanel.repaint();
         });
 
          roomDetailedInfo.add(backButton ,"wrap");
-
-
 
         bookButton.addActionListener(e -> {
 

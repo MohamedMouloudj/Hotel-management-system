@@ -21,7 +21,7 @@ public class Receptionist extends User {
     }
 
     @Override
-    public void inser() {
+    public void insertToDB() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'inser'");
     }

@@ -1,4 +1,4 @@
-package view.login.container;
+package view.components;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -29,9 +29,9 @@ public class Message extends javax.swing.JPanel {
         this.messageType = messageType;
         lbMessage.setText(message);
         if (messageType == MessageType.SUCCESS) {
-            lbMessage.setIcon(new ImageIcon(getClass().getResource("/view/login/icon/success.png")));
+            lbMessage.setIcon(new ImageIcon("hotelproject/src/main/java/view/icons/success.png"));
         } else {
-            lbMessage.setIcon(new ImageIcon(getClass().getResource("/view/login/icon/error.png")));
+            lbMessage.setIcon(new ImageIcon("hotelproject/src/main/java/view/icons/error.png"));
         }
     }
 

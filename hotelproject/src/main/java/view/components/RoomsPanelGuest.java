@@ -14,11 +14,12 @@ import java.util.Set;
 
 public class RoomsPanelGuest extends JPanel {
     private JScrollPane scrollPane;
-
+    JPanel panel;
     //
-    HashMap<RoomType, Room> rooms = new HashMap<RoomType , Room>();
-    Set<RoomType> keys = rooms.keySet(); // get the keys (roomType)
+    protected HashMap<RoomType, Room> rooms = new HashMap<RoomType , Room>();
+    protected Set<RoomType> keys = rooms.keySet(); // get the keys (roomType)
     //used a set to avoid duplicates
+    protected JPanel filter;
 
     /*
         using the hashmap to index all the rooms by their type
@@ -27,8 +28,7 @@ public class RoomsPanelGuest extends JPanel {
 
     public RoomsPanelGuest(){
 
-
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         panel.setLayout(new MigLayout("wrap 1,center ","[grow]","push[]10[]push"));
 
         Room room1 = new Room(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","-Single Room with a single bed.");
@@ -43,7 +43,7 @@ public class RoomsPanelGuest extends JPanel {
         rooms.put(room4.getRoomType(),room4);
 
         //filter for filtering the rooms by type
-        JPanel filter = new JPanel();
+        filter = new JPanel();
         filter.setLayout(new FlowLayout());
 
         JComboBox<RoomType> comboBox = new JComboBox<>();
@@ -73,31 +73,34 @@ public class RoomsPanelGuest extends JPanel {
         comboBox.setSelectedItem(null);
         filter.add(comboBox);
 
-
         DynamicButton FilterButton = new DynamicButton("filter");
         FilterButton.setButtonBgColor(new Color(0x0377FF));
         FilterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 RoomType selectedRoomType = (RoomType) comboBox.getSelectedItem();
-//                ArrayList<Room> roomsToRemove = new ArrayList<>();
-//                for (Component component : panel.getComponents()) {
-//                    if (component instanceof Room) {
-//                        Room room = (Room) component;
-//                        if (selectedRoomType != null && room.getRoomType() != selectedRoomType) {
-//                            roomsToRemove.add(room);
-//                        }
-//                    }
-//                }
-//                for (Room room : roomsToRemove) {
-//                    panel.remove(room);
-//                }
-                panel.removeAll();
-                panel.add(filter, "center");
+                ArrayList<Room> roomsToAdd = new ArrayList<>();
+
                 for (Room room : rooms.values()) {
-                    if (selectedRoomType == null || room.getRoomType() == selectedRoomType) {
-                        panel.add(room, "center");
+                        if (selectedRoomType != null && room.getRoomType() == selectedRoomType) {
+                            roomsToAdd.add(room);
+                        }
+                }
+                //remove all the rooms and add those who have the same type as the selected one
+                panel.removeAll();
+                panel.add(filter , "center");
+                if (!roomsToAdd.isEmpty()) {
+                    for (Room room : roomsToAdd) {
+                        panel.add(room , "center");
                     }
+                }else {
+                   // add a panel for no rooms found
+                    JLabel noRoomsFound = new JLabel("No rooms found with this type");
+                    panel.add(noRoomsFound , "center , wrap");
+                    DynamicButton JoinWaitlist = new DynamicButton("Join Waitlist");
+                    JoinWaitlist.setButtonBgColor(new Color(0x0377FF));
+                    JoinWaitlist.setButtonSize(new Dimension(110,40));
+                    panel.add(JoinWaitlist , "center");
                 }
                 panel.revalidate();
                 panel.repaint();
@@ -107,24 +110,23 @@ public class RoomsPanelGuest extends JPanel {
 
        //another button to show all the rooms again
         DynamicButton resetButton = new DynamicButton("show all");
-        resetButton.setButtonTxtColor(new Color(0x0377FF));
-        FilterButton.setButtonBgColor(new Color(0x0377FF));
+        resetButton.setForeground(new Color(0x0377FF));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
-                panel.add(filter, "center");
+                panel.add(filter ,"center");
                 for (Room room : rooms.values()) { // assuming allRooms is a list that contains all the Room objects
-                    panel.add(room,"center");
+                    panel.add(room , "center");
                 }
                 panel.revalidate();
                 panel.repaint();
             }
         });
         filter.add(resetButton);
+
         panel.add(filter, "center");
 
-        //Add all the rooms to the panel
         for (Room room : rooms.values()) {
             panel.add(room , "center");
         }
@@ -208,7 +210,6 @@ class Room extends JPanel implements ActionListener {
 
         bookButton.addActionListener(this);
         /////////////////////////////////
-
     }
 
     RoomType getRoomType() {
@@ -230,8 +231,6 @@ class Room extends JPanel implements ActionListener {
         this.roomDescription = roomDescription;
     }
 
-
-
     //TODO: To be checked later
 
     public void setAvailable(boolean available){
@@ -251,7 +250,7 @@ class Room extends JPanel implements ActionListener {
 
         roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription);
         //get the parent that is the roomsPanel
-        JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Rooms
+        JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Roomr
 
         // remove all other Room panels
         rooms.removeAll();
@@ -262,6 +261,8 @@ class Room extends JPanel implements ActionListener {
         // Revalidate and repaint the RoomsPanel for layout updates
         rooms.revalidate();
         rooms.repaint();
+
+        System.out.println("clicked action performed");
     }
 
     public void addActionListener(ActionListener actionListener) {

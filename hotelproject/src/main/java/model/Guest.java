@@ -43,18 +43,8 @@ public class Guest extends User {
         return !super.firstName.isEmpty() && !super.lastName.isEmpty() && !super.email.isEmpty()
                 && !super.password.isEmpty();
     }
-
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-
-    private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
-
-    public static boolean isValidEmail(String email) {
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
     @Override
-    public void inser() {
+    public void insertToDB() {
         try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
             // Accessing the User database
             MongoDatabase userDatabase = mongoClient.getDatabase("User");

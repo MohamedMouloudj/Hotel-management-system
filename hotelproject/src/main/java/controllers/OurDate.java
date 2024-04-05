@@ -203,7 +203,7 @@ public class OurDate {
 
    public static void main(String[] args) {
        OurDate a = new OurDate();
-       OurDate b = new OurDate(30,2,2024);
+       OurDate b = new OurDate(30,5,2024);
        try{
            System.out.println("the difference is " + OurDate.getDaysBetweenDates(a,b) );
        }catch (InvalidDateException e) {

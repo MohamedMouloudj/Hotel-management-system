@@ -14,10 +14,10 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 import model.User;
-import view.login.container.Message;
+import view.components.Message;
 import view.login.container.PanelCover;
 import view.login.container.PanelLoginAndRegister;
-import view.login.container.Message.MessageType;
+import view.components.Message.MessageType;
 
 public class LogInForm extends JFrame {
 
@@ -174,26 +174,26 @@ public class LogInForm extends JFrame {
         User guest = loginAndRegister.getRegisterData();
         if (guest != null) {
 
-            showMessage(MessageType.SUCCESS, "nice test");
-            guest.inser();
+            showMessage(MessageType.SUCCESS, "nice test",bg);
+            guest.insertToDB();
             loginAndRegister.setRegisterData(null);
         } else {
-            showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg());
+            showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg(),bg);
 
         }
     }
 
     public void logIn() {
         if (loginAndRegister.getLogInData() != null) {
-            showMessage(MessageType.SUCCESS, "Welcome back " + loginAndRegister.getLogInData().getFirstName());
+            showMessage(MessageType.SUCCESS, "Welcome back " + loginAndRegister.getLogInData().getFirstName(),bg);
             loginAndRegister.setLogInData(null);
         } else {
-            showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg());
+            showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg(),bg);
 
         }
     }
 
-    private void showMessage(Message.MessageType messageType, String message) {
+    private void showMessage(Message.MessageType messageType, String message,JLayeredPane bg) {
         Message ms = new Message();
         ms.showMessage(messageType, message);
         TimingTarget target = new TimingTargetAdapter() {

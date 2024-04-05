@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-// import controllers.Hotel;
+// import model.Hotel;
 
 import controllers.PasswordHashing;
 import org.bson.Document;

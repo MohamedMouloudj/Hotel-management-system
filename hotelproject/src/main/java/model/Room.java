@@ -9,7 +9,7 @@ public class Room {
 
     public Room(RoomType roomType, boolean isAvailable) {
         idCounter++;
-        this.roomNumber = "Room " + idCounter;
+        this.roomNumber = roomType.toString() + idCounter;
         this.roomType = roomType;
         this.isAvailable = isAvailable;
     }
