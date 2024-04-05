@@ -6,12 +6,29 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 public class RoomsPanelGuest extends JPanel {
     private JScrollPane scrollPane;
-    public RoomsPanelGuest(){
-        JPanel panel = new JPanel();
 
+    //
+    HashMap<RoomType, Room> rooms = new HashMap<RoomType , Room>();
+    Set<RoomType> keys = rooms.keySet(); // get the keys (roomType)
+    //used a set to avoid duplicates
+
+    /*
+        using the hashmap to index all the rooms by their type
+        and then using the combobox to select the room type
+    */
+
+    public RoomsPanelGuest(){
+
+
+        JPanel panel = new JPanel();
         panel.setLayout(new MigLayout("wrap 1,center ","[grow]","push[]10[]push"));
 
         Room room1 = new Room(RoomType.Standard,"hotelproject/src/main/java/view/icons/singleRoom.jpg","-Single Room with a single bed.");
@@ -19,10 +36,112 @@ public class RoomsPanelGuest extends JPanel {
         Room room3 = new Room(RoomType.Suite,"hotelproject/src/main/java/view/icons/suitRoom.jpg","-Suite Room with a double bed and a living room.");
         Room room4 = new Room(RoomType.Family,"hotelproject/src/main/java/view/icons/familyRoom.jpg","-Family Room with a double bed and two single beds.");
 
-        panel.add(room1,"center");
-        panel.add(room2,"center");
-        panel.add(room4,"center");
-        panel.add(room3,"center");
+       //add rooms to the hash map
+        rooms.put(room1.getRoomType(),room1);
+        rooms.put(room2.getRoomType(),room2);
+        rooms.put(room3.getRoomType(),room3);
+        rooms.put(room4.getRoomType(),room4);
+
+        //filter for filtering the rooms by type
+        JPanel filter = new JPanel();
+        filter.setLayout(new FlowLayout());
+
+        JComboBox<RoomType> comboBox = new JComboBox<>();
+
+        //addign the  options to the combo box
+        for (RoomType roomType : keys ) {
+            comboBox.addItem(roomType);
+        }
+        comboBox.setPreferredSize(new Dimension(150, 30));
+
+        //setting the default value shown to select a roomType
+        DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                if (value == null) {
+                    setText("Select a RoomType");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        };
+
+        // Set the custom renderer to the JComboBox
+        comboBox.setRenderer(renderer);
+        // Set the selected item to null to display the initial text
+        comboBox.setSelectedItem(null);
+        filter.add(comboBox);
+
+
+        DynamicButton FilterButton = new DynamicButton("filter");
+        FilterButton.setButtonBgColor(new Color(0x0377FF));
+        FilterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                RoomType selectedRoomType = (RoomType) comboBox.getSelectedItem();
+//                ArrayList<Room> roomsToRemove = new ArrayList<>();
+//                for (Component component : panel.getComponents()) {
+//                    if (component instanceof Room) {
+//                        Room room = (Room) component;
+//                        if (selectedRoomType != null && room.getRoomType() != selectedRoomType) {
+//                            roomsToRemove.add(room);
+//                        }
+//                    }
+//                }
+//                for (Room room : roomsToRemove) {
+//                    panel.remove(room);
+//                }
+                panel.removeAll();
+                panel.add(filter, "center");
+                for (Room room : rooms.values()) {
+                    if (selectedRoomType == null || room.getRoomType() == selectedRoomType) {
+                        panel.add(room, "center");
+                    }
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+        filter.add(FilterButton);
+
+       //another button to show all the rooms again
+        DynamicButton resetButton = new DynamicButton("show all");
+        resetButton.setButtonTxtColor(new Color(0x0377FF));
+        FilterButton.setButtonBgColor(new Color(0x0377FF));
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panel.removeAll();
+                panel.add(filter, "center");
+                for (Room room : rooms.values()) { // assuming allRooms is a list that contains all the Room objects
+                    panel.add(room,"center");
+                }
+                panel.revalidate();
+                panel.repaint();
+            }
+        });
+        filter.add(resetButton);
+        panel.add(filter, "center");
+
+        //Add all the rooms to the panel
+        for (Room room : rooms.values()) {
+            panel.add(room , "center");
+        }
+
+    //this will allow us to know which room was clicked
+        for (int i = 0; i < getComponentCount(); i++) {
+            Room room = (Room) getComponent(i);
+            room.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Find the clicked room's corresponding RoomUI panel
+                    Room clickedRoom = (Room) e.getSource();
+                    RoomUI clickedRoomUI = clickedRoom.roomDetail;
+                    clickedRoomUI.setVisible(true); // Make the clicked room's detail panel visible
+                }
+            });
+        }
 
         scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(Color.WHITE);
@@ -36,8 +155,18 @@ public class RoomsPanelGuest extends JPanel {
     }
 }
 
-class Room extends JPanel {
+class Room extends JPanel implements ActionListener {
+
+    public RoomUI roomDetail;
+    private RoomType roomType;
+    private String roomPicture;
+    private String roomDescription;
+
     Room(RoomType roomType, String roomPicture, String roomDescription){
+
+        this.roomType = roomType;
+        this.roomPicture = roomPicture;
+        this.roomDescription = roomDescription;
 
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200),2);
         setBorder(border);
@@ -76,11 +205,35 @@ class Room extends JPanel {
         DynamicButton bookButton = new DynamicButton("Book now");
         bookButton.setButtonBgColor(new Color(0x0377FF));
         pricePanel.add(bookButton,"span 2,left,wrap,growx,pushx");
+
+        bookButton.addActionListener(this);
         /////////////////////////////////
 
     }
 
+    RoomType getRoomType() {
+        return this.roomType;
+    };
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+    public String getRoomPicture() {
+        return this.roomPicture;
+    }
+    public void setRoomPicture(String roomPicture) {
+        this.roomPicture = roomPicture;
+    }
+    public String getRoomDescription() {
+        return this.roomDescription;
+    }
+    public void setRoomDescription(String roomDescription) {
+        this.roomDescription = roomDescription;
+    }
+
+
+
     //TODO: To be checked later
+
     public void setAvailable(boolean available){
         if(available){
             ((JLabel)((JPanel)getComponent(1)).getComponent(1)).setText("Available");
@@ -92,4 +245,28 @@ class Room extends JPanel {
         }
     }
 
+    ///this action is to display the room detail panel and hide(remove) the rooms ui
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription);
+        //get the parent that is the roomsPanel
+        JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Rooms
+
+        // remove all other Room panels
+        rooms.removeAll();
+
+        roomDetail.setVisible(true);
+        rooms.add(roomDetail);
+
+        // Revalidate and repaint the RoomsPanel for layout updates
+        rooms.revalidate();
+        rooms.repaint();
+    }
+
+    public void addActionListener(ActionListener actionListener) {
+    }
 }
+
+
+

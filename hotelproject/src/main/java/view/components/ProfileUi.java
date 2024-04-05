@@ -25,7 +25,7 @@ public class ProfileUi extends JPanel {
         Password = new JLabel();
         Email = new JLabel();
 
-        editButton.setButtonBgColor(new Color(0x0069EF));
+        editButton.setButtonBgColor(new Color(0xADADAD));
         editButton.setForeground(Color.BLACK);
         editButton.setIconToButton(new ImageIcon("hotelproject/src/main/java/view/icons/edit.png"),15,4);
 

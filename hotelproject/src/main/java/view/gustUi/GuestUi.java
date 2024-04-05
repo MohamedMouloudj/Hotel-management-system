@@ -4,11 +4,9 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 
-import view.ImageNotFoundedException;
+import view.ImageNotFoundException;
 import view.components.*;
 import view.components.sideBarComponents.SideBar;
 import view.components.sideBarComponents.SideButton;
@@ -26,9 +24,9 @@ public class GuestUi extends JFrame {
         try {
             ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
             if (icon == null)
-                throw new ImageNotFoundedException("Program icon is not found");
+                throw new ImageNotFoundException("Program icon is not found");
             setIconImage(icon.getImage());
-        }catch (ImageNotFoundedException e){
+        }catch (ImageNotFoundException e){
             e.printStackTrace();
         }
 
