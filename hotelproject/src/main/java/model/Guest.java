@@ -45,13 +45,10 @@ public class Guest extends User {
     }
     @Override
     public void insertToDB() {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            // Accessing the User database
-            MongoDatabase userDatabase = mongoClient.getDatabase("User");
-            System.out.println("Database Name = " + userDatabase.getName());
+        try {
 
             // Retrieving the Client collection
-            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
+            MongoCollection<Document> clientCollection = Hotel.hotelDatabase.getCollection("Guests");
             System.out.println("Client Collection selected successfully");
 
 
@@ -73,13 +70,10 @@ public class Guest extends User {
 
     public static Document researchByEmail(String email) {
         Document existingGuest = null; // Initialize to null outside try block
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            // Accessing the User database
-            MongoDatabase userDatabase = mongoClient.getDatabase("User");
-            System.out.println("Database Name = " + userDatabase.getName());
+        try {
 
             // Retrieving the Client collection
-            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
+            MongoCollection<Document> clientCollection = Hotel.hotelDatabase.getCollection("Guests");
             System.out.println("Client Collection selected successfully");
 
             // Check if the email already exists in the collection
@@ -109,12 +103,12 @@ public class Guest extends User {
     // KeyNotFoundException {
     // Reservation toBeModified = reservations.get(roomNumber);
     // if (toBeModified == null) {
-    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
+    // throw new KeyNotFoundException("RoomOnList number: " + roomNumber + " not found");
     // }
 
-    // ArrayList<Room> rooms = Hotel.getRoomByType(type);
-    // Room room = null;
-    // for (Room r : rooms) {
+    // ArrayList<RoomOnList> rooms = Hotel.getRoomByType(type);
+    // RoomOnList room = null;
+    // for (RoomOnList r : rooms) {
     // if (r.isAvailable()) {
     // room = r;
     // break;
@@ -161,7 +155,7 @@ public class Guest extends User {
     // return;
     // }
     // if (reservations.get(roomNumber) == null) {
-    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
+    // throw new KeyNotFoundException("RoomOnList number: " + roomNumber + " not found");
     // }
     // reservations.remove(roomNumber);
     // }

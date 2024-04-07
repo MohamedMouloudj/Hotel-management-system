@@ -38,8 +38,8 @@ public class ManagerUI extends JFrame {
         map.put("Add Reciptionist", actAddRecip);
         map.put("Delate Reciptionist", actAddRecip);
         map.put("All Reciptionists", actAllrecip);
-        map.put("Add Room", null);
-        map.put("Delate Room", null);
+        map.put("Add RoomOnList", null);
+        map.put("Delate RoomOnList", null);
         map.put("All Rooms", null);
 
         sideBar = new SideBar(map, TabbedContent);

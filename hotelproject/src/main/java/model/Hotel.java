@@ -3,22 +3,42 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import model.Guest;
-import model.Room;
-import model.Receptionist;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
+import controllers.Reservation;
+import org.bson.Document;
 
 public class Hotel {
-
-    private final String name = "L'oasis";
+    public static final MongoDatabase hotelDatabase = MongoConnection.getDatabase();
+    private final int connectedUserType;
+    private final String name = "L'Oasis";
     private final String location = "L'Oasis Hotel Rue du Paradis 56 Besakara";
-    private static HashMap<String,Guest> guests;
-    private static HashMap<String,Room> rooms;
-    private static HashMap<String,Receptionist> employees;
+    protected static final HashMap<String,Guest> guests= new HashMap<>();
+    protected   static final HashMap<String, Reservation> reservationRequests= new HashMap<>();
+    protected static final HashMap<String,Guest> confirmedGuests= new HashMap<>();
+    protected static final HashMap<String, Guest> waitlist=new HashMap<>();
+    protected static final HashMap<String,Room> rooms= new HashMap<>();
+    protected static final HashMap<String,Receptionist> employees= new HashMap<>();
 
-    public Hotel() {
-        this.guests = new HashMap<>();
-        this.rooms = new HashMap<>();
-        this.employees = new HashMap<>();
+    /**
+     * @param connectedUserType 1 for guest, 2 for receptionist, 3 for manager
+     * */
+    public Hotel(int connectedUserType) {
+        this.connectedUserType = connectedUserType;
+
+        //Retrieving rooms from the database and putting them in the rooms HashMap
+        try {
+            MongoConnection.retrieveRoomsFromDB(rooms);
+        } catch (RetreiveFromDBException e) {
+            System.out.println(e.getMessage());
+        }
+
+        if (connectedUserType == 1) {
+
+        }
     }
 
     public String getName() {
@@ -33,28 +53,21 @@ public class Hotel {
         return guests;
     }
 
-    public void setGuests(HashMap<String,Guest> guests) {
-        Hotel.guests = guests;
-    }
-
-    public HashMap<String,Room> getRooms() {
+    public HashMap<String, Room> getRooms() {
         return rooms;
     }
 
-    public void setRooms(HashMap<String,Room> rooms) {
-        Hotel.rooms = rooms;
-    }
 
     public HashMap<String,Receptionist> getEmployees() {
         return employees;
     }
 
-    public static void setEmployees(HashMap<String,Receptionist> employees) {
-        Hotel.employees = employees;
-    }
+}
 
-    public static String generateId(int idCounter, char type) {
-        return type + "" + idCounter;
-    }
 
+
+class RetreiveFromDBException extends Exception {
+    RetreiveFromDBException(String msg){
+        super(msg);
+    }
 }

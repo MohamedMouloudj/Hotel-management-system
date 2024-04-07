@@ -1,13 +1,19 @@
-package view.gustUi;
+package view.guestUi;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
+import model.Room;
+import model.RoomType;
 import view.ImageNotFoundException;
 import view.components.*;
+import view.components.roomComponents.RoomOnList;
+import view.components.roomComponents.RoomsPanelGuest;
 import view.components.sideBarComponents.SideBar;
 import view.components.sideBarComponents.SideButton;
 
@@ -20,7 +26,7 @@ public class GuestUi extends JFrame {
     private HashMap<String, ActionListener> map = new HashMap<>();
     Color fancyColor = new Color(0x0377FF);
     Color lightColor = new Color(0x4FB5FF);
-    public GuestUi() {
+    public GuestUi(HashMap<String,RoomOnList> roomsList) {
         try {
             ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
             if (icon == null)
@@ -40,7 +46,12 @@ public class GuestUi extends JFrame {
         tabbedContent = new JTabbedPane();
         tabbedContent.setUI(new HiddenTabTitleUI()); //Hide tab titles
 
-        RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
+//        RoomOnList room1 = new RoomOnList(RoomType.Standard,"hotelproject/src/main/java/view/icons/StandardRoom.jpg","-Single Room with a single bed.",9000, true);
+//        RoomOnList room2 = new RoomOnList(RoomType.Double,"hotelproject/src/main/java/view/icons/DoubleRoom.jpg","-Double Room with a double bed.",12000, true);
+//        RoomOnList room3 = new RoomOnList(RoomType.Suite,"hotelproject/src/main/java/view/icons/SuiteRoom.jpg","-Suite Room with a double bed and a living room.",18000, true);
+//        RoomOnList room4 = new RoomOnList(RoomType.Family,"hotelproject/src/main/java/view/icons/FamilyRoom.jpg","-Family Room with a double bed and two single beds.",25000, false);
+
+        RoomsPanelGuest roomsPanel = new RoomsPanelGuest(roomsList);
         JPanel emptyTMPPanel=new JPanel();
         emptyTMPPanel.setBackground(Color.WHITE);
         ProfileUi profilePanel=new ProfileUi();

@@ -1,8 +1,10 @@
-package view.components;
+package view.components.roomComponents;
 
 import model.RoomType;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
+import view.components.CounterPanel;
+import view.components.DynamicButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +14,7 @@ import java.text.SimpleDateFormat;
 public class RoomUI extends JPanel {
     private final double imageWidth = 45;
 
-    RoomUI(RoomType roomType, String roomPicture, String roomDescription){
+    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price){
 
         /* JPanel roomInfo = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -36,7 +38,7 @@ public class RoomUI extends JPanel {
 
 
 
-        /////////// Room Info //////////
+        /////////// RoomOnList Info //////////
         JLabel roomTypeLabel = new JLabel(roomType.toString());
         roomTypeLabel.setFont(new Font("Lucida Handwriting",Font.PLAIN,30));
 
@@ -123,7 +125,7 @@ public class RoomUI extends JPanel {
 
 
         //price label
-        JLabel priceLabel = new JLabel("Price: "+roomType.getPrice()+"DZD/Night");
+        JLabel priceLabel = new JLabel("Price: "+price+"DZD/Night");
         priceLabel.setFont(new Font("Inter",Font.BOLD,12));
         roomDetailedInfo.add(priceLabel , "span 2 ,  wrap , gap 15 0 0 0");
 
@@ -151,7 +153,7 @@ public class RoomUI extends JPanel {
             JPanel rooms = (JPanel) this.getParent();
             rooms.add(roomsPanel.filter , "center");
             for (Component component : roomsPanel.rooms.values()) {
-                if (component instanceof Room) {
+                if (component instanceof RoomOnList) {
                     rooms.add(component , "center");
                 }
             }
@@ -165,7 +167,7 @@ public class RoomUI extends JPanel {
         bookButton.addActionListener(e -> {
 
             //this calculated price will have a different value depending on the date children and adults
-            double CalculatedPrice = roomType.getPrice() + 0.2*AdultsCounter.getCount() + 0.2*ChildrenCounter.getCount();//this one to revise
+            double CalculatedPrice = price+ 0.2*AdultsCounter.getCount() + 0.15*ChildrenCounter.getCount();//this one to revise
             int response = JOptionPane.showConfirmDialog(null,
                     "The price is " + CalculatedPrice + " DZD/Night. Do you want to confirm the booking?",
                     "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);

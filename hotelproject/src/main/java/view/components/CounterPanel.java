@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class CounterPanel extends JPanel {
     int counter = 0;
-    CounterPanel(String text){
+    public CounterPanel(String text){
         //some styling
         setBorder(BorderFactory.createLineBorder(Color.lightGray , 1));
         //setPreferredSize(new Dimension(40, 40));
@@ -82,7 +82,7 @@ public class CounterPanel extends JPanel {
 
 
     }
-    int getCount(){
+    public int getCount(){
         return this.counter;
     }
 }

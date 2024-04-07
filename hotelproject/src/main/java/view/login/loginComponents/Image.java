@@ -13,7 +13,7 @@ public class Image extends JPanel {
 
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Room Image");
+        JFrame frame = new JFrame("RoomOnList Image");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new Image());
         frame.pack();

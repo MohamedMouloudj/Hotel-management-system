@@ -2,7 +2,7 @@ package model;
 
 import org.bson.Document;
 
-public class Receptionist extends User {
+public class Receptionist extends Manager {
     // private static int idCounter = 0;
     // private final char type = 'R';
     private Role role;
