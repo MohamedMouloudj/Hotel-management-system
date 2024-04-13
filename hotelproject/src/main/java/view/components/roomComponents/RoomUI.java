@@ -183,7 +183,3 @@ public class RoomUI extends JPanel {
     }
 
 }
-
-
-
-

@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import javax.swing.*;
 
@@ -12,7 +13,7 @@ import view.components.sideBarComponents.SideBar;
 public class ManagerUI extends JFrame {
 
     private ManagerShow panelShow;
-    HashMap<String, ActionListener> map = new HashMap<>();
+    LinkedHashMap<String, ActionListener> map = new LinkedHashMap<>();
     private SideBar sideBar;
     private JTabbedPane TabbedContent; //TODO : Add all the panel to be shown to this tabbed content , the add it to the sideBar
     private final double panelShowSize = 75;

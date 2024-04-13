@@ -41,6 +41,8 @@ public class DynamicButton extends JButton {
         }
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);// Anti-aliasing, make the border smoother
+        // Set the color of the button based on the state (armed or not)
         if (getModel().isArmed()) {
             // Workaround for getArmedBorderColor():
             Color armedColor = UIManager.getColor("Button.select"); // Use system-defined color
@@ -52,7 +54,6 @@ public class DynamicButton extends JButton {
             g2d.setColor(getBackground());
         }
         g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arcWidth, arcHeight);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);// Anti-aliasing, make the border smoother
         super.paintComponent(g);
     }
 

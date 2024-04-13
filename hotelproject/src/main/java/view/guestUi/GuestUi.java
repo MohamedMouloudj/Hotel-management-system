@@ -7,11 +7,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import model.Room;
 import model.RoomType;
 import view.ImageNotFoundException;
 import view.components.*;
+import view.components.HomeComponents.Card;
+import view.components.HomeComponents.HomePage;
 import view.components.roomComponents.RoomOnList;
 import view.components.roomComponents.RoomsPanelGuest;
 import view.components.sideBarComponents.SideBar;
@@ -23,7 +26,7 @@ public class GuestUi extends JFrame {
     private SideButton reservationsTab;
     private SideButton profileTab;
     private JTabbedPane tabbedContent;
-    private HashMap<String, ActionListener> map = new HashMap<>();
+    private LinkedHashMap<String, ActionListener> map = new LinkedHashMap<>();
     Color fancyColor = new Color(0x0377FF);
     Color lightColor = new Color(0x4FB5FF);
     public GuestUi(HashMap<String,RoomOnList> roomsList) {
@@ -60,15 +63,26 @@ public class GuestUi extends JFrame {
         profilePanel.addLastName("Doe");
         profilePanel.addEmail("mdlc@gmail.com");
         profilePanel.addPassword("password123");
+
+        // JUST AN EXAMPLE OF HOW TO ADD CARDS TO THE HOMEPAGE
+        HomePage homePage = new HomePage();
+        Card card1 = new Card("Available Rooms", "Click here to see the available rooms");
+        homePage.addCard(card1);
+        Card card2 = new Card("Reservations", "Click here to see your reservations");
+        card2.setBgColor(new Color(0x995555), new Color(0x995599));
+        homePage.addCard(card2);
+
+        tabbedContent.addTab("homePage", homePage);
         tabbedContent.addTab("roomsPanel", roomsPanel);
         tabbedContent.addTab("emptyPanel",emptyTMPPanel);//Temporary
         tabbedContent.addTab("profilePanel",profilePanel);//Temporary
         ////////////////////////////////////////////////////////////////////
 
         /////////////////// SideBar ////////////////////////////////////////
-        map.put("Rooms", e -> tabbedContent.setSelectedIndex(0));
-        map.put("Reservations", e -> tabbedContent.setSelectedIndex(1));//Temporary
-        map.put("ProfileUi", e -> tabbedContent.setSelectedIndex(2));//Temporary
+        map.put("Home", e -> tabbedContent.setSelectedIndex(0));
+        map.put("Rooms", e -> tabbedContent.setSelectedIndex(1));
+        map.put("Requests", e -> tabbedContent.setSelectedIndex(2));
+        map.put("ProfileUi", e -> tabbedContent.setSelectedIndex(3));
         sideBar = new SideBar(map, tabbedContent);
 
         ////////////////////////////////////////////////////////////////////

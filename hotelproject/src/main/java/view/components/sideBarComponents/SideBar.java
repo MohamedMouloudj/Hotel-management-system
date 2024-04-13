@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class SideBar extends JPanel {
     private JLayeredPane sideTabs;
@@ -16,8 +17,8 @@ public class SideBar extends JPanel {
 
     private int width = 250;
 
-    Color startColor = new Color(0x0377FF); // Dark blue
-    Color endColor = new Color(0x4FB5FF); // Light blue
+    private final Color startColor = new Color(0x0377FF); // Dark blue
+    private final Color endColor = new Color(0x4FB5FF); // Light blue
 
     /**
      * @param map           HashMap<String, ActionListener>.
@@ -25,7 +26,7 @@ public class SideBar extends JPanel {
      * @param tabbedContent JTabbedPane.
      *                      The container of all the panel to be shown. It must be instantiated in UI class (like GuestUi, ManagerUi, etc)
      */
-    public SideBar(HashMap<String, ActionListener> map , JTabbedPane tabbedContent){
+    public SideBar(LinkedHashMap<String, ActionListener> map , JTabbedPane tabbedContent){
         setLayout(new MigLayout("fillx,wrap 1 , inset 0","[right,"+width+"!]","20[]70[]push[]30"));
 
 
@@ -72,7 +73,9 @@ public class SideBar extends JPanel {
 
     }
 
-    //For gradient background
+    /**
+     * To paint the gradient background of the card
+     * */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
