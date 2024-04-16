@@ -1,101 +1,70 @@
-/*
 package view.receptionistUi;
 
-import java.awt.*;
-// import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.TreeMap;
+import javax.swing.JTabbedPane;
 
-import javax.swing.*;
+import model.Receptionist;
+import view.components.ProfileUi;
+import view.components.sideBarComponents.SideBar;
+import view.userUi.GuestManagement;
+import view.userUi.UserGui;
 
-import net.miginfocom.swing.MigLayout;
-import view.components.sideBarComponents.SideTabsContainer;
+public class ReceptionistUi extends UserGui {
+    private JTabbedPane tabbedContent;
+    private SideBar sideBar;
+    private Receptionist receptionist;
 
-public class ReceptionistUi extends JFrame {
-
-    private MigLayout layout;
-    private ReceptionistShow ReceptionistShow;
-    private SideTabsContainer sideTabsContainer;
-    private final double ReceptionistShowSize = 75;
-    private final double panelTabsSize = 25;
-    private JLayeredPane bg;
-
-    public ReceptionistUi() {
-        initComponents();
-        act();
-        init();
+    public ReceptionistUi(Receptionist receptionist) {
+        this.receptionist = receptionist;
     }
 
-    private void init() {
-        layout = new MigLayout("fill, insets 0");
-        ReceptionistShow = new ReceptionistShow();
-        HashMap<String, ActionListener> map = new HashMap<>();
-        map.put("All Workers", null);
-        map.put("Rooms", null);
-        map.put("All Guests", null);
-        map.put("Remove Guests", null);
-        map.put("Reservations", null);
-        map.put("Profile", null);
-
-        sideTabsContainer = new SideTabsContainer(map, "[]30[]18[]18[]18[]18[]18[]18push");
-        sideTabsContainer.addAncestorListener(null);
-
-        bg.setLayout(layout);
-        bg.add(ReceptionistShow, "width " + ReceptionistShowSize + "%, pos " + "1al" + " 0 n 100%");
-        bg.add(sideTabsContainer, "width " + panelTabsSize + "%, pos " + "0al" + " 0 n 100%");
+    public Receptionist getReceptionist() {
+        return receptionist;
     }
 
-    private void act() {
-
+    public void setReceptionist(Receptionist receptionist) {
+        this.receptionist = receptionist;
     }
 
-    private void initComponents() {
-        bg = new javax.swing.JLayeredPane();
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
+    @Override
+    public void initializeTabbedContent() {
+        tabbedContent = new JTabbedPane();
+        tabbedContent.setUI(super.layoTabTitleUI);
 
-        try {
-            Image backgroundImage = new ImageIcon(
-                    getClass().getResource("/view/icons/OasisLogo.png")).getImage();
-            setIconImage(backgroundImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ProfileUi profilePanel = new ProfileUi();
+        // profilePanel.addFirstName(this.receptionist.getFirstName());
+        // profilePanel.addLastName(this.receptionist.getLastName());
+        // profilePanel.addEmail(this.receptionist.getEmail());
+        // profilePanel.addPassword("password123");
 
-        bg.setBackground(new java.awt.Color(255, 255, 255));
-        bg.setOpaque(true);
+        // RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
 
-        GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
-        bg.setLayout(bgLayout);
-        bgLayout.setHorizontalGroup(
-                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 933, Short.MAX_VALUE));
-        bgLayout.setVerticalGroup(
-                bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGap(0, 537, Short.MAX_VALUE));
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(bg, GroupLayout.Alignment.TRAILING));
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(bg));
-
-        pack();
-        setLocationRelativeTo(null);
+        tabbedContent.addTab("", new GuestManagement().createUserTabbedPane());
+        tabbedContent.addTab("", profilePanel);
+        tabbedContent.addTab("", null);
+        // tabbedContent.addTab("", roomsPanel);
     }
 
-    public static void main(String[] args) {
-        */
-/* Create and display the form *//*
+    @Override
+    public void initializeSideBar() {
+        TreeMap<String, ActionListener> map = new TreeMap<>();
+        map.put("Guests", e -> tabbedContent.setSelectedIndex(0));
+        map.put("Profile", e -> tabbedContent.setSelectedIndex(1)); // Temporary
+        map.put("Rooms", e -> tabbedContent.setSelectedIndex(2)); // Temporary
+        map.put("Reservations", e -> tabbedContent.setSelectedIndex(3)); // Temporary
 
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ReceptionistUi().setVisible(true);
-            }
-        });
+        // Initialize sidebar with the map of actions
+        sideBar = new SideBar(map, tabbedContent);
+
+        // Add sidebar and tabbed content to the frame
+        add(sideBar, BorderLayout.WEST);
+        add(tabbedContent, BorderLayout.CENTER);
     }
+
+    public static void runFrom(Receptionist receptionist) {
+        new ReceptionistUi(receptionist);
+    }
+
 }
-*/

@@ -1,89 +1,76 @@
 package view.managerUi;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.swing.JTabbedPane;
 
-import javax.swing.*;
-
+import view.components.ProfileUi;
 import view.components.sideBarComponents.SideBar;
+import view.userUi.GuestManagement;
+import view.userUi.ReceptionistManagement;
+import view.userUi.UserGui;
 
-public class ManagerUI extends JFrame {
+public class ManagerUi extends UserGui {
+    public ManagerUi() {
+        super();
+    }
 
-    private ManagerShow panelShow;
-    HashMap<String, ActionListener> map = new HashMap<>();
     private SideBar sideBar;
-    private JTabbedPane TabbedContent; //TODO : Add all the panel to be shown to this tabbed content , the add it to the sideBar
-    private final double panelShowSize = 75;
-    private final double loginSize = 25;
-    private ActionListener actAllrecip;
-    private ActionListener actAddRecip;
-    int a = 0;
-    int b = 0;
+    private JTabbedPane tabbedContent;
+    private Map<String, ActionListener> map;
 
-    public ManagerUI() {
-        //TODO: Check GuestUi to understand the pattern, DON'T CHANGE GuestUi
+    @Override
+    public void initializeTabbedContent() {
 
-        act();
-        init();
+        tabbedContent = new JTabbedPane();
+        tabbedContent.setUI(super.layoTabTitleUI);
+        ProfileUi profilePanel = new ProfileUi();
+        profilePanel.setBackground(Color.WHITE);
+        profilePanel.addFirstName("John");
+        profilePanel.addLastName("Doe");
+        profilePanel.addEmail("mdlc@gmail.com");
+        profilePanel.addPassword("password123");
+
+        // RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
+
+        tabbedContent.addTab("", new ReceptionistManagement().createUserTabbedPane());
+        tabbedContent.addTab("", new GuestManagement().createUserTabbedPane());
+        tabbedContent.addTab("", profilePanel);
+        // tabbedContent.addTab("", roomsPanel);
+        tabbedContent.addTab("", null);
+
     }
 
-    private void init() {
-        setLayout(new BorderLayout(5,0));
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    @Override
+    public void initializeSideBar() {
+        // Create map for sidebar actions
+        map = new TreeMap<>();
+        map.put("Receptionists", e -> tabbedContent.setSelectedIndex(0));
+        map.put("Guests", e -> tabbedContent.setSelectedIndex(1));
+        map.put("Profile", e -> tabbedContent.setSelectedIndex(2)); // Temporary
+        map.put("Rooms", e -> tabbedContent.setSelectedIndex(3)); // Temporary
 
-        panelShow = new ManagerShow();
+        // Initialize sidebar with the map of actions
+        sideBar = new SideBar(map, tabbedContent);
 
-        map.put("Add Reciptionist", actAddRecip);
-        map.put("Delate Reciptionist", actAddRecip);
-        map.put("All Reciptionists", actAllrecip);
-        map.put("Add Room", null);
-        map.put("Delate Room", null);
-        map.put("All Rooms", null);
-
-        sideBar = new SideBar(map, TabbedContent);
-
-
-
+        // Add sidebar and tabbed content to the frame
         add(sideBar, BorderLayout.WEST);
-        add(panelShow, BorderLayout.CENTER);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        add(tabbedContent, BorderLayout.CENTER);
     }
 
-    private void act() {
-        actAllrecip = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                showAllRecipt();
-            }
-        };
-        actAddRecip = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                if (b % 2 == 0) {
-                    panelShow.addReci();
-
-                } else {
-                    panelShow.removeAllComponents();
-                }
-                b++;
-
-            }
-        };
+    /**
+     * Main method to launch the application.
+     */
+    public static void main(String[] args) {
+        // SwingUtilities.invokeLater(Manager::new);
+        Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
+        mongoLogger.setLevel(Level.OFF);
+        new ManagerUi();
     }
-
-
-
-    private void showAllRecipt() {
-        if (a % 2 == 0) {
-            panelShow.addAllreceptionist();
-
-        } else {
-            panelShow.removeAllComponents();
-        }
-        a++;
-    }
-
 }
