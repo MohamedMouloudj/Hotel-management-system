@@ -105,7 +105,7 @@ public class RoomUI extends JPanel {
         phoneNumberField.setFont(new Font("Arial", Font.BOLD, 15)); // Set font and size
         phoneNumberField.setForeground(Color.DARK_GRAY); // Set text color
         phoneNumberField.setHorizontalAlignment(JTextField.CENTER); // Align text to center
-        infoCollect.add(phoneNumberLabel , "wrap ");
+        infoCollect.add(phoneNumberLabel , "wrap");
         infoCollect.add(phoneNumberField, "wrap"); // "wrap" starts a new row after this component
 
         // Create JLabel and JTextField for credit card

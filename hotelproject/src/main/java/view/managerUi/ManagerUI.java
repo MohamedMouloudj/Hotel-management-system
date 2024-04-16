@@ -1,16 +1,14 @@
 package view.managerUi;
 
+import view.components.sideBarComponents.SideBar;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-import javax.swing.*;
-
-import view.components.sideBarComponents.SideBar;
-
 public class ManagerUI extends JFrame {
-
     private ManagerShow panelShow;
     HashMap<String, ActionListener> map = new HashMap<>();
     private SideBar sideBar;
@@ -43,8 +41,6 @@ public class ManagerUI extends JFrame {
         map.put("All Rooms", null);
 
         sideBar = new SideBar(map, TabbedContent);
-
-
 
         add(sideBar, BorderLayout.WEST);
         add(panelShow, BorderLayout.CENTER);

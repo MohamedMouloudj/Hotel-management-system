@@ -1,17 +1,16 @@
 package view.gustUi;
 
+import view.ImageNotFoundedException;
+import view.components.ProfileUi;
+import view.components.RoomsPanelGuest;
+import view.components.sideBarComponents.SideBar;
+import view.components.sideBarComponents.SideButton;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
-
-import view.ImageNotFoundedException;
-import view.components.*;
-import view.components.sideBarComponents.SideBar;
-import view.components.sideBarComponents.SideButton;
 
 public class GuestUi extends JFrame {
     private SideBar sideBar;
@@ -23,6 +22,7 @@ public class GuestUi extends JFrame {
     Color fancyColor = new Color(0x0377FF);
     Color lightColor = new Color(0x4FB5FF);
     public GuestUi() {
+
         try {
             ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
             if (icon == null)

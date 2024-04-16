@@ -1,20 +1,15 @@
 package view.login.container;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import net.miginfocom.swing.MigLayout;
+import view.login.loginComponents.MyButtonOutLine;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import net.miginfocom.swing.MigLayout;
-import view.login.loginComponents.MyButtonOutLine;
 
 
 public class PanelCover extends JPanel {
@@ -40,23 +35,23 @@ public class PanelCover extends JPanel {
 
     private void init() {
         title = new JLabel("Welcome Back!");
-        title.setFont(new Font("sansserif", 1, 33));
+        title.setFont(new Font("sanserif", 1, 33));
         title.setForeground(blueColor);
         add(title);
         description = new JLabel("To keep connected with us please");
         description.setForeground(blueColor);
-        description.setFont(new Font("sansserif", 1, 12));
+        description.setFont(new Font("sanserif", 1, 12));
         add(description);
         description1 = new JLabel("login with your personal info");
         description1.setForeground(blueColor);
-        description1.setFont(new Font("sansserif", 1, 12));
+        description1.setFont(new Font("sanserif", 1, 12));
 
         add(description1);
         signInbutton = new MyButtonOutLine();
         signInbutton.setBackground(new Color(255, 255, 255));
         signInbutton.setForeground(new Color(255, 255, 255));
         signInbutton.setText("SIGN IN");
-        signInbutton.setFont(new Font("sansserif", Font.BOLD, 15));
+        signInbutton.setFont(new Font("sanserif", Font.BOLD, 15));
         signInbutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {

@@ -1,25 +1,18 @@
 package view.login.container;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-// import controllers.Hotel;
-
 import controllers.PasswordHashing;
-import org.bson.Document;
-
-import model.*;
-
+import model.Guest;
+import model.User;
 import net.miginfocom.swing.MigLayout;
+import org.bson.Document;
 import view.login.loginComponents.MyButton;
 import view.login.loginComponents.MyPasswordField;
 import view.login.loginComponents.MyTextField;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PanelLoginAndRegister extends JLayeredPane {
     private User registerData;
@@ -157,7 +150,7 @@ public class PanelLoginAndRegister extends JLayeredPane {
     private void initLogin(ActionListener actEventLogin) {
         login.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]25[]push"));
         JLabel label = new JLabel("Sign In");
-        label.setFont(new Font("sansserif", 1, 40));
+        label.setFont(new Font("sanserif", 1, 40));
         label.setForeground(new Color(0x1E90FF));
         login.add(label);
         MyTextField txtEmail = new MyTextField();
@@ -182,8 +175,21 @@ public class PanelLoginAndRegister extends JLayeredPane {
         txtPass.setHint("Password");
         login.add(txtPass, "w 60%");
         JButton btnRegisterForget = new JButton("Forgot your password ?");
+        btnRegisterForget.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Assuming 'this' is a JFrame or other container
+                // And 'forgetPasswordPanel' is an instance of your ForgetPassword panel
+                ForgetPassword forgetPasswordPanel = new ForgetPassword();
+                JFrame parentContainer = (JFrame) SwingUtilities.getWindowAncestor(PanelLoginAndRegister.this);
+                parentContainer.setContentPane(forgetPasswordPanel);
+                parentContainer.revalidate();
+                parentContainer.repaint();
+
+            }
+        });
         btnRegisterForget.setForeground(new Color(100, 100, 100));
-        btnRegisterForget.setFont(new Font("sansserif", 1, 12));
+        btnRegisterForget.setFont(new Font("sanserif", 1, 12));
         btnRegisterForget.setContentAreaFilled(false);
         btnRegisterForget.setFocusPainted(false);
         btnRegisterForget.setBorderPainted(false);
