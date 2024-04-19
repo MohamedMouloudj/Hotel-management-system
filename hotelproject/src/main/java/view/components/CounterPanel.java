@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class CounterPanel extends JPanel {
     int counter = 0;
-    CounterPanel(String text){
+    public CounterPanel(String text){
         //some styling
         setBorder(BorderFactory.createLineBorder(Color.lightGray , 1));
         //setPreferredSize(new Dimension(40, 40));
@@ -21,37 +21,37 @@ public class CounterPanel extends JPanel {
 
         ImageIcon incrementIcon = new ImageIcon("hotelproject/src/main/java/view/icons/add.png");
         DynamicButton incrementButton = new DynamicButton("");
-        incrementButton.setButtonSize(new Dimension(20,20));
+        incrementButton.setButtonSize(new Dimension(20, 20));
         incrementButton.setBackground(Color.BLUE); // Set background color to transparent
-        incrementButton.setIconToButton(incrementIcon , 20, SwingConstants.CENTER);
+        incrementButton.setIconToButton(incrementIcon, 20, SwingConstants.CENTER);
         incrementButton.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
-        add(incrementButton );
+        add(incrementButton);
 
-
-
-         //placeholder
+        // placeholder
         JLabel CounterType = new JLabel(text);
-        CounterType.setFont(new Font("Inter",Font.BOLD,10));
+        CounterType.setFont(new Font("Inter", Font.BOLD, 10));
         CounterType.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         add(CounterType);
 
-         //the actual
+        // the actual
         JLabel counterLabel = new JLabel(String.valueOf(counter));
-        counterLabel.setFont(new Font("Inter",Font.BOLD,13));
+        counterLabel.setFont(new Font("Inter", Font.BOLD, 13));
         counterLabel.setForeground(new Color(0x0377FF));
         counterLabel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         // counterLabel.setSize(new Dimension(30,30));
         add(counterLabel);
 
+        // decrement button
         //decrement button
         ImageIcon decrementIcon = new ImageIcon("hotelproject/src/main/java/view/icons/minus.png");
         DynamicButton decrementButton = new DynamicButton("");
-        decrementButton.setIconToButton(decrementIcon , 20, SwingConstants.CENTER);
-        decrementButton.setButtonSize(new Dimension(20,20));
+        decrementButton.setIconToButton(decrementIcon, 20, SwingConstants.CENTER);
+        decrementButton.setButtonSize(new Dimension(20, 20));
         decrementButton.setBackground(Color.BLUE);
         decrementButton.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         add(decrementButton);
 
+        // action listeners for buttons
 
         //action listeners for buttons
         incrementButton.addActionListener(new ActionListener() {
@@ -79,10 +79,14 @@ public class CounterPanel extends JPanel {
             }
         });
 
-
-
     }
-    int getCount(){
+
+    public int getCount() {
         return this.counter;
     }
 }
+
+
+
+
+

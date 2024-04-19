@@ -1,30 +1,26 @@
 package model;
 
-// import controllers.KeyNotFoundException;
 import controllers.OurDate;
-import controllers.PasswordHashing;
 import controllers.Reservation;
-
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.bson.Document;
+// import controllers.KeyNotFoundException;
+// import controllers.PasswordHashing;
+// import java.util.regex.Matcher;
+// import java.util.regex.Pattern;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+// import org.bson.Document;
+
+// import com.mongodb.MongoClient;
+// import com.mongodb.client.MongoCollection;
+// import com.mongodb.client.MongoDatabase;
 
 public class Guest extends User {
-
-    // private static int idCounter = 0;
-    // private final char type = 'G';
 
     private HashMap<String, Reservation> reservations = new HashMap<>();
 
     public Guest(String firstName, String lastName, String email, String password) {
-        super(firstName, lastName, password, email);
-        // setId(++idCounter, type);
+        super(firstName, lastName, email, password);
     }
 
     public void requestReservation(RoomType type, OurDate checkInDate, OurDate checkOutDate) {
@@ -39,70 +35,46 @@ public class Guest extends User {
         // Hotel.cancelReservation(roomNumber);
     }
 
-    public boolean isValid() {
-        return !super.firstName.isEmpty() && !super.lastName.isEmpty() && !super.email.isEmpty()
-                && !super.password.isEmpty();
+    public void addGuestToDataBase() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("firstName", this.firstName);
+        map.put("lastName", this.lastName);
+        map.put("email", this.email);
+        map.put("password", this.password);
+        super.addToDataBase("Guest", map);
     }
 
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    // public boolean isValid() {
+    // return !super.firstName.isEmpty() && !super.lastName.isEmpty() &&
+    // !super.email.isEmpty()
+    // && !super.password.isEmpty();
+    // }
 
-    private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
+    // @Override
+    // public void deleteFromDataBase() {
+    // try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+    // // Accessing the User database
+    // MongoDatabase userDatabase = mongoClient.getDatabase("User");
+    // System.out.println("Database Name = " + userDatabase.getName());
 
-    public static boolean isValidEmail(String email) {
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
+    // // Retrieving the Client collection
+    // MongoCollection<Document> clientCollection =
+    // userDatabase.getCollection("Client");
+    // System.out.println("Client Collection selected successfully");
 
-    @Override
-    public void inser() {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            // Accessing the User database
-            MongoDatabase userDatabase = mongoClient.getDatabase("User");
-            System.out.println("Database Name = " + userDatabase.getName());
+    // // Deleting the document with the given email
+    // clientCollection.deleteOne(new Document("email", this.email));
+    // System.out.println("Document with email " + this.email + " deleted
+    // successfully");
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
 
-            // Retrieving the Client collection
-            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
-            System.out.println("Client Collection selected successfully");
-
-
-            //hashing the password
-            String HashedPassword = PasswordHashing.hashPassword(this.password);
-            // Creating a document for the new guest
-            Document guestDocument = new Document("firstName", this.firstName)
-                    .append("lastName", this.lastName)
-                    .append("email", this.email)
-                    .append("password", HashedPassword);
-
-            // Inserting the guest document into the collection
-            clientCollection.insertOne(guestDocument);
-            System.out.println("Document inserted successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Document researchByEmail(String email) {
-        Document existingGuest = null; // Initialize to null outside try block
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            // Accessing the User database
-            MongoDatabase userDatabase = mongoClient.getDatabase("User");
-            System.out.println("Database Name = " + userDatabase.getName());
-
-            // Retrieving the Client collection
-            MongoCollection<Document> clientCollection = userDatabase.getCollection("Client");
-            System.out.println("Client Collection selected successfully");
-
-            // Check if the email already exists in the collection
-            existingGuest = clientCollection.find(new Document("email", email)).first();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return existingGuest; // Return outside finally block
-    }
-    @Override
-    public String getPassword (){
-        return password;
-    }
+    // @Override
+    // public String getPassword() {
+    // return password;
+    // }
 
     // public static
 
@@ -200,4 +172,5 @@ public class Guest extends User {
         // return totalCost;
         return 19d;
     }
+
 }

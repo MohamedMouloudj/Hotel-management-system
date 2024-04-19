@@ -1,88 +1,80 @@
 package view.gustUi;
 
-import view.ImageNotFoundedException;
-import view.components.ProfileUi;
-import view.components.RoomsPanelGuest;
-import view.components.sideBarComponents.SideBar;
-import view.components.sideBarComponents.SideButton;
-
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
+import java.util.TreeMap;
 
-public class GuestUi extends JFrame {
-    private SideBar sideBar;
-    private SideButton roomsTab;
-    private SideButton reservationsTab;
-    private SideButton profileTab;
+import javax.swing.JTabbedPane;
+
+import controllers.Main;
+import model.Guest;
+import view.components.ProfileUi;
+import view.components.HomeComponents.Card;
+import view.components.HomeComponents.HomePage;
+import view.components.roomComponents.RoomsPanelGuest;
+import view.components.sideBarComponents.SideBar;
+import view.userUi.UserGui;
+
+public class GuestUi extends UserGui {
     private JTabbedPane tabbedContent;
-    private HashMap<String, ActionListener> map = new HashMap<>();
-    Color fancyColor = new Color(0x0377FF);
-    Color lightColor = new Color(0x4FB5FF);
-    public GuestUi() {
+    private SideBar sideBar;
+    private Guest guest;
 
-        try {
-            ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
-            if (icon == null)
-                throw new ImageNotFoundedException("Program icon is not found");
-            setIconImage(icon.getImage());
-        }catch (ImageNotFoundedException e){
-            e.printStackTrace();
-        }
+    public GuestUi(Guest guest) {
+        super();
+        this.guest = guest;
 
-        setSize(1000, 600);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout(5,0));
-        /////////////////////////////////////////////////////////////
+    }
 
-        /////////////////// Right Content /////////////////////////////////
+    public Guest getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+    }
+
+    @Override
+    public void initializeTabbedContent() {
         tabbedContent = new JTabbedPane();
-        tabbedContent.setUI(new HiddenTabTitleUI()); //Hide tab titles
+        tabbedContent.setUI(super.layoTabTitleUI);
 
-        RoomsPanelGuest roomsPanel = new RoomsPanelGuest();
-        JPanel emptyTMPPanel=new JPanel();
-        emptyTMPPanel.setBackground(Color.WHITE);
-        ProfileUi profilePanel=new ProfileUi();
-        profilePanel.setBackground(Color.WHITE);
-        profilePanel.addFirstName("John");
-        profilePanel.addLastName("Doe");
-        profilePanel.addEmail("mdlc@gmail.com");
-        profilePanel.addPassword("password123");
-        tabbedContent.addTab("roomsPanel", roomsPanel);
-        tabbedContent.addTab("emptyPanel",emptyTMPPanel);//Temporary
-        tabbedContent.addTab("profilePanel",profilePanel);//Temporary
-        ////////////////////////////////////////////////////////////////////
+        ProfileUi profilePanel = new ProfileUi();
+        // System.out.println("name: " + this.guest.getFirstName());
+        // profilePanel.addFirstName(this.guest.getFirstName());
+        // profilePanel.addLastName(this.guest.getLastName());
+        // profilePanel.addEmail(this.guest.getEmail());
+        // profilePanel.addPassword(this.guest.getPassword());
 
-        /////////////////// SideBar ////////////////////////////////////////
-        map.put("Rooms", e -> tabbedContent.setSelectedIndex(0));
-        map.put("Reservations", e -> tabbedContent.setSelectedIndex(1));//Temporary
-        map.put("ProfileUi", e -> tabbedContent.setSelectedIndex(2));//Temporary
+        RoomsPanelGuest roomsPanel = new RoomsPanelGuest(Main.roomsToRoomPanelGuest());
+        HomePage homePage = new HomePage();
+        Card card1 = new Card("Available Rooms", "Click here to see the available rooms");
+        homePage.addCard(card1);
+        Card card2 = new Card("Reservations", "Click here to see your reservations");
+        card2.setBgColor(new Color(0x995555), new Color(0x995599));
+        homePage.addCard(card2);
+
+        tabbedContent.addTab("", homePage);
+        tabbedContent.addTab("", profilePanel);
+        tabbedContent.addTab("", roomsPanel);
+        tabbedContent.addTab("", null);
+    }
+
+    @Override
+    public void initializeSideBar() {
+        TreeMap<String, ActionListener> map = new TreeMap<>();
+        map.put("Home", e -> tabbedContent.setSelectedIndex(0));
+        map.put("Profile", e -> tabbedContent.setSelectedIndex(1)); // Temporary
+        map.put("Rooms", e -> tabbedContent.setSelectedIndex(2)); // Temporary
+        map.put("Reservations", e -> tabbedContent.setSelectedIndex(3)); // Temporary
+
+        // Initialize sidebar with the map of actions
         sideBar = new SideBar(map, tabbedContent);
 
-        ////////////////////////////////////////////////////////////////////
+        // Add sidebar and tabbed content to the frame
         add(sideBar, BorderLayout.WEST);
         add(tabbedContent, BorderLayout.CENTER);
-        setVisible(true);
-    }
-}
-
-/**
- * Override the default tabbed pane UI to hide the tab titles and tab area
- * */
-class HiddenTabTitleUI extends BasicTabbedPaneUI {
-
-    @Override
-    protected int calculateTabHeight(int tabPlacement, int tabIndex, int fontHeight) {
-        // Return 0 to hide the tab titles
-        return 0;
     }
 
-    @Override
-    protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
-        // Return 0 to hide the tab area (adjust for padding if needed)
-        return 0;
-    }
 }

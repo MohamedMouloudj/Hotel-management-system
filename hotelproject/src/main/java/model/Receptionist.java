@@ -1,29 +1,32 @@
 package model;
 
-import org.bson.Document;
+import java.util.HashMap;
 
 public class Receptionist extends User {
-    // private static int idCounter = 0;
-    // private final char type = 'R';
-    private Role role;
+    private final String dist = "@Oasis.dz";
+    private String oasisMail;
 
-    public Receptionist(String firstName, String lastName, String password, String email) {
-        super(firstName, lastName, password, email);
-        // setId(++idCounter, type);
+    public String getOasisMail() {
+        return oasisMail;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setOasisMail(String oasisMail) {
+        this.oasisMail = oasisMail;
     }
 
-    public Role getRole() {
-        return role;
+    public Receptionist(String firstName, String lastName, String email) {
+        super(firstName, lastName, email, firstName + "123");
+        this.oasisMail = firstName + lastName + dist;
     }
 
-    @Override
-    public void inser() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'inser'");
+    public void addReceptionistToDataBase() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("firstName", this.firstName);
+        map.put("lastName", this.lastName);
+        map.put("email", this.email);
+        map.put("password", this.password);
+        map.put("OasisMail", this.oasisMail);
+        super.addToDataBase("Receptionist", map);
     }
 
 }

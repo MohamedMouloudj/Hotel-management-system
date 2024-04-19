@@ -13,11 +13,8 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-import model.User;
-import view.login.container.Message;
 import view.login.container.PanelCover;
 import view.login.container.PanelLoginAndRegister;
-import view.login.container.Message.MessageType;
 
 public class LogInForm extends JFrame {
 
@@ -29,9 +26,7 @@ public class LogInForm extends JFrame {
     private final double addSize = 30;
     private final double coverSize = 40;
     private final double loginSize = 60;
-    private JLayeredPane bg;
-
-    // private Image backgroundImage;
+    private JPanel bg;
 
     public LogInForm() {
         initComponents();
@@ -41,23 +36,7 @@ public class LogInForm extends JFrame {
     private void init() {
         layout = new MigLayout("fill, insets 0");
         cover = new PanelCover();
-        ActionListener actEventRegister = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                register();
-            }
-
-        };
-        ActionListener actEventLogin = new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                logIn();
-            }
-
-        };
-        loginAndRegister = new PanelLoginAndRegister(actEventRegister, actEventLogin);
+        loginAndRegister = new PanelLoginAndRegister(bg, layout);
 
         TimingTarget target = new TimingTargetAdapter() {
             @Override
@@ -111,9 +90,8 @@ public class LogInForm extends JFrame {
         animator.setResolution(0); // for smooth animation
         bg.setLayout(layout);
         bg.add(cover, "width " + coverSize + "%, pos " + (isLogin ? "1al" : "0al") + " 0 n 100%");
-        bg.add(loginAndRegister, "width " + loginSize + "%, pos " + (isLogin ? "0al" : "1al") + " 0 n 100%"); // 1al
-                                                                                                              // as
-                                                                                                              // 100%
+        bg.add(loginAndRegister, "width " + loginSize + "%, pos " + (isLogin ? "0al" : "1al") + " 0 n 100%");
+
         loginAndRegister.showRegister(!isLogin);
         cover.login(isLogin);
         cover.addEvent(new ActionListener() {
@@ -124,17 +102,17 @@ public class LogInForm extends JFrame {
                 }
             }
         });
+
     }
 
     private void initComponents() {
 
-        bg = new javax.swing.JLayeredPane();
+        bg = new JPanel();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        // setUndecorated(true);
         setResizable(false);
 
         try {
-            ImageIcon icon=new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
+            ImageIcon icon = new ImageIcon("hotelproject/src/main/java/view/icons/programIcon.jpg");
             setIconImage(icon.getImage());
 
         } catch (NullPointerException e) {
@@ -143,10 +121,10 @@ public class LogInForm extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
 
-        bg.setBackground(new java.awt.Color(255, 255, 255));
+        bg.setBackground(new Color(255, 255, 255));
         bg.setOpaque(true);
 
-        GroupLayout bgLayout = new javax.swing.GroupLayout(bg);
+        GroupLayout bgLayout = new GroupLayout(bg);
         bg.setLayout(bgLayout);
         bgLayout.setHorizontalGroup(
                 bgLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -166,86 +144,7 @@ public class LogInForm extends JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }
 
-    public void register() {
-        // Guest user = loginAndRegister.guest;
-        // Guest guest = loginAndRegister.getLogInData();
-        User guest = loginAndRegister.getRegisterData();
-        if (guest != null) {
-
-            showMessage(MessageType.SUCCESS, "nice test");
-            guest.inser();
-            loginAndRegister.setRegisterData(null);
-        } else {
-            showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg());
-
-        }
-    }
-
-    public void logIn() {
-        if (loginAndRegister.getLogInData() != null) {
-            showMessage(MessageType.SUCCESS, "Welcome back " + loginAndRegister.getLogInData().getFirstName());
-            loginAndRegister.setLogInData(null);
-        } else {
-            showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg());
-
-        }
-    }
-
-    private void showMessage(Message.MessageType messageType, String message) {
-        Message ms = new Message();
-        ms.showMessage(messageType, message);
-        TimingTarget target = new TimingTargetAdapter() {
-            @Override
-            public void begin() {
-                if (!ms.isShow()) {
-                    bg.add(ms, "pos 0.5al -30", 0); // Insert to bg fist index 0
-                    ms.setVisible(true);
-                    bg.repaint();
-                }
-            }
-
-            @Override
-            public void timingEvent(float fraction) {
-                float f;
-                if (ms.isShow()) {
-                    f = 40 * (1f - fraction);
-                } else {
-                    f = 40 * fraction;
-                }
-                layout.setComponentConstraints(ms, "pos 0.5al " + (int) (f - 30));
-                bg.repaint();
-                bg.revalidate();
-            }
-
-            @Override
-            public void end() {
-                if (ms.isShow()) {
-                    bg.remove(ms);
-                    bg.repaint();
-                    bg.revalidate();
-                } else {
-                    ms.setShow(true);
-                }
-            }
-        };
-        Animator animator = new Animator(300, target);
-        animator.setResolution(0);
-        animator.setAcceleration(0.5f);
-        animator.setDeceleration(0.5f);
-        animator.start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    animator.start();
-                } catch (InterruptedException e) {
-                    System.err.println(e);
-                }
-            }
-        }).start();
     }
 
     public static void runForm() {
@@ -283,9 +182,86 @@ public class LogInForm extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LogInForm().setVisible(true);
-                new LogInForm().setVisible(true);
             }
         });
     }
 
 }
+
+// public void register() {
+// Guest guest = loginAndRegister.getRegisterData();
+// if (guest != null) {
+
+// showMessage(MessageType.SUCCESS, "nice test");
+// guest.addGuestToDataBase();
+// loginAndRegister.setRegisterData(null);
+// } else {
+// showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg());
+// }
+// }
+
+// public void logIn() {
+// if (loginAndRegister.getLogInData() != null) {
+// showMessage(MessageType.SUCCESS, "Welcome back " +
+// loginAndRegister.getLogInData().getFirstName());
+// loginAndRegister.setLogInData(null);
+// } else {
+// showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg());
+
+// }
+// }
+
+// private void showMessage(Message.MessageType messageType, String message) {
+// Message ms = new Message();
+// ms.showMessage(messageType, message);
+// TimingTarget target = new TimingTargetAdapter() {
+// @Override
+// public void begin() {
+// if (!ms.isShow()) {
+// bg.add(ms, "pos 0.5al -30", 0); // Insert to bg fist index 0
+// ms.setVisible(true);
+// bg.repaint();
+// }
+// }
+
+// @Override
+// public void timingEvent(float fraction) {
+// float f;
+// if (ms.isShow()) {
+// f = 40 * (1f - fraction);
+// } else {
+// f = 40 * fraction;
+// }
+// layout.setComponentConstraints(ms, "pos 0.5al " + (int) (f - 30));
+// bg.repaint();
+// bg.revalidate();
+// }
+
+// @Override
+// public void end() {
+// if (ms.isShow()) {
+// bg.remove(ms);
+// bg.repaint();
+// bg.revalidate();
+// } else {
+// ms.setShow(true);
+// }
+// }
+// };
+// Animator animator = new Animator(300, target);
+// animator.setResolution(0);
+// animator.setAcceleration(0.5f);
+// animator.setDeceleration(0.5f);
+// animator.start();
+// new Thread(new Runnable() {
+// @Override
+// public void run() {
+// try {
+// Thread.sleep(2000);
+// animator.start();
+// } catch (InterruptedException e) {
+// System.err.println(e);
+// }
+// }
+// }).start();
+// }

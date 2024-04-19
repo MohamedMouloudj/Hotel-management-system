@@ -7,20 +7,24 @@ import java.awt.event.ActionListener;
 
 public class DynamicButton extends JButton {
 
-    private int arcWidth=25;
-    private int arcHeight=25;
+    private int arcWidth = 25;
+    private int arcHeight = 25;
 
-    private boolean bgFilled=false;
+    private boolean bgFilled = false;
+    @SuppressWarnings("unused")
     private Image icon;
 
     /**
      * (For content buttons)
-     * Will create a button with the given text and set the default font to Arial, bold, 14pt.
-     * It provides a default transparent background and black text color and round border
+     * Will create a button with the given text and set the default font to Arial,
+     * bold, 14pt.
+     * It provides a default transparent background and black text color and round
+     * border
+     * 
      * @param text String
      *             The text to be displayed on the button
      * @author Mouloudj
-     * */
+     */
     public DynamicButton(String text) {
         super(text);
         setContentAreaFilled(false);
@@ -28,18 +32,22 @@ public class DynamicButton extends JButton {
         setFocusPainted(false);
         setFont(new Font("Arial", Font.BOLD, 14)); // Set default font
         setForeground(Color.WHITE);
+        setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
-
-    // These 2 methods are used to paint the button with a round border and armed color when clicked
+    // These 2 methods are used to paint the button with a round border and armed
+    // color when clicked
     @Override
     protected void paintComponent(Graphics g) {
-        if (!bgFilled){
+        if (!bgFilled) {
             super.paintComponent(g);
             return;
         }
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);// Anti-aliasing, make
+                                                                                                 // the border smoother
+        // Set the color of the button based on the state (armed or not)
         if (getModel().isArmed()) {
             // Workaround for getArmedBorderColor():
             Color armedColor = UIManager.getColor("Button.select"); // Use system-defined color
@@ -51,7 +59,6 @@ public class DynamicButton extends JButton {
             g2d.setColor(getBackground());
         }
         g2d.fillRoundRect(0, 0, getWidth(), getHeight(), arcWidth, arcHeight);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);// Anti-aliasing, make the border smoother
         super.paintComponent(g);
     }
 
@@ -59,14 +66,16 @@ public class DynamicButton extends JButton {
         super.setText(text);
     }
 
-    public void setButtonBgColor(Color bgColor ) {
+    public void setButtonBgColor(Color bgColor) {
         setBackground(bgColor);
         bgFilled = true;
         repaint();
     }
+
     public void setButtonTxtColor(Color txtColor) {
         setForeground(txtColor);
     }
+
     public void removeRoundBorder() {
         setContentAreaFilled(true);
         repaint();
@@ -83,15 +92,17 @@ public class DynamicButton extends JButton {
 
     /**
      * Set the icon to the button
-     * @param icon String
-     *             The path of the icon
-     * @param gap int
-     *            The space between the text and the icon
+     * 
+     * @param icon                   String
+     *                               The path of the icon
+     * @param gap                    int
+     *                               The space between the text and the icon
      * @param horizontalTextPosition int
-     *                               The position of the text in relation to the icon
+     *                               The position of the text in relation to the
+     *                               icon
      *                               LEFT=2, RIGHT=4, CENTER=0
-     * */
-    public void setIconToButton(ImageIcon icon,int gap, int horizontalTextPosition) {
+     */
+    public void setIconToButton(ImageIcon icon, int gap, int horizontalTextPosition) {
         if (icon != null) {
             this.icon = icon.getImage();
             setIcon(icon);
@@ -105,6 +116,7 @@ public class DynamicButton extends JButton {
                     Math.max(getPreferredSize().height, iconHeight)));
         }
     }
+
     public void addActionListener(ActionListener listener) {
         super.addActionListener(listener);
     }
