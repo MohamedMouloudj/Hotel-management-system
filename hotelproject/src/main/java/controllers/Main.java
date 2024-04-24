@@ -5,7 +5,7 @@ import model.Manager;
 import model.Room;
 import model.RoomType;
 import view.components.roomComponents.RoomOnList;
-import view.login.loginMain.LogInForm;
+import view.gustUi.GuestUi;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +46,6 @@ public class Main {
 
                 // TODO : delete the things (methodes classes attributes imports icons ...) that
                 // we dont use (no yellow lines please)
-
                 // TODO: be carfuuuuuuuuuuu not using date
                 // TODO: RAHIM AND MOULOUDJ ->{ROOMS AND RESERVATIONS AND REQUESTS } in short
                 // the rooms job
@@ -57,8 +56,8 @@ public class Main {
                 Manager.addRoom(RoomType.Double, true, 12000);
                 Manager.addRoom(RoomType.Suite, false, 18000);
                 Manager.addRoom(RoomType.Standard, true, 25000);
-                // new GuestUi(null);
-                LogInForm.runForm();
+                new GuestUi(null);
+                //LogInForm.runForm();
 
         }
 
