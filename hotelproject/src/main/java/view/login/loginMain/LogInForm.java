@@ -27,6 +27,7 @@ public class LogInForm extends JFrame {
     private final double coverSize = 40;
     private final double loginSize = 60;
     private JPanel bg;
+
     public LogInForm() {
         initComponents();
         init();
@@ -36,6 +37,7 @@ public class LogInForm extends JFrame {
         layout = new MigLayout("fill, insets 0");
         cover = new PanelCover();
         loginAndRegister = new PanelLoginAndRegister(bg, layout);
+
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void timingEvent(float fraction) {
@@ -100,6 +102,7 @@ public class LogInForm extends JFrame {
                 }
             }
         });
+
     }
 
     private void initComponents() {
@@ -141,9 +144,11 @@ public class LogInForm extends JFrame {
 
         pack();
         setLocationRelativeTo(null);
+
     }
 
     public static void runForm() {
+
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -180,4 +185,83 @@ public class LogInForm extends JFrame {
             }
         });
     }
+
 }
+
+// public void register() {
+// Guest guest = loginAndRegister.getRegisterData();
+// if (guest != null) {
+
+// showMessage(MessageType.SUCCESS, "nice test");
+// guest.addGuestToDataBase();
+// loginAndRegister.setRegisterData(null);
+// } else {
+// showMessage(MessageType.ERROR, loginAndRegister.getRegisterErreurMsg());
+// }
+// }
+
+// public void logIn() {
+// if (loginAndRegister.getLogInData() != null) {
+// showMessage(MessageType.SUCCESS, "Welcome back " +
+// loginAndRegister.getLogInData().getFirstName());
+// loginAndRegister.setLogInData(null);
+// } else {
+// showMessage(MessageType.ERROR, loginAndRegister.getLoginErreurMsg());
+
+// }
+// }
+
+// private void showMessage(Message.MessageType messageType, String message) {
+// Message ms = new Message();
+// ms.showMessage(messageType, message);
+// TimingTarget target = new TimingTargetAdapter() {
+// @Override
+// public void begin() {
+// if (!ms.isShow()) {
+// bg.add(ms, "pos 0.5al -30", 0); // Insert to bg fist index 0
+// ms.setVisible(true);
+// bg.repaint();
+// }
+// }
+
+// @Override
+// public void timingEvent(float fraction) {
+// float f;
+// if (ms.isShow()) {
+// f = 40 * (1f - fraction);
+// } else {
+// f = 40 * fraction;
+// }
+// layout.setComponentConstraints(ms, "pos 0.5al " + (int) (f - 30));
+// bg.repaint();
+// bg.revalidate();
+// }
+
+// @Override
+// public void end() {
+// if (ms.isShow()) {
+// bg.remove(ms);
+// bg.repaint();
+// bg.revalidate();
+// } else {
+// ms.setShow(true);
+// }
+// }
+// };
+// Animator animator = new Animator(300, target);
+// animator.setResolution(0);
+// animator.setAcceleration(0.5f);
+// animator.setDeceleration(0.5f);
+// animator.start();
+// new Thread(new Runnable() {
+// @Override
+// public void run() {
+// try {
+// Thread.sleep(2000);
+// animator.start();
+// } catch (InterruptedException e) {
+// System.err.println(e);
+// }
+// }
+// }).start();
+// }
