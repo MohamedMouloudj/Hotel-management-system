@@ -1,6 +1,6 @@
 package view.components.roomComponents;
 
-import model.RoomType;
+import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
 import view.components.DynamicButton;
 

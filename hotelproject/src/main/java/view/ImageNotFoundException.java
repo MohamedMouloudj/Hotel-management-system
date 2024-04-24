@@ -1,7 +1,7 @@
 package view;
 
-public class ImageNotFoundException extends Exception{
-    public ImageNotFoundException(String message){
+public class ImageNotFoundException extends RuntimeException {
+    public ImageNotFoundException(String message) {
         super(message);
     }
 }

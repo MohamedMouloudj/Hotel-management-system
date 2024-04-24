@@ -83,13 +83,13 @@ public class OurDate {
     /*to treat the all cases
      */
 
-   int getDay(){
+   public int getDay(){
       return this.day;
    }
-   int getMonth(){
+   public int getMonth(){
         return this.month;
     }
-    int getYear(){
+    public int getYear(){
         return this.year;
     }
 
@@ -199,6 +199,23 @@ public class OurDate {
         return totalDays;
     }
 
+
+    /**
+     * Parse a date string in the format day/month/year
+     * @param dateString the date string to parse
+     * @return a new OurDate object
+     * @throws InvalidDateException if the date string is not in the expected format
+     * */
+    public static OurDate parse(String dateString) throws InvalidDateException {
+        String[] parts = dateString.split("/");
+        if (parts.length != 3) {
+            throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+        }
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        int year = Integer.parseInt(parts[2]);
+        return new OurDate(day, month, year);
+    }
 
 
    public static void main(String[] args) {

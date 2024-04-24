@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import model.Role;
+import model.supervisors.Role;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
@@ -29,7 +29,6 @@ public class ProfileUi extends JPanel {
     public ProfileUi() {
         initComponents();
     }
-
 
     private void initComponents() {
 
@@ -284,7 +283,7 @@ class ProfileEdit extends JPanel{
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void begin() {
-                if (!ms.isShow()) {
+                if (!ms.isShown()) {
                     bg.add(ms, "pos 0.5al -30", 0); // Insert to bg fist index 0
                     ms.setVisible(true);
                     bg.repaint();
@@ -294,7 +293,7 @@ class ProfileEdit extends JPanel{
             @Override
             public void timingEvent(float fraction) {
                 float f;
-                if (ms.isShow()) {
+                if (ms.isShown()) {
                     f = 40 * (1f - fraction);
                 } else {
                     f = 40 * fraction;
@@ -306,7 +305,7 @@ class ProfileEdit extends JPanel{
 
             @Override
             public void end() {
-                if (ms.isShow()) {
+                if (ms.isShown()) {
                     bg.remove(ms);
                     bg.repaint();
                     bg.revalidate();
