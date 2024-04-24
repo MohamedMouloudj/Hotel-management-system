@@ -19,10 +19,10 @@ import view.components.Message.MessageType;
 import view.components.items.MyButton;
 import view.components.items.MyPasswordField;
 import view.components.items.MyTextField;
-import view.gustUi.GuestUi;
+import view.UserGui.GuestUi;
+import view.UserGui.ReceptionistGui;
+import view.UserGui.UserGui;
 import view.components.Message;
-// import view.managerUi.Manager;
-import view.receptionistUi.ReceptionistUi;
 
 public class PanelLoginAndRegister extends JPanel {
     private Guest registerData;
@@ -174,17 +174,18 @@ public class PanelLoginAndRegister extends JPanel {
                     } else {
                         // If the user is a receptionist, open ReceptionistUi; otherwise, open GuestUi
                         if (email.endsWith("Oasis.dz")) {
-                            new ReceptionistUi(new Receptionist(
-                                    loginUser.getString("firstName"),
-                                    loginUser.getString("lastName"),
-                                    loginUser.getString("email")));
+                            // new ReceptionistUi(new Receptionist(
+                            // loginUser.getString("firstName"),
+                            // loginUser.getString("lastName"),
+                            // loginUser.getString("email")));
+                            UserGui.run(new ReceptionistGui(new Receptionist(loginUser.getString("firstName"),
+                                    loginUser.getString("lastName"), loginUser.getString("email"))));
                         } else {
-                            new GuestUi(new Guest(
-                                    loginUser.getString("firstName"),
-                                    loginUser.getString("lastName"),
-                                    loginUser.getString("email"),
-                                    loginUser.getString("password")));
-
+                            UserGui.run(new GuestUi(
+                                    new Guest(loginUser.getString("firstName"), loginUser.getString("lastName"),
+                                            loginUser.getString("email"), loginUser.getString("password"))));
+                            // new com.raven.main.Main().v();
+                            // UserGui.run(new GuestUi());
                         }
                         bg.getTopLevelAncestor().setVisible(false); // Hide the login form
                     }

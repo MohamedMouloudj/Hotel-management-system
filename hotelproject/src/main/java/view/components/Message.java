@@ -30,6 +30,7 @@ public class Message extends JPanel {
     }
 
     // Method to display a message with the specified type and text
+
     public void displayMessage(MessageType messageType, String message, JPanel bg, MigLayout layout) {
         Message ms = new Message(); // Create a new instance of Message
         ms.showMessage(messageType, message); // Show the specified message
@@ -37,7 +38,8 @@ public class Message extends JPanel {
             @Override
             public void begin() {
                 if (!ms.isShow()) {
-                    bg.add(ms, "pos 0.5al -30", 0); // Add the message panel to the specified parent panel
+                    bg.add(ms, "pos 0.5al -30", 0); // Add the message panel to the specified
+                    // parent panel
                     ms.setVisible(true); // Make the message panel visible
                     bg.repaint(); // Repaint the parent panel
                 }

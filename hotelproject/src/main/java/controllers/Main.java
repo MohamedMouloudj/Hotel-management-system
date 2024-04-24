@@ -67,6 +67,11 @@ public class Main {
          * @return HashMap<String,RoomOnList> roomsUiList
          */
         public static HashMap<String, RoomOnList> roomsToRoomPanelGuest() {
+                hotel = new Hotel(1);// example
+                Manager.addRoom(RoomType.Standard, true, 9000);
+                Manager.addRoom(RoomType.Double, true, 12000);
+                Manager.addRoom(RoomType.Suite, false, 18000);
+                Manager.addRoom(RoomType.Standard, true, 25000);
                 HashMap<String, Room> allRooms = hotel.getRooms();
                 HashMap<String, RoomOnList> roomsUiList = new HashMap<>();
 

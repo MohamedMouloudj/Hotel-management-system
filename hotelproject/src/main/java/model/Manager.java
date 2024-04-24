@@ -1,17 +1,16 @@
 package model;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import controllers.Main;
-import org.bson.Document;
-// import org.bson.conversions.Bson;
 
-abstract public class Manager extends User {
+public class Manager extends User {
 
-    public Manager(String firstName, String lastName, String password, String email) {
-        super(firstName, lastName, password, email);
+    public static final String firstName = "ww";
+    public static final String lastName = "ww";
+    public static final String email = "ww";
+    public static final String password = "ww";
+
+    public Manager() {
+        super(firstName, lastName, email, password);
     }
 
     public static void addRoom(RoomType roomType, boolean isAvailable, double price) {

@@ -2,7 +2,7 @@ package view.components.roomComponents;
 
 import model.RoomType;
 import net.miginfocom.swing.MigLayout;
-import view.components.DynamicButton;
+import view.components.items.DynamicButton;
 
 import javax.swing.*;
 import javax.swing.border.Border;

@@ -1,6 +1,7 @@
 package view.components;
 
 import net.miginfocom.swing.MigLayout;
+import view.components.items.DynamicButton;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,8 +3,8 @@ package view.components.roomComponents;
 import model.RoomType;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
-import view.components.CounterPanel;
-import view.components.DynamicButton;
+
+import view.components.items.DynamicButton;
 
 import javax.swing.*;
 import java.awt.*;
