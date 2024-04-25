@@ -1,9 +1,8 @@
 package view.components.roomComponents;
 
+import view.components.OurButton;
+
 import javax.swing.*;
-
-import view.components.items.DynamicButton;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,13 +13,12 @@ public class CounterPanel extends JPanel {
     public CounterPanel(String text) {
         // some styling
         setBorder(BorderFactory.createLineBorder(Color.lightGray, 1));
-        // setPreferredSize(new Dimension(40, 40));
 
         setLayout(new FlowLayout());
         setBackground(Color.white);
 
         ImageIcon incrementIcon = new ImageIcon("hotelproject/src/main/java/view/icons/add.png");
-        DynamicButton incrementButton = new DynamicButton("");
+        OurButton incrementButton = new OurButton("");
         incrementButton.setButtonSize(new Dimension(20, 20));
         incrementButton.setBackground(Color.BLUE); // Set background color to transparent
         incrementButton.setIconToButton(incrementIcon, 20, SwingConstants.CENTER);
@@ -43,7 +41,7 @@ public class CounterPanel extends JPanel {
 
         // decrement button
         ImageIcon decrementIcon = new ImageIcon("hotelproject/src/main/java/view/icons/minus.png");
-        DynamicButton decrementButton = new DynamicButton("");
+        OurButton decrementButton = new OurButton("");
         decrementButton.setIconToButton(decrementIcon, 20, SwingConstants.CENTER);
         decrementButton.setButtonSize(new Dimension(20, 20));
         decrementButton.setBackground(Color.BLUE);
@@ -74,7 +72,6 @@ public class CounterPanel extends JPanel {
                 }
             }
         });
-
     }
 
     public int getCount() {

@@ -1,7 +1,7 @@
 package view.UserMangementGui;
 
 import net.miginfocom.swing.MigLayout;
-import view.components.items.MyButton;
+import view.components.OurButton;
 import view.components.items.MyTextField;
 import view.components.sacrollBar.ScrollBar;
 import view.components.table.PanelBorder;
@@ -190,29 +190,29 @@ public abstract class UserManagement extends JPanel {
                 buttonPanel.add(new JLabel(), "wrap, height 20");
 
                 // Creating and configuring add button
-                MyButton addButton = new MyButton("Add");
-                addButton.setBackground(new Color(0x00A550));
+                OurButton addButton = new OurButton("Add");
+                addButton.setButtonBgColor(new Color(0, 112, 255));
                 addButton.addActionListener(addActionListener());
                 // Adding add button to the button panel
                 buttonPanel.add(addButton, "w 50%, h 34");
 
-                // Creating and configuring delete button
-                MyButton deleteButton = new MyButton("Delete");
-                deleteButton.setBackground(new Color(0xED1B24));
-                deleteButton.addActionListener(deleteActionListener());
-                // Adding delete button to the button panel
-                buttonPanel.add(deleteButton, "w 50%, h 34");
-
                 // Creating and configuring update button
-                MyButton updateButton = new MyButton("Update");
-                updateButton.setBackground(new Color(0x008080));
+                OurButton updateButton = new OurButton("Update");
+                updateButton.setButtonBgColor(new Color(0, 112, 255));
                 updateButton.addActionListener(updateActionListener());
                 // Adding update button to the button panel
                 buttonPanel.add(updateButton, "w 50%, h 34");
 
+                // Creating and configuring delete button
+                OurButton deleteButton = new OurButton("Delete");
+                deleteButton.setButtonBgColor(new Color(0xED1B24));
+                deleteButton.addActionListener(deleteActionListener());
+                // Adding delete button to the button panel
+                buttonPanel.add(deleteButton, "w 50%, h 34");
+
                 // Creating and configuring clear button
-                MyButton clearButton = new MyButton("Clear");
-                clearButton.setBackground(new Color(0x55DD33));
+                OurButton clearButton = new OurButton("Clear");
+                clearButton.setButtonBgColor(new Color(0xED1B24));
                 clearButton.addActionListener(clearActionListener());
                 // Adding clear button to the button panel
                 buttonPanel.add(clearButton, "w 50%, h 34");
@@ -231,17 +231,3 @@ public abstract class UserManagement extends JPanel {
         }
 
 }
-
-// Card card1 = new Card();
-// Card card2 = new Card();
-// Card card3 = new Card();
-
-// card1.setData(new Model_Card(new
-// ImageIcon(getClass().getResource("/com/raven/icon/stock.png")),
-// "Stock Total", "$200000", "Increased by 60%"));
-// card2.setData(new Model_Card(new
-// ImageIcon(getClass().getResource("/com/raven/icon/profit.png")),
-// "Total Profit", "$15000", "Increased by 25%"));
-// card3.setData(new Model_Card(new
-// ImageIcon(getClass().getResource("/com/raven/icon/flag.png")),
-// "Unique Visitors", "$300000", "Increased by 70%"));

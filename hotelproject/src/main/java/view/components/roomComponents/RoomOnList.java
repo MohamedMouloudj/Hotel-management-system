@@ -2,7 +2,7 @@ package view.components.roomComponents;
 
 import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
-import view.components.DynamicButton;
+import view.components.OurButton;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -18,7 +18,7 @@ public class RoomOnList extends JPanel implements ActionListener {
     private String roomPicture;
     private String roomDescription;
     private JLabel isAvailableLabel;
-    private DynamicButton bookButton=new DynamicButton("Book now");
+    private OurButton bookButton=new OurButton("Book now");
 
     public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, boolean available){
 
@@ -29,16 +29,18 @@ public class RoomOnList extends JPanel implements ActionListener {
 
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200),2);
         setBorder(border);
+        setBackground(new Color(242, 242, 242));
 
         setLayout(new MigLayout("wrap 2, center, insets 0 5 0 5,gap 5% 5%","[][]","[grow,fill]"));
 
         ImageIcon icon =new ImageIcon(roomPicture);
+        icon = new ImageIcon(icon.getImage().getScaledInstance(200, 150, Image.SCALE_SMOOTH));
         JLabel imageLabel = new JLabel();
         imageLabel.setIcon(icon);
         add(imageLabel,"cell 0 0");
 
         JPanel roomInfo = new JPanel(new MigLayout("wrap 2,inset 5 15 5 20"));
-//        GridBagConstraints constraints = new GridBagConstraints();
+        roomInfo.setBackground(new Color(242, 242, 242));
         add(roomInfo,"center,cell 1 0");
 
         /////////// RoomOnList Info ///////////
@@ -47,7 +49,7 @@ public class RoomOnList extends JPanel implements ActionListener {
         roomInfo.add(roomTypeLabel,"span 2,left,wrap");
 
         isAvailableLabel = new JLabel();
-        isAvailableLabel.setFont(new Font("Inter",Font.PLAIN,12));
+        isAvailableLabel.setFont(new Font("Inter",Font.PLAIN,15));
         if (available) {
             isAvailableLabel.setText("Available");
             isAvailableLabel.setForeground(new Color(0x00A000));
@@ -65,12 +67,13 @@ public class RoomOnList extends JPanel implements ActionListener {
         roomInfo.add(roomDescriptionLabel,"span 2,left,growy, pushy, w 60% ,wrap");
 
         JPanel pricePanel = new JPanel(new MigLayout("wrap 1,filly,inset 0","[grow]","[]2[]"));
+        pricePanel.setBackground(new Color(242, 242, 242));
         roomInfo.add(pricePanel,"left");
         JLabel priceLabel = new JLabel(" Price: "+price+"DZD/Night");
         priceLabel.setFont(new Font("Inter",Font.PLAIN,13));
         pricePanel.add(priceLabel,"left,wrap");
 
-        bookButton = new DynamicButton("Book now");
+        bookButton = new OurButton("Book now");
         bookButton.setButtonBgColor(new Color(0x0377FF));
         pricePanel.add(bookButton,"span 2,left,wrap,growx,pushx");
 

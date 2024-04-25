@@ -3,8 +3,7 @@ package view.components.roomComponents;
 import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
-import view.components.CounterPanel;
-import view.components.DynamicButton;
+import view.components.OurButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,12 +15,8 @@ public class RoomUI extends JPanel {
 
     RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price){
 
-        /* JPanel roomInfo = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        add(roomInfo,BorderLayout.EAST);*/
-
         setLayout(new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]"));
-
+        setBackground(new Color(242, 242, 242));
 
         //// room photo ////
         ImageIcon icon =new ImageIcon(roomPicture);
@@ -34,8 +29,8 @@ public class RoomUI extends JPanel {
         JPanel roomDetailedInfo = new JPanel(new MigLayout("wrap 2,inset 20 15 5 20"));
 
         roomDetailedInfo.setBorder(BorderFactory.createLineBorder(new Color(0xC1A200),2));
+        roomDetailedInfo.setBackground(new Color(242, 242, 242));
         add(roomDetailedInfo,"center,cell 1 0");
-
 
 
         /////////// RoomOnList Info //////////
@@ -45,7 +40,7 @@ public class RoomUI extends JPanel {
         roomDetailedInfo.add(roomTypeLabel , "gap 0 0 0 10" );
 
         JLabel isAvailableLabel = new JLabel("Available");
-        isAvailableLabel.setFont(new Font("",Font.PLAIN,10));
+        isAvailableLabel.setFont(new Font("",Font.PLAIN,14));
         isAvailableLabel.setForeground(new Color(0x00A000));
         roomDetailedInfo.add(isAvailableLabel , "gap 10 0 20 10" );
 
@@ -54,11 +49,9 @@ public class RoomUI extends JPanel {
         roomDescriptionLabel.setFont(new Font("Inter",Font.ITALIC,13));
         roomDetailedInfo.add(roomDescriptionLabel , "span 2 , wrap " );
 
-
         JPanel infoCollect = new JPanel(new MigLayout("wrap 2,inset 10 15 5 20"));
-
-
-        //Counter panel for counting adults and chuldren
+        infoCollect.setBackground(new Color(242, 242, 242));
+        //Counter panel for counting adults and children
         CounterPanel AdultsCounter = new CounterPanel("adults");
         CounterPanel ChildrenCounter = new CounterPanel("Children");
         infoCollect.add(AdultsCounter );
@@ -130,14 +123,14 @@ public class RoomUI extends JPanel {
         roomDetailedInfo.add(priceLabel , "span 2 ,  wrap , gap 15 0 0 0");
 
         //the main book button
-        DynamicButton bookButton = new DynamicButton("Book now");
+        OurButton bookButton = new OurButton("Book now");
         bookButton.setButtonBgColor(new Color(0x0377FF));
         bookButton.setButtonSize(new Dimension(140,40));
         roomDetailedInfo.add(bookButton , "gap 15 0 0 0");
 
 
         //back buttonor cancel button
-        DynamicButton backButton = new DynamicButton("cancel");
+        OurButton backButton = new OurButton("cancel");
         backButton.setButtonSize(new Dimension(140,40));
         backButton.setBackground(Color.white);
         backButton.setBorder(BorderFactory.createLineBorder(new Color(0x0377FF), 2));
@@ -165,7 +158,6 @@ public class RoomUI extends JPanel {
          roomDetailedInfo.add(backButton ,"wrap");
 
         bookButton.addActionListener(e -> {
-
             //this calculated price will have a different value depending on the date children and adults
             double CalculatedPrice = price+ 0.2*AdultsCounter.getCount() + 0.15*ChildrenCounter.getCount();//this one to revise
             int response = JOptionPane.showConfirmDialog(null,

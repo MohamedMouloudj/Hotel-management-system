@@ -6,31 +6,27 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import model.Model_Card;
+import javax.swing.*;
 
 public class Card extends javax.swing.JPanel {
 
-    public Color getColor1() {
-        return color1;
-    }
-
     public void setColor1(Color color1) {
         this.color1 = color1;
-    }
-
-    public Color getColor2() {
-        return color2;
+        repaint();
+        revalidate();
     }
 
     public void setColor2(Color color2) {
         this.color2 = color2;
+        repaint();
+        revalidate();
     }
 
     private Color color1;
     private Color color2;
 
-    public Card() {
-        initComponents();
+    public Card(ImageIcon icon, String title, String values) {
+        initComponents(icon, title, values);
         setOpaque(false);
         color1 = Color.BLACK;
         color2 = Color.WHITE;
@@ -40,31 +36,23 @@ public class Card extends javax.swing.JPanel {
         lbIcon.setIcon(data.getIcon());
         lbTitle.setText(data.getTitle());
         lbValues.setText(data.getValues());
-        lbDescription.setText(data.getDescription());
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents(ImageIcon icon, String title, String values) {
 
         lbIcon = new javax.swing.JLabel();
-        lbTitle = new javax.swing.JLabel();
-        lbValues = new javax.swing.JLabel();
-        lbDescription = new javax.swing.JLabel();
+        lbTitle = new javax.swing.JLabel(title);
+        lbValues = new javax.swing.JLabel(values);
 
-        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/icons/stock.png"))); // NOI18N
+        lbIcon.setIcon(icon);
 
-        lbTitle.setFont(new java.awt.Font("sansserif", 1, 14)); // NOI18N
+        lbTitle.setFont(new java.awt.Font("sansserif", 1, 16));
         lbTitle.setForeground(new java.awt.Color(255, 255, 255));
-        lbTitle.setText("Title");
 
-        lbValues.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
+
+        lbValues.setFont(new java.awt.Font("sansserif", 1, 14));
         lbValues.setForeground(new java.awt.Color(255, 255, 255));
-        lbValues.setText("Values");
 
-        lbDescription.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        lbDescription.setForeground(new java.awt.Color(255, 255, 255));
-        lbDescription.setText("Description");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -73,7 +61,6 @@ public class Card extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(25, 25, 25)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lbDescription)
                                         .addComponent(lbValues)
                                         .addComponent(lbTitle)
                                         .addComponent(lbIcon))
@@ -88,9 +75,8 @@ public class Card extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lbValues)
                                 .addGap(18, 18, 18)
-                                .addComponent(lbDescription)
                                 .addContainerGap(25, Short.MAX_VALUE)));
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     @Override
     protected void paintComponent(Graphics grphcs) {
@@ -105,10 +91,7 @@ public class Card extends javax.swing.JPanel {
         super.paintComponent(grphcs);
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lbDescription;
     private javax.swing.JLabel lbIcon;
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbValues;
-    // End of variables declaration//GEN-END:variables
 }

@@ -1,7 +1,7 @@
 package model.supervisors;
 
-import controllers.Main;
-import model.*;
+
+import model.Database;
 import model.hotel.Hotel;
 import model.hotel.Room;
 import model.hotel.RoomType;

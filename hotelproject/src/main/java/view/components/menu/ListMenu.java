@@ -1,7 +1,5 @@
 package view.components.menu;
 
-import model.Model_Menu;
-
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

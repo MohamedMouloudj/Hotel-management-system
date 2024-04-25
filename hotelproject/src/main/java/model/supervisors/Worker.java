@@ -1,9 +1,6 @@
 package model.supervisors;
 
-import model.Database;
 import model.User;
-
-import java.util.HashMap;
 
 public abstract class Worker extends User {
 

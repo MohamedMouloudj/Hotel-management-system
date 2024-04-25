@@ -30,14 +30,16 @@ public class Message extends JPanel {
     }
 
     // Method to display a message with the specified type and text
+
     public void displayMessage(MessageType messageType, String message, JPanel bg, MigLayout layout) {
         Message ms = new Message(); // Create a new instance of Message
         ms.showMessage(messageType, message); // Show the specified message
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void begin() {
-                if (!ms.isShown()) {
-                    bg.add(ms, "pos 0.5al -30", 0); // Add the message panel to the specified parent panel
+                if (!ms.isShow()) {
+                    bg.add(ms, "pos 0.5al -30", 0); // Add the message panel to the specified
+                    // parent panel
                     ms.setVisible(true); // Make the message panel visible
                     bg.repaint(); // Repaint the parent panel
                 }
@@ -45,7 +47,7 @@ public class Message extends JPanel {
 
             @Override
             public void timingEvent(float fraction) {
-                float f = ms.isShown() ? 40 * (1f - fraction) : 40 * fraction;
+                float f = ms.isShow() ? 40 * (1f - fraction) : 40 * fraction;
                 if (layout != null) {
                     layout.setComponentConstraints(ms, "pos 0.5al " + (int) (f - 30));
                 } else {
@@ -57,7 +59,7 @@ public class Message extends JPanel {
 
             @Override
             public void end() {
-                if (ms.isShown()) {
+                if (ms.isShow()) {
                     bg.remove(ms); // Remove the message panel from the parent panel
                     bg.repaint(); // Repaint the parent panel
                     bg.revalidate(); // Revalidate the parent panel
@@ -130,7 +132,7 @@ public class Message extends JPanel {
     }
 
     // Method to show the specified message with the given type
-    void showMessage(MessageType messageType, String message) {
+    private void showMessage(MessageType messageType, String message) {
         this.messageType = messageType; // Update the message type
         lbMessage.setText(message); // Set the message text
         // Set appropriate icon based on message type
@@ -142,7 +144,7 @@ public class Message extends JPanel {
     }
 
     // Getter method for the visibility state of the message panel
-    public boolean isShown() {
+    public boolean isShow() {
         return show;
     }
 

@@ -2,7 +2,8 @@ package view.components.roomComponents;
 
 import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
-import view.components.DynamicButton;
+import view.components.OurButton;
+import view.components.sacrollBar.ModernScrollBarUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +28,10 @@ public class RoomsPanelGuest extends JPanel {
     */
 
     public RoomsPanelGuest(HashMap<String,RoomOnList> roomsList){
-
+        setBackground(new Color(242, 242, 242));
         panel = new JPanel();
         panel.setLayout(new MigLayout("wrap 1,center ","[grow]","push[]10[]push"));
+        panel.setBackground(new Color(242, 242, 242));
 
        //add rooms to the hash map
         for (RoomOnList roomOnList :roomsList.values()){
@@ -39,6 +41,7 @@ public class RoomsPanelGuest extends JPanel {
         //filter for filtering the rooms by type
         filter = new JPanel();
         filter.setLayout(new FlowLayout());
+        filter.setBackground(new Color(242, 242, 242));
 
         JComboBox<RoomType> comboBox = new JComboBox<>();
 
@@ -52,7 +55,7 @@ public class RoomsPanelGuest extends JPanel {
                 case "Double":
                     comboBox.addItem(RoomType.Double);
                     break;
-                case "Suit":
+                case "Suite":
                     comboBox.addItem(RoomType.Suite);
                     break;
                 case "Family":
@@ -81,7 +84,7 @@ public class RoomsPanelGuest extends JPanel {
         comboBox.setSelectedItem(null);
         filter.add(comboBox);
 
-        DynamicButton FilterButton = new DynamicButton("filter");
+        OurButton FilterButton = new OurButton("filter");
         FilterButton.setButtonBgColor(new Color(0x0377FF));
         FilterButton.addActionListener(new ActionListener() {
             @Override
@@ -105,10 +108,6 @@ public class RoomsPanelGuest extends JPanel {
                    // add a panel for no rooms found
                     JLabel noRoomsFound = new JLabel("No rooms found with this type");
                     panel.add(noRoomsFound , "center , wrap");
-                    DynamicButton JoinWaitlist = new DynamicButton("Join Waitlist");
-                    JoinWaitlist.setButtonBgColor(new Color(0x0377FF));
-                    JoinWaitlist.setButtonSize(new Dimension(110,40));
-                    panel.add(JoinWaitlist , "center");
                 }
                 panel.revalidate();
                 panel.repaint();
@@ -117,7 +116,7 @@ public class RoomsPanelGuest extends JPanel {
         filter.add(FilterButton);
 
        //another button to show all the rooms again
-        DynamicButton resetButton = new DynamicButton("show all");
+        OurButton resetButton = new OurButton("show all");
         resetButton.setForeground(new Color(0x0377FF));
         resetButton.addActionListener(new ActionListener() {
             @Override
@@ -154,10 +153,13 @@ public class RoomsPanelGuest extends JPanel {
         }
 
         scrollPane = new JScrollPane(panel);
+        scrollPane.setBackground(new Color(242, 242, 242));
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove scroll pane border
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Increase scroll speed
         scrollPane.setPreferredSize(new Dimension(600, 500)); // Set preferred size
+        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+        scrollPane.getHorizontalScrollBar().setUI(new ModernScrollBarUI());
 
         setLayout(new MigLayout("insets 10, fill"));
         add(scrollPane, "grow, growy, push");

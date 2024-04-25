@@ -35,17 +35,8 @@ public class Receptionist extends Worker {
     }
     public static void updateGuestInDataBase(String email, String key, Object updatedValue){
         try {
-            if(Objects.equals(key, "email")){
-                Database.updateFieldInDataBase("Guests", "email", email, key,(String) updatedValue);
-            }
-            if (Objects.equals(key, "firstName")){
-                Database.updateFieldInDataBase("Guests", "email", email, key,(String)  updatedValue);
-            }
-            if (Objects.equals(key, "lastName")){
-                Database.updateFieldInDataBase("Guests", "email", email, key,(String)  updatedValue);
-            }
-            if (Objects.equals(key, "password")){
-                Database.updateFieldInDataBase("Guests", "email", email, key,(String)  updatedValue);
+            if(!Objects.equals(key, "Reservations")){
+                Database.updateFieldInDataBase("Guests", "email", email, key, (String) updatedValue);
             }
             if (Objects.equals(key, "Reservations")){
                 HashMap<String, Object> objectHashMap = new HashMap<>((HashMap<String, Object>) updatedValue);

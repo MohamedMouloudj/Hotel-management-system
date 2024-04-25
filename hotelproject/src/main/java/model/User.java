@@ -1,12 +1,11 @@
 package model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.mongodb.client.MongoCollection;
 import model.hotel.Hotel;
 import org.bson.Document;
 
-import com.mongodb.client.MongoCollection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class User {
 

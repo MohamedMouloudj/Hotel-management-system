@@ -1,8 +1,9 @@
 package view.UserGui;
 
+import controllers.UserType;
 import view.ImageNotFoundedException;
-import view.components.Form;
-import view.components.Header;
+
+import view.components.WelcomePage;
 import view.components.menu.Menu;
 import view.components.table.PanelBorder;
 
@@ -25,14 +26,13 @@ import model.User;
 
 public abstract class UserGui<T extends User> extends JFrame {
         private static final String PROGRAM_ICON_PATH = "hotelproject/src/main/java/view/icons/programIcon.jpg";
-        private Header headerPanel; // Panel for displaying the header
         private JPanel mainContentPanel; // Main panel for displaying the content
         private Menu sideMenu; // Menu panel displayed on the side
         private PanelBorder borderPanel; // Panel with a border for the main content area
 
         protected T user; // The currently logged-in user
 
-        private HashMap<Integer, JPanel> formPanelMap; // Map for storing different form panels
+        private HashMap<Integer, JPanel> panelMap; // Map for storing different panels
 
         /**
          * Constructs a UserGui instance for a given user.
@@ -42,7 +42,7 @@ public abstract class UserGui<T extends User> extends JFrame {
         public UserGui(T user) {
                 this.user = user;
                 initializeComponents(); // Initialize the GUI components
-                setupForms(); // Set up the form panels
+                setupPanels(); // Set up the form panels
         }
 
         /**
@@ -50,7 +50,7 @@ public abstract class UserGui<T extends User> extends JFrame {
          *
          * @return a HashMap containing form panels and their indices
          */
-        public abstract HashMap<Integer, JPanel> getForms();
+        public abstract HashMap<Integer, JPanel> getPanels();
 
         /**
          * Returns a map of menu items with their corresponding labels.
@@ -61,24 +61,23 @@ public abstract class UserGui<T extends User> extends JFrame {
         public abstract LinkedHashMap<String, String> getMenuItems();
 
         /**
-         * Sets up the form panels and initializes the side menu with event handling.
+         * Sets up the panels and initializes the side menu with event handling.
          */
-        private void setupForms() {
-                formPanelMap = getForms(); // Get the map of form panels
-                setActiveForm(new Form()); // Set the initial form panel
+        private void setupPanels() {
+                panelMap = getPanels(); // Get the map of form panels
                 sideMenu.initMoving(UserGui.this); // Initialize the side menu movement
-                sideMenu.addEventMenuSelected(index -> setActiveForm(formPanelMap.get(index))); // Add event listener
-                                                                                                // for menu selection
+                sideMenu.addEventMenuSelected(index -> setActivePanel(panelMap.get(index))); // Add event listener
+                                                                                                // for side menu selection
         }
 
         /**
-         * Sets the active form panel in the main content area.
+         * Sets the active panel in the main content area.
          *
-         * @param form the form panel to be displayed
+         * @param panel the panel to be displayed
          */
-        private void setActiveForm(JComponent form) {
+        private void setActivePanel(JComponent panel) {
                 mainContentPanel.removeAll(); // Remove all existing components from the main content panel
-                mainContentPanel.add(form); // Add the new form panel
+                mainContentPanel.add(panel); // Add the new panel
                 mainContentPanel.repaint(); // Repaint the main content panel
                 mainContentPanel.revalidate(); // Revalidate the layout of the main content panel
         }
@@ -98,7 +97,6 @@ public abstract class UserGui<T extends User> extends JFrame {
         private void initializeMainPanels() {
                 borderPanel = new PanelBorder(); // Create a new border panel
                 sideMenu = new Menu(getMenuItems()); // Create a new side menu with menu items
-                headerPanel = new Header(); // Create a new header panel
                 mainContentPanel = new JPanel(); // Create a new main content panel
         }
 
@@ -107,10 +105,8 @@ public abstract class UserGui<T extends User> extends JFrame {
          */
         private void initializeLayout() {
                 borderPanel.setBackground(new Color(242, 242, 242)); // Set the background color of the border panel
-                headerPanel.setFont(new Font("sansserif", 0, 14)); // Set the font of the header panel
                 mainContentPanel.setOpaque(false); // Set the main content panel to be transparent
                 mainContentPanel.setLayout(new BorderLayout()); // Set the layout of the main content panel
-
                 // Set up the layout of the border panel
                 GroupLayout borderPanelLayout = new GroupLayout(borderPanel);
                 borderPanel.setLayout(borderPanelLayout);
@@ -122,9 +118,6 @@ public abstract class UserGui<T extends User> extends JFrame {
                                                                                 GroupLayout.PREFERRED_SIZE)
                                                                 .addGroup(borderPanelLayout.createParallelGroup(
                                                                                 GroupLayout.Alignment.LEADING)
-                                                                                .addComponent(headerPanel,
-                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                965, Short.MAX_VALUE)
                                                                                 .addGroup(borderPanelLayout
                                                                                                 .createSequentialGroup()
                                                                                                 .addGap(6, 6, 6)
@@ -137,9 +130,7 @@ public abstract class UserGui<T extends User> extends JFrame {
                                 borderPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                 .addComponent(sideMenu, GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
                                                 .addGroup(borderPanelLayout.createSequentialGroup()
-                                                                .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE,
-                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                GroupLayout.PREFERRED_SIZE)
+
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                 .addComponent(mainContentPanel,
@@ -162,21 +153,22 @@ public abstract class UserGui<T extends User> extends JFrame {
         }
 
         /**
-         * Sets the properties of the application, such as the default close operation
-         * and resizability.
+         * Sets the properties of the application, such as the default close operation and resizable.
          */
         private void setApplicationProperties() {
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set the default close operation to exit the //
-                setResizable(false); // Set the frame to be non-resizable
-                pack(); // Pack the components into the frame
+                setResizable(true); // Set the frame to be non-resizable
                 setLocationRelativeTo(null); // Center the frame on the screen
                 try {
                         ImageIcon icon = new ImageIcon(PROGRAM_ICON_PATH);
                         ImageNotFoundedException.imageNotFound(icon);
                         setIconImage(icon.getImage());
                 } catch (ImageNotFoundedException e) {
+                        System.out.println(e.getMessage());
                         e.printStackTrace();
                 }
+                setSize(1200, 700); // Set the size of the frame
+                pack();
         }
 
         /**

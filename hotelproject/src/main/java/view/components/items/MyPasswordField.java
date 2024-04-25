@@ -24,8 +24,7 @@ public class MyPasswordField extends JPasswordField {
         setFont(new java.awt.Font("sansserif", 0, 13));
         setSelectionColor(new Color(75, 175, 152));
         try {
-            ImageIcon prefixIcon = new ImageIcon(prefixIconPath);
-            setPrefixIcon(prefixIcon);
+            setPrefixIcon(new ImageIcon(prefixIconPath));
         } catch (Exception e) {
             e.printStackTrace();
         }

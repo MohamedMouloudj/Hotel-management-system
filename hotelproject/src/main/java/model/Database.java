@@ -1,4 +1,5 @@
 package model;
+
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -13,6 +14,7 @@ import model.supervisors.Receptionist;
 import model.supervisors.Role;
 import model.supervisors.Worker;
 import org.bson.Document;
+
 import java.util.HashMap;
 import java.util.Map;
 

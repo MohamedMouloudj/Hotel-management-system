@@ -1,6 +1,8 @@
 package view.components.menu;
 
-import model.Model_Menu;
+import net.miginfocom.swing.MigLayout;
+import view.components.OurButton;
+import view.login.loginMain.LogInForm;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,21 +14,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.LinkedHashMap;
 
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Menu extends JPanel {
 
-    @SuppressWarnings("unused")
+    private final int width=250;
     private EventMenuSelected eventMenuSelected; // Event listener for menu selection
     private int initialX; // Initial mouse X position for dragging the frame
     private int initialY; // Initial mouse Y position for dragging the frame
 
     // Components declaration
     private JLabel logoLabel;
+    private OurButton quitButton;
     private ListMenu<String> menuList;
     private JPanel movingPanel;
 
@@ -42,41 +41,31 @@ public class Menu extends JPanel {
         movingPanel = new JPanel(); // Panel for moving the frame
         logoLabel = new JLabel(); // Label for logo display
         menuList = new ListMenu<>(); // List for displaying menu items
+        quitButton=new OurButton("Log out");
+        quitButton.setIconToButton(new ImageIcon("hotelproject/src/main/java/view/icons/quit.png"),5,4);
+        quitButton.addActionListener(e -> {
+            int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?", "Warning", JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.NO_OPTION)
+                return;
+            LogInForm logInForm = new LogInForm();
+            logInForm.setVisible(true);
+            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();    // close the current window
+        });
 
         movingPanel.setOpaque(false); // Make moving panel transparent
 
         logoLabel.setFont(new Font("sansserif", Font.BOLD, 18)); // Set font for logo label
         logoLabel.setForeground(new Color(255, 255, 255)); // Set text color for logo label
-        logoLabel.setIcon(new ImageIcon(getClass().getResource("/view/icons/OasisLogo.png"))); // Set logo icon
+        ImageIcon icon=new ImageIcon("hotelproject/src/main/java/view/icons/OasisLogo.png");
+        logoLabel.setIcon(icon); // Set logo icon
 
-        GroupLayout movingPanelLayout = new GroupLayout(movingPanel);
-        movingPanel.setLayout(movingPanelLayout);
-        movingPanelLayout.setHorizontalGroup(
-                movingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(movingPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(logoLabel, GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
-                                .addContainerGap()));
-        movingPanelLayout.setVerticalGroup(
-                movingPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(movingPanelLayout.createSequentialGroup()
-                                .addGap(15, 15, 15)
-                                .addComponent(logoLabel)
-                                .addContainerGap()));
+        movingPanel.setLayout(new MigLayout("", "[grow]", "[]"));
+        movingPanel.add(menuList, "wrap ,grow, pushy, alignx center , aligny center");
 
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(movingPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(menuList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(movingPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-                                        GroupLayout.PREFERRED_SIZE)
-                                .addGap(15, 15, 15)
-                                .addComponent(menuList, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)));
+        this.setLayout(new MigLayout("wrap 1, inset 0", "[center,"+width+"!]", "10[]60[]push[]40"));
+        this.add(logoLabel, "center");
+        this.add(movingPanel, "wrap ,grow, pushy, alignx right , aligny center");
+        this.add(quitButton, "center");
     }
 
     // Custom painting method for background gradient
@@ -93,16 +82,11 @@ public class Menu extends JPanel {
     // Initialize menu items based on the provided map
     private void init(LinkedHashMap<String, String> menuMap) {
         menuList.setOpaque(false);
-
-        menuList.addItem(new Model_Menu("", " ", Model_Menu.MenuType.EMPTY));
+        menuList.addItem(new Model_Menu("", " ", Model_Menu.MenuType.EMPTY)); //WE NEED TO ADD THIS AT FIRST FOR SOME REASON!
 
         for (String text : menuMap.keySet()) {
             menuList.addItem(new Model_Menu(menuMap.get(text), text, Model_Menu.MenuType.MENU));
         }
-
-        menuList.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-        menuList.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
-        menuList.addItem(new Model_Menu("quit", "Logout", Model_Menu.MenuType.MENU));
     }
 
     // Method to initialize frame dragging functionality

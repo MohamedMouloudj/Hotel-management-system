@@ -6,11 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import model.Model_Menu;
+import javax.swing.*;
 
 public class MenuItem extends JPanel {
 

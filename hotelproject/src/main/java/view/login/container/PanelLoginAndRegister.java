@@ -7,47 +7,48 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
+import controllers.Controller;
 import controllers.PasswordHashing;
-import org.bson.Document;
 import model.*;
 import net.miginfocom.swing.MigLayout;
 import view.components.Message.MessageType;
 import view.components.items.MyButton;
 import view.components.items.MyPasswordField;
 import view.components.items.MyTextField;
-import view.UserGui.GuestUi;
-import view.UserGui.ReceptionistGui;
-import view.UserGui.UserGui;
-import view.components.Message;
 
-public class PanelLoginAndRegister extends JPanel {
+import view.components.Message;
+// import view.managerUi.Manager;
+
+
+public class PanelLoginAndRegister extends JPanel{
+    private final MigLayout layout;
+    private final JPanel bg;
     private Guest registerData;
     private JPanel login;
     private JPanel register;
     private Message msg = new Message();
+    // Create a button for signing in
+    private MyButton btnLogIn = new MyButton("SIGN IN");
+    // Create a button for registration
+    private MyButton btnRegister = new MyButton("Register");
+    private String passIconPath = "hotelproject/src/main/java/view/icons/pass.png";
+    private String mailIconPath = "hotelproject/src/main/java/view/icons/mail.png";
 
     public PanelLoginAndRegister(JPanel bg, MigLayout layout) {
         initComponents();
-        initRegister(bg, layout);
-        initLogin(bg, layout);
+        this.layout = layout;
+        this.bg = bg;
+        initRegister();
+        initLogin();
         login.setVisible(false);
         register.setVisible(true);
     }
 
-    public Guest getRegisterData() {
-        return registerData;
-    }
-
-    public void setRegisterData(Guest registerData) {
-        this.registerData = registerData;
-    }
 
     // Method to initialize the registration panel
-    private void initRegister(JPanel bg, MigLayout layout) {
+    private void initRegister() {
         // Set layout for the register panel
         register.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]10[]25[]push"));
 
@@ -57,29 +58,28 @@ public class PanelLoginAndRegister extends JPanel {
         label.setForeground(new Color(0x1E90FF)); // Set text color
         register.add(label); // Add label to the register panel
 
+        //TODO to be checked
+
         // Create text fields for name, last name, email, and password input
-        MyTextField txtName = new MyTextField("Name", "/view/icons/user.png");
-        MyTextField txtLastName = new MyTextField("Lastname", "/view/icons/user.png");
-        MyTextField txtEmail = new MyTextField("Email", "/view/icons/mail.png");
-        MyPasswordField txtPass = new MyPasswordField("Password", "/view/icons/pass.png");
+        MyTextField txtName = new MyTextField("Name", "hotelproject/src/main/java/view/icons/user.png");
+        MyTextField txtLastName = new MyTextField("Lastname", "hotelproject/src/main/java/view/icons/user.png");
+        MyTextField txtEmail = new MyTextField("Email", mailIconPath);
+        MyPasswordField txtPass = new MyPasswordField("Password", passIconPath);
 
         // Add text fields to the register panel
         register.add(txtName, "w 70%");
         register.add(txtLastName, "w 70%");
         register.add(txtEmail, "w 70%");
         register.add(txtPass, "w 70%");
-
-        // Create a button for registration
-        MyButton btnRegister = new MyButton("Register");
-        btnRegister.addActionListener(new ActionListener() {
+        btnRegister.setBackground(new Color(0x1E90FF));
+        btnRegister.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Get input data from text fields
+            public void actionPerformed(ActionEvent e){
                 String name = txtName.getText();
                 String lastName = txtLastName.getText();
                 String email = txtEmail.getText();
                 String password = String.valueOf(txtPass.getPassword());
-
+                System.out.println(name + " " + lastName + " " + email + " " + password);
                 // Check if any field is empty
                 if (name.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
                     // Display error message if any field is empty
@@ -87,14 +87,13 @@ public class PanelLoginAndRegister extends JPanel {
                 } else if (!User.isValidEmail(email)) { // Check if email is valid
                     // Display error message if email is invalid
                     msg.displayMessage(MessageType.ERROR, "Invalid Email", bg, layout);
-                } else if (User.research("Guest", "email", email) != null) { // Check if email already exists
+                } else if (Controller.getUserFromModel("Guests", "email", email) != null) { // Check if email already exists
                     // Display error message if email already exists in the database
                     msg.displayMessage(MessageType.ERROR, "Guest with email " + email + " already exists.", bg, layout);
                 } else {
-                    // Create a new Guest object with input data
-                    registerData = new Guest(name, lastName, email, password);
-                    // Add the guest to the database
-                    registerData.addGuestToDataBase();
+                    // Create a new Guest object with input data and add him to database
+                    Controller.addGuestFromInputs(name, lastName, email, password);
+                    System.out.println("User registered successfully");
                     // Clear input fields
                     txtName.setText("");
                     txtLastName.setText("");
@@ -111,7 +110,7 @@ public class PanelLoginAndRegister extends JPanel {
     }
 
     // Method to initialize the login panel
-    private void initLogin(JPanel bg, MigLayout layout) {
+    private void initLogin() {
         // Set layout for the login panel
         login.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]25[]push"));
 
@@ -122,8 +121,8 @@ public class PanelLoginAndRegister extends JPanel {
         login.add(label); // Add label to the login panel
 
         // Create text fields for email and password input
-        MyTextField txtEmail = new MyTextField("Email", "/view/icons/mail.png");
-        MyPasswordField txtPass = new MyPasswordField("Password", "/view/icons/pass.png");
+        MyTextField txtEmail = new MyTextField("Email", mailIconPath);
+        MyPasswordField txtPass = new MyPasswordField("Password", passIconPath);
 
         // Add text fields to the login panel
         login.add(txtEmail, "w 60%");
@@ -139,60 +138,49 @@ public class PanelLoginAndRegister extends JPanel {
         btnRegisterForget.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
         login.add(btnRegisterForget); // Add button to the login panel
 
-        // Create a button for signing in
-        MyButton btnLogIn = new MyButton("SIGN IN");
-        btnLogIn.addActionListener(e -> { // Add action listener for button click
-            String email = txtEmail.getText(); // Get email input
-            String password = String.valueOf(txtPass.getPassword()); // Get password input
-            Document loginUser; // Document to store user data
+        btnLogIn.setBackground(new Color(0x1E90FF));
+        btnLogIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = txtEmail.getText(); // Get email input
+                String password = String.valueOf(txtPass.getPassword()); // Get password input
+                User loginUser; // Document to store user data
 
-            // Check if email or password is empty
-            if (email.isEmpty() || password.isEmpty()) {
-                // Display error message if any field is empty
-                msg.displayMessage(MessageType.ERROR, "All the Fields Are Required", bg, layout);
-            } else if (!User.isValidEmail(email)) { // Check if email is valid
-                // Display error message if email is invalid
-                msg.displayMessage(MessageType.ERROR, "Invalid Email", bg, layout);
-            } else {
-                // Check if the user is a receptionist or a guest
-                if (email.endsWith("Oasis.dz")) { // Receptionist
-                    loginUser = Receptionist.research("Receptionist", "OasisMail", email);
-                } else { // Guest
-                    loginUser = Guest.research("Guest", "email", email);
-                }
-
-                // Check if the user exists
-                if (loginUser == null) {
-                    // Display error message if no account is found with the provided email
-                    msg.displayMessage(MessageType.ERROR, "There's no account with this Email", bg, layout);
+                // Check if email or password is empty
+                if (email.isEmpty() || password.isEmpty()) {
+                    // Display error message if any field is empty
+                    msg.displayMessage(MessageType.ERROR, "All the Fields Are Required", bg, layout);
+                } else if (!User.isValidEmail(email)) { // Check if email is valid
+                    // Display error message if email is invalid
+                    msg.displayMessage(MessageType.ERROR, "Invalid Email", bg, layout);
                 } else {
-                    String A = loginUser.getString("password"); // Get hashed password from database
-                    // Check if the provided password matches the hashed password
-                    if (!PasswordHashing.verifyPassword(password, A)) {
-                        // Display error message if password is incorrect
-                        msg.displayMessage(MessageType.ERROR, "Incorrect password", bg, layout);
+                    // Check if the user is a receptionist or a guest
+                    if (email.endsWith("Oasis.dz")) { // Receptionist
+                        loginUser = Controller.getUserFromModel("Receptionists", "OasisMail", email);
+                    } else { // Guest
+                        loginUser = Controller.getUserFromModel("Guests", "email", email);
+                    }
+
+                    // Check if the user exists
+                    if (loginUser == null) {
+                        // Display error message if no account is found with the provided email
+                        msg.displayMessage(MessageType.ERROR, "There's no account with this Email", bg, layout);
                     } else {
-                        // If the user is a receptionist, open ReceptionistUi; otherwise, open GuestUi
-                        if (email.endsWith("Oasis.dz")) {
-                            // new ReceptionistUi(new Receptionist(
-                            // loginUser.getString("firstName"),
-                            // loginUser.getString("lastName"),
-                            // loginUser.getString("email")));
-                            UserGui.run(new ReceptionistGui(new Receptionist(loginUser.getString("firstName"),
-                                    loginUser.getString("lastName"), loginUser.getString("email"))));
+                        String truePassword = loginUser.getPassword(); // Get hashed password from database
+                        // Check if the provided password matches the hashed password
+                        if (!PasswordHashing.verifyPassword(password, truePassword)) {
+                            // Display error message if password is incorrect
+                            msg.displayMessage(MessageType.ERROR, "Incorrect password", bg, layout);
+                            System.out.println("Incorrect password");
                         } else {
-                            UserGui.run(new GuestUi(
-                                    new Guest(loginUser.getString("firstName"), loginUser.getString("lastName"),
-                                            loginUser.getString("email"), loginUser.getString("password"))));
-                            // new com.raven.main.Main().v();
-                            // UserGui.run(new GuestUi());
+                            Controller.setHotelUserAndOpenUI(loginUser); // Set the user in the hotel model
+                            System.out.println("User logged in successfully");
                         }
-                        bg.getTopLevelAncestor().setVisible(false); // Hide the login form
+                        SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
                     }
                 }
             }
         });
-
         // Add the sign-in button to the login panel
         login.add(btnLogIn, "w 40%, h 40");
     }
@@ -218,67 +206,4 @@ public class PanelLoginAndRegister extends JPanel {
         add(login, "loginPanel");
         add(register, "registerPanel");
     }
-
 }
-// msg.displayMessage(MessageType.SUCCESS, "Welcome back " +
-// receptionist.getFirstName(),
-// bg,
-// layout);
-// txtEmail.setText("");
-// txtPass.setText("");
-// } else {
-// String A = guest.getString("password");
-// if (!PasswordHashing.verifyPassword(password, A)) {
-// msg.displayMessage(MessageType.ERROR, "incorrect password", bg, layout);
-
-// } else {
-
-// logInData = new Guest(guest.getString("firstName"),
-// guest.getString("lastName"),
-// guest.getString("email"),
-// guest.getString("password"));
-// msg.displayMessage(MessageType.SUCCESS, "Welcome back " +
-// logInData.getFirstName(), bg, layout);
-// txtEmail.setText("");
-// txtPass.setText("");
-// }
-
-// }
-// msg.displayMessage(MessageType.SUCCESS, "Welcome back " +
-// guest.getFirstName(), bg,
-// layout);
-// txtEmail.setText("");
-// txtPass.setText("");
-// private void initComponents() {
-
-// login = new JPanel();
-// register = new JPanel();
-
-// setLayout(new CardLayout());
-
-// login.setBackground(new Color(255, 255, 255));
-
-// GroupLayout loginLayout = new GroupLayout(login);
-// login.setLayout(loginLayout);
-// loginLayout.setHorizontalGroup(
-// loginLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-// .addGap(0, 327, Short.MAX_VALUE));
-// loginLayout.setVerticalGroup(
-// loginLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-// .addGap(0, 300, Short.MAX_VALUE));
-
-// add(login, "card3");
-
-// register.setBackground(new Color(255, 255, 255));
-
-// GroupLayout registerLayout = new GroupLayout(register);
-// register.setLayout(registerLayout);
-// registerLayout.setHorizontalGroup(
-// registerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-// .addGap(0, 327, Short.MAX_VALUE));
-// registerLayout.setVerticalGroup(
-// registerLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-// .addGap(0, 300, Short.MAX_VALUE));
-
-// add(register, "card2");
-// }

@@ -1,5 +1,4 @@
 package model.hotel;
-import java.util.HashMap;
 
 import com.mongodb.client.MongoDatabase;
 import controllers.UserType;
@@ -7,6 +6,8 @@ import model.Database;
 import model.Guest;
 import model.User;
 import model.supervisors.Worker;
+
+import java.util.HashMap;
 
 public class Hotel {
     public static final MongoDatabase hotelDatabase = Database.getDatabase();
@@ -25,7 +26,8 @@ public class Hotel {
     public static void initHotelModel(UserType userType) {
         //Retrieving rooms from the database and putting them in the rooms HashMap
         try {
-            Database.retrieveRoomsFromDB(rooms);
+            if (rooms.isEmpty())
+                Database.retrieveRoomsFromDB(rooms);
         } catch (Database.DBException e) {
             System.out.println(e.getMessage());
         }

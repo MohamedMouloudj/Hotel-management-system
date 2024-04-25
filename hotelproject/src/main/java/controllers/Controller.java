@@ -12,8 +12,9 @@ import model.supervisors.Receptionist;
 import model.supervisors.Role;
 import model.supervisors.Worker;
 import org.bson.Document;
+import view.UserGui.GuestUi;
 import view.components.roomComponents.RoomOnList;
-import view.guestUi.GuestUi;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class Controller {
         Hotel.setUser(user);
         if (user instanceof Guest){
             Hotel.initHotelModel(UserType.GUEST);
-            new GuestUi(roomsToRoomPanelGuest(), (Guest) user);
+            GuestUi.run(new GuestUi((Guest) user));
         }
         if (user instanceof Worker){
             if (((Worker) user).getRole().equals(Role.RECEPTIONIST)){
@@ -143,10 +144,10 @@ public class Controller {
 
         for (RoomType roomType : RoomType.values()) {
             description = switch (roomType) {
-                case RoomType.Standard -> "-Single Room with a single bed.";
-                case RoomType.Double -> "-Double Room with a double bed.";
-                case RoomType.Suite -> "-Suite Room with a double bed and a living room.";
-                case RoomType.Family -> "-Family Room with a double bed and two single beds.";
+                case Standard -> "-Single Room with a single bed.";
+                case Double -> "-Double Room with a double bed.";
+                case Suite -> "-Suite Room with a double bed and a living room.";
+                case Family -> "-Family Room with a double bed and two single beds.";
             };
 
             HashMap<Double, Integer> roomPriceCount = new HashMap<>();
@@ -167,7 +168,7 @@ public class Controller {
             }
             for (Double price : roomPriceCount.keySet()) {
                 RoomOnList roomOnList = new RoomOnList(roomType,
-                        "hotelproject/src/main/java/view/icons/"+ roomType.toString() + "Room.jpg",
+                        "hotelproject/src/main/java/view/icons/"+ roomType.toString() + "Room.png",
                         description,
                         price,
                         roomPriceCount.get(price)>0);
