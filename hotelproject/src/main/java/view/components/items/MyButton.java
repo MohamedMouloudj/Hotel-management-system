@@ -50,7 +50,6 @@ public class MyButton extends JButton {
         setFocusPainted(false);
         setFont(new Font("sansserif", Font.BOLD, 15));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
@@ -86,55 +85,17 @@ public class MyButton extends JButton {
         int height = getHeight();
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = img.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, width, height, height, height);
+        Graphics2D g3 = (Graphics2D) grphcs;
+        g3.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g3.setColor(getBackground());
+        g3.fillRoundRect(0, 0, width-1, height-1, height, height);
         if (pressedPoint != null) {
             g2.setColor(effectColor);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
             g2.fillOval((int) (pressedPoint.x - animatSize / 2), (int) (pressedPoint.y - animatSize / 2),
                     (int) animatSize, (int) animatSize);
         }
-        g2.dispose();
         grphcs.drawImage(img, 0, 0, null);
         super.paintComponent(grphcs);
     }
-
 }
-
-/*
- * protected void paintComponentTopLeftRoundCorner(Graphics grphcs) {
- * int width = getWidth();
- * int height = getHeight();
- * BufferedImage img = new BufferedImage(width, height,
- * BufferedImage.TYPE_INT_ARGB);
- * Graphics2D g2 = img.createGraphics();
- * g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
- * RenderingHints.VALUE_ANTIALIAS_ON);
- * g2.setColor(getBackground());
- * 
- * // Create a round rectangle that covers the entire button
- * RoundRectangle2D roundRect = new RoundRectangle2D.Float(0, 0, width, height,
- * height, height);
- * // Create a rectangle that covers the top-right and bottom-right corners
- * Rectangle2D rect = new Rectangle2D.Float(width / 2, 0, width / 2, height);
- * // Create an Area object from the round rectangle
- * Area area = new Area(roundRect);
- * // Subtract the rectangle from the Area
- * area.subtract(new Area(rect));
- * 
- * // Fill the Area
- * g2.fill(area);
- * 
- * if (pressedPoint != null) {
- * g2.setColor(effectColor);
- * g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
- * g2.fillOval((int) (pressedPoint.x - animatSize / 2), (int) (pressedPoint.y -
- * animatSize / 2),
- * (int) animatSize, (int) animatSize);
- * }
- * g2.dispose();
- * grphcs.drawImage(img, 0, 0, null);
- * super.paintComponent(grphcs);
- * }
- */

@@ -1,26 +1,19 @@
 package model;
 
 import controllers.OurDate;
-import controllers.Reservation;
+import model.hotel.Reservation;
+import model.hotel.RoomType;
+
 import java.util.HashMap;
 
-// import controllers.KeyNotFoundException;
-// import controllers.PasswordHashing;
-// import java.util.regex.Matcher;
-// import java.util.regex.Pattern;
-
-// import org.bson.Document;
-
-// import com.mongodb.MongoClient;
-// import com.mongodb.client.MongoCollection;
-// import com.mongodb.client.MongoDatabase;
 
 public class Guest extends User {
-
+    // key: roomNumber, value: reservation
     private HashMap<String, Reservation> reservations = new HashMap<>();
 
     public Guest(String firstName, String lastName, String email, String password) {
         super(firstName, lastName, email, password);
+        // setId(++idCounter, type);
     }
 
     public void requestReservation(RoomType type, OurDate checkInDate, OurDate checkOutDate) {
@@ -35,87 +28,6 @@ public class Guest extends User {
         // Hotel.cancelReservation(roomNumber);
     }
 
-    public void addGuestToDataBase() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("firstName", this.firstName);
-        map.put("lastName", this.lastName);
-        map.put("email", this.email);
-        map.put("password", this.password);
-        super.addToDataBase("Guest", map);
-    }
-
-    // public boolean isValid() {
-    // return !super.firstName.isEmpty() && !super.lastName.isEmpty() &&
-    // !super.email.isEmpty()
-    // && !super.password.isEmpty();
-    // }
-
-    // @Override
-    // public void deleteFromDataBase() {
-    // try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-    // // Accessing the User database
-    // MongoDatabase userDatabase = mongoClient.getDatabase("User");
-    // System.out.println("Database Name = " + userDatabase.getName());
-
-    // // Retrieving the Client collection
-    // MongoCollection<Document> clientCollection =
-    // userDatabase.getCollection("Client");
-    // System.out.println("Client Collection selected successfully");
-
-    // // Deleting the document with the given email
-    // clientCollection.deleteOne(new Document("email", this.email));
-    // System.out.println("Document with email " + this.email + " deleted
-    // successfully");
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
-
-    // @Override
-    // public String getPassword() {
-    // return password;
-    // }
-
-    // public static
-
-    /**
-     *
-     * This method is used to modify a reservation of a guest by changing the room
-     * type, it will cancel the current reservation and create a new one with the
-     * new room type
-     * 
-     * @param roomNumber String
-     *
-     */
-    // public void modifyReservation(String roomNumber, RoomType type) throws
-    // KeyNotFoundException {
-    // Reservation toBeModified = reservations.get(roomNumber);
-    // if (toBeModified == null) {
-    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
-    // }
-
-    // ArrayList<Room> rooms = Hotel.getRoomByType(type);
-    // Room room = null;
-    // for (Room r : rooms) {
-    // if (r.isAvailable()) {
-    // room = r;
-    // break;
-    // }
-    // }
-    // if (room == null) {
-    // System.out.println("No available rooms");
-    // return;
-    // }
-    // OurDate checkInDate = toBeModified.getCheckInDate();
-    // OurDate checkOutDate = toBeModified.getCheckOutDate();
-    // reservations.remove(roomNumber);
-    // Hotel.cancelReservation(roomNumber);
-    // room.setAvailable(false);
-    // Reservation reservation = new Reservation(room.getRoomNumber(), this.getId(),
-    // checkInDate, checkOutDate);
-    // reservations.put(room.getRoomNumber(), reservation);
-    // Hotel.addReservation(this);
-
     public void modifyCheckIn(String roomNumber, OurDate checkIn) {
         reservations.get(roomNumber).setCheckInDate(checkIn);
     }
@@ -127,6 +39,9 @@ public class Guest extends User {
     public HashMap<String, Reservation> getReservations() {
         return reservations;
     }
+    public void setReservations(HashMap<String, Reservation> reservations) {
+        this.reservations = reservations;
+    }
 
     public void payReservation(String roomNumber) {
         reservations.get(roomNumber).setPaid(true);
@@ -135,42 +50,4 @@ public class Guest extends User {
     public void addReservation(Reservation reservation) {
         reservations.put(reservation.getRoomNumber(), reservation);
     }
-
-    // public void removeReservation(String roomNumber) throws KeyNotFoundException
-    // {
-    // if (!reservations.get(roomNumber).isPaid()) {
-    // System.out.println("You can't remove a paid reservation");
-    // return;
-    // }
-    // if (reservations.get(roomNumber) == null) {
-    // throw new KeyNotFoundException("Room number: " + roomNumber + " not found");
-    // }
-    // reservations.remove(roomNumber);
-    // }
-
-    /**
-     * This method is used to calculate the total cost of the reservations of a
-     * guest, if a room number is provided it will return the cost of that room
-     * only, otherwise it will return the total cost of all non paid reservations
-     * 
-     * @param roomNumber String
-     */
-    public double calculateTotalCost(String roomNumber) {
-        // if (roomNumber != null) {
-        // return
-        // Hotel.getRoom(reservations.get(roomNumber).getRoomNumber()).getRoomPrice();
-        // }
-        // double totalCost = 0;
-        // Iterator<String> keys = reservations.keySet().iterator();
-        // while (keys.hasNext()) {
-        // String key = keys.next();
-        // if (!reservations.get(key).isPaid()) {
-        // totalCost +=
-        // Hotel.getRoom(reservations.get(key).getRoomNumber()).getRoomPrice();
-        // }
-        // }
-        // return totalCost;
-        return 19d;
-    }
-
 }

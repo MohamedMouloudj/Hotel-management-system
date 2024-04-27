@@ -26,15 +26,22 @@ public class SendEmail
 //        mail.sendEmail();
 //    }
 
-    public void sendEmail(String Email) throws MessagingException {
-        String fromUser = "hermezabderrahim568@gmail.com";  //Enter sender email id
-        String fromUserPassword = "pwqo zsea tqgl epre";  //Enter sender gmail password , this will be authenticated by gmail smtp server
+    public boolean sendEmail(String Email) {
+        String fromUser = "hermezabderrahim568@gmail.com";
+        String fromUserPassword = "pwqo zsea tqgl epre";
         String emailHost = "smtp.gmail.com";
-        Transport transport = newSession.getTransport("smtp");
-        transport.connect(emailHost, fromUser, fromUserPassword);
-        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-        transport.close();
-        System.out.println("Email successfully sent!!!");
+        try {
+            Transport transport = newSession.getTransport("smtp");
+            transport.connect(emailHost, fromUser, fromUserPassword);
+            transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+            transport.close();
+            System.out.println("Email successfully sent!!!");
+            return true; // Return true if the email was sent successfully
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Failed to send email");
+            return false; // Return false if there was an error sending the email
+        }
     }
 
     public MimeMessage draftEmail(String Email , String message , String token) throws AddressException, MessagingException, IOException {

@@ -1,13 +1,13 @@
 package view.components;
 
+import model.supervisors.Receptionist;
+import model.supervisors.Role;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import model.Role;
 
 public class ProfileUi extends JPanel {
     private JPanel container;
@@ -16,12 +16,10 @@ public class ProfileUi extends JPanel {
     private String firstName;
     private JLabel lastNameLabel;
     private String lastName;
-    private JLabel passwordLabel;
-    private String password;
     private JLabel firstNameLabelData;
     private JLabel lastNameLabelData;
-    private JLabel passwordLabelData;
-    private DynamicButton editButton = new DynamicButton("Edit");
+    private JLabel emailLabel;
+    private OurButton editButton = new OurButton("Edit");
     private ProfileEdit editProfile = new ProfileEdit();
 
     public ProfileUi() {
@@ -33,7 +31,6 @@ public class ProfileUi extends JPanel {
         container = new JPanel();
         lastNameLabel = new JLabel();
         firstNameLabel = new JLabel();
-        passwordLabel = new JLabel();
         Email = new JLabel();
 
         editButton.setButtonBgColor(new Color(0xC0C0C0));
@@ -50,6 +47,7 @@ public class ProfileUi extends JPanel {
         });
 
         setLayout(new MigLayout("wrap 1,center", "[]", "push[]push"));
+        setBackground(new Color(242, 242, 242));
 
         container.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0), 2,
                 true));
@@ -73,12 +71,7 @@ public class ProfileUi extends JPanel {
         Email.setText("Email:");
         container.add(Email, "cell 0 2");
 
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        passwordLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        passwordLabel.setText("Password:");
-        container.add(passwordLabel, "cell 0 3");
-
-        container.add(editButton, "cell 0 5,alignx center,spanx 2,gapy 10");
+        container.add(editButton, "cell 0 4,alignx center,spanx 2,gapy 10");
 
         add(container);
     }
@@ -101,17 +94,8 @@ public class ProfileUi extends JPanel {
         container.add(lastNameLabelData, "cell 1 1");
     }
 
-    public void addPassword(String password) {
-        this.password = password;
-        passwordLabelData = new JLabel();
-        passwordLabelData.setFont(new Font("Arial", Font.PLAIN, 12));
-        passwordLabelData.setHorizontalAlignment(SwingConstants.LEFT);
-        passwordLabelData.setText(this.password);
-        container.add(passwordLabelData, "cell 1 3");
-    }
-
     public void addEmail(String email) {
-        JLabel emailLabel = new JLabel();
+        emailLabel = new JLabel();
         emailLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         emailLabel.setHorizontalAlignment(SwingConstants.LEFT);
         emailLabel.setText(email);
@@ -121,6 +105,7 @@ public class ProfileUi extends JPanel {
     public void updateFirstName(String firstName) {
         this.firstName = firstName;
         firstNameLabelData.setText(firstName);
+        Receptionist.updateGuestInDataBase(this.emailLabel.getText(), "firstName", firstName);
         revalidate();
         repaint();
     }
@@ -128,13 +113,7 @@ public class ProfileUi extends JPanel {
     public void updateLastName(String lastName) {
         this.lastName = lastName;
         lastNameLabelData.setText(lastName);
-        revalidate();
-        repaint();
-    }
-
-    public void updatePassword(String password) {
-        this.password = password;
-        passwordLabelData.setText(password);
+        Receptionist.updateGuestInDataBase(this.emailLabel.getText(), "lastName", lastName);
         revalidate();
         repaint();
     }
@@ -145,16 +124,16 @@ public class ProfileUi extends JPanel {
      * to add a role row to the profile
      */
     public void addRollRow(Role role) {
-        JLabel roleIndecator = new JLabel();
-        roleIndecator.setFont(new Font("Arial", Font.BOLD, 12));
-        roleIndecator.setHorizontalAlignment(SwingConstants.LEFT);
-        roleIndecator.setText("Role:");
-        container.add(roleIndecator, "cell 0 4");
+        JLabel roleIndicator = new JLabel();
+        roleIndicator.setFont(new Font("Arial", Font.BOLD, 12));
+        roleIndicator.setHorizontalAlignment(SwingConstants.LEFT);
+        roleIndicator.setText("Role:");
+        container.add(roleIndicator, "cell 0 3");
         JLabel roleLabel = new JLabel();
         roleLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         roleLabel.setHorizontalAlignment(SwingConstants.LEFT);
         roleLabel.setText(role.toString());
-        container.add(roleLabel, "cell 1 4");
+        container.add(roleLabel, "cell 1 3");
     }
 
     protected JPanel getContainer() {
@@ -165,13 +144,11 @@ public class ProfileUi extends JPanel {
 class ProfileEdit extends JPanel {
     private JLabel FirstName;
     private JLabel LastName;
-    private JLabel Password;
-    private DynamicButton confirm = new DynamicButton("Confirm");
-    private DynamicButton cancel = new DynamicButton("Cancel");
+    private OurButton confirm = new OurButton("Confirm");
+    private OurButton cancel = new OurButton("Cancel");
 
     private JTextField firstNameField;
     private JTextField lastNameField;
-    private JTextField passwordField;
 
     ProfileEdit() {
         initComponents();
@@ -181,7 +158,6 @@ class ProfileEdit extends JPanel {
 
         LastName = new JLabel();
         FirstName = new JLabel();
-        Password = new JLabel();
 
         confirm.setButtonBgColor(new Color(0xC0C0C0));
         confirm.setButtonTxtColor(Color.BLACK);
@@ -192,12 +168,8 @@ class ProfileEdit extends JPanel {
                 Message msg = new Message();
                 ProfileUi profilePanel = (ProfileUi) getParent();
                 try {
-                    if (firstNameField.getText().isEmpty() && lastNameField.getText().isEmpty()
-                            && passwordField.getText().isEmpty()) {
+                    if (firstNameField.getText().isEmpty() && lastNameField.getText().isEmpty()) {
                         throw new InputException("Please fill at least one field");
-                    }
-                    if (!passwordField.getText().isEmpty() && passwordField.getText().length() < 8) {
-                        throw new InputException("Password must be at least 8 characters");
                     }
                     if (!firstNameField.getText().isEmpty()) {
                         profilePanel.updateFirstName(firstNameField.getText());
@@ -207,11 +179,6 @@ class ProfileEdit extends JPanel {
                     if (!lastNameField.getText().isEmpty()) {
                         profilePanel.updateLastName(lastNameField.getText());
                         lastNameField.setText("");
-                        isUpdated = true;
-                    }
-                    if (!passwordField.getText().isEmpty()) {
-                        profilePanel.updatePassword(passwordField.getText());
-                        passwordField.setText("");
                         isUpdated = true;
                     }
                 } catch (InputException ex) {
@@ -236,7 +203,6 @@ class ProfileEdit extends JPanel {
                 profilePanel.add(profilePanel.getContainer());
                 firstNameField.setText("");
                 lastNameField.setText("");
-                passwordField.setText("");
                 profilePanel.revalidate();
                 profilePanel.repaint();
             }
@@ -263,84 +229,12 @@ class ProfileEdit extends JPanel {
         lastNameField.setPreferredSize(new Dimension(100, 30));
         add(lastNameField, "cell 1 1");
 
-        Password.setFont(new Font("Arial", Font.BOLD, 12));
-        Password.setHorizontalAlignment(SwingConstants.LEFT);
-        Password.setText("Password:");
-        add(Password, "cell 0 2");
-        passwordField = new JTextField(15);
-        passwordField.setPreferredSize(new Dimension(100, 30));
-        add(passwordField, "cell 1 2");
-
         JPanel buttonsContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,
                 5));
         buttonsContainer.add(confirm);
         buttonsContainer.add(cancel);
         add(buttonsContainer, "cell 0 3,alignx center,spanx 2");
     }
-
-    /**
-     * Show a message on the screen
-     *
-     * @param messageType : The type of the message (Error, Success)
-     * @param message     : The message to be displayed
-     * @param bg          : The background panel to add the message to
-     */
-    // private void displayMessage(Message.MessageType messageType, String message,
-    // JPanel bg) {
-    // Message ms = new Message();
-    // ms.displayMessage(messageType, message);
-    // TimingTarget target = new TimingTargetAdapter() {
-    // @Override
-    // public void begin() {
-    // if (!ms.isShow()) {
-    // bg.add(ms, "pos 0.5al -30", 0); // Insert to bg fist index 0
-    // ms.setVisible(true);
-    // bg.repaint();
-    // }
-    // }
-
-    // @Override
-    // public void timingEvent(float fraction) {
-    // float f;
-    // if (ms.isShow()) {
-    // f = 40 * (1f - fraction);
-    // } else {
-    // f = 40 * fraction;
-    // }
-    // bg.add(ms, "pos 0.5al " + (int) (f - 30));
-    // bg.repaint();
-    // bg.revalidate();
-    // }
-
-    // @Override
-    // public void end() {
-    // if (ms.isShow()) {
-    // bg.remove(ms);
-    // bg.repaint();
-    // bg.revalidate();
-    // } else {
-    // ms.setShow(true);
-    // }
-    // }
-    // };
-    // Animator animator = new Animator(300, target);
-    // animator.setResolution(0);
-    // animator.setAcceleration(0.5f);
-    // animator.setDeceleration(0.5f);
-    // animator.start();
-    // new Thread(new Runnable() {
-    // @Override
-    // public void run() {
-    // try {
-    // Thread.sleep(2000);
-    // animator.start();
-    // } catch (InterruptedException e) {
-    // System.err.println(e);
-    // }
-    // }
-    // }).start();
-    // }
-    // }
 }
 
 class InputException extends Exception {

@@ -1,8 +1,9 @@
 package view.components.roomComponents;
 
-import model.RoomType;
+import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
-import view.components.DynamicButton;
+import view.components.OurButton;
+import view.components.sacrollBar.ModernScrollBarUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,43 +17,45 @@ public class RoomsPanelGuest extends JPanel {
     private JScrollPane scrollPane;
     JPanel panel;
     //
-    public HashMap<String, RoomOnList> rooms = new HashMap<String, RoomOnList>();
+    protected HashMap<String, RoomOnList> rooms = new HashMap<String , RoomOnList>();
     protected Set<String> keys = rooms.keySet(); // get the keys (roomType)
-    // used a set to avoid duplicates
-    public JPanel filter;
+    //used a set to avoid duplicates
+    protected JPanel filter;
 
     /*
-     * using the hashmap to index all the rooms by their type
-     * and then using the combobox to select the room type
-     */
+        using the hashmap to index all the rooms by their type
+        and then using the combobox to select the room type
+    */
 
-    public RoomsPanelGuest(HashMap<String, RoomOnList> roomsList) {
-
+    public RoomsPanelGuest(HashMap<String,RoomOnList> roomsList){
+        setBackground(new Color(242, 242, 242));
         panel = new JPanel();
-        panel.setLayout(new MigLayout("wrap 1,center ", "[grow]", "push[]10[]push"));
+        panel.setLayout(new MigLayout("wrap 1,center ","[grow]","push[]10[]push"));
+        panel.setBackground(new Color(242, 242, 242));
 
-        // add rooms to the hash map
-        for (RoomOnList roomOnList : roomsList.values()) {
-            rooms.put(roomOnList.getRoomType().toString() + roomOnList.getRoomPrice(), roomOnList);
+       //add rooms to the hash map
+        for (RoomOnList roomOnList :roomsList.values()){
+            rooms.put(roomOnList.getRoomType().toString()+roomOnList.getRoomPrice(), roomOnList);
         }
 
-        // filter for filtering the rooms by type
+        //filter for filtering the rooms by type
         filter = new JPanel();
         filter.setLayout(new FlowLayout());
+        filter.setBackground(new Color(242, 242, 242));
 
         JComboBox<RoomType> comboBox = new JComboBox<>();
 
-        // addign the options to the combo box
-        for (String roomKey : keys) {
+        //addign the  options to the combo box
+        for (String roomKey : keys ) {
             String roomType = roomKey.replaceAll("\\d+\\.\\d+", "");
-            switch (roomType) {
+            switch (roomType){
                 case "Standard":
                     comboBox.addItem(RoomType.Standard);
                     break;
                 case "Double":
                     comboBox.addItem(RoomType.Double);
                     break;
-                case "Suit":
+                case "Suite":
                     comboBox.addItem(RoomType.Suite);
                     break;
                 case "Family":
@@ -62,11 +65,10 @@ public class RoomsPanelGuest extends JPanel {
         }
         comboBox.setPreferredSize(new Dimension(150, 30));
 
-        // setting the default value shown to select a roomType
+        //setting the default value shown to select a roomType
         DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
-                    boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 if (value == null) {
                     setText("Select a RoomType");
                 } else {
@@ -82,7 +84,7 @@ public class RoomsPanelGuest extends JPanel {
         comboBox.setSelectedItem(null);
         filter.add(comboBox);
 
-        DynamicButton FilterButton = new DynamicButton("filter");
+        OurButton FilterButton = new OurButton("filter");
         FilterButton.setButtonBgColor(new Color(0x0377FF));
         FilterButton.addActionListener(new ActionListener() {
             @Override
@@ -91,25 +93,21 @@ public class RoomsPanelGuest extends JPanel {
                 ArrayList<RoomOnList> roomsToAdd = new ArrayList<>();
 
                 for (RoomOnList roomOnList : rooms.values()) {
-                    if (selectedRoomType != null && roomOnList.getRoomType() == selectedRoomType) {
-                        roomsToAdd.add(roomOnList);
-                    }
+                        if (selectedRoomType != null && roomOnList.getRoomType() == selectedRoomType) {
+                            roomsToAdd.add(roomOnList);
+                        }
                 }
-                // remove all the rooms and add those who have the same type as the selected one
+                //remove all the rooms and add those who have the same type as the selected one
                 panel.removeAll();
-                panel.add(filter, "center");
+                panel.add(filter , "center");
                 if (!roomsToAdd.isEmpty()) {
                     for (RoomOnList roomOnList : roomsToAdd) {
                         panel.add(roomOnList, "center");
                     }
-                } else {
-                    // add a panel for no rooms found
+                }else {
+                   // add a panel for no rooms found
                     JLabel noRoomsFound = new JLabel("No rooms found with this type");
-                    panel.add(noRoomsFound, "center , wrap");
-                    DynamicButton JoinWaitlist = new DynamicButton("Join Waitlist");
-                    JoinWaitlist.setButtonBgColor(new Color(0x0377FF));
-                    JoinWaitlist.setButtonSize(new Dimension(110, 40));
-                    panel.add(JoinWaitlist, "center");
+                    panel.add(noRoomsFound , "center , wrap");
                 }
                 panel.revalidate();
                 panel.repaint();
@@ -117,16 +115,15 @@ public class RoomsPanelGuest extends JPanel {
         });
         filter.add(FilterButton);
 
-        // another button to show all the rooms again
-        DynamicButton resetButton = new DynamicButton("show all");
+       //another button to show all the rooms again
+        OurButton resetButton = new OurButton("show all");
         resetButton.setForeground(new Color(0x0377FF));
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 panel.removeAll();
-                panel.add(filter, "center");
-                for (RoomOnList roomOnList : rooms.values()) { // assuming allRooms is a list that contains all the
-                                                               // RoomOnList objects
+                panel.add(filter ,"center");
+                for (RoomOnList roomOnList : rooms.values()) { // assuming allRooms is a list that contains all the RoomOnList objects
                     panel.add(roomOnList, "center");
                 }
                 panel.revalidate();
@@ -141,7 +138,7 @@ public class RoomsPanelGuest extends JPanel {
             panel.add(roomOnList, "center");
         }
 
-        // this will allow us to know which room was clicked
+    //this will allow us to know which room was clicked
         for (int i = 0; i < getComponentCount(); i++) {
             RoomOnList roomOnList = (RoomOnList) getComponent(i);
             roomOnList.addActionListener(new ActionListener() {
@@ -156,10 +153,13 @@ public class RoomsPanelGuest extends JPanel {
         }
 
         scrollPane = new JScrollPane(panel);
+        scrollPane.setBackground(new Color(242, 242, 242));
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove scroll pane border
         scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Increase scroll speed
         scrollPane.setPreferredSize(new Dimension(600, 500)); // Set preferred size
+        scrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+        scrollPane.getHorizontalScrollBar().setUI(new ModernScrollBarUI());
 
         setLayout(new MigLayout("insets 10, fill"));
         add(scrollPane, "grow, growy, push");

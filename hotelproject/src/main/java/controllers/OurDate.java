@@ -9,41 +9,41 @@ class InvalidDateException extends Exception {
 }
 
 public class OurDate {
-   private int year ;
-   private int month;
-   private int day;
-   final int  currentYear = 2024;
-   /**
-    *
-    * @param day the day of the month
-    * @param month the month of the year
-    * @param year the year
-    * */
-   public OurDate(int day ,int month ,int  year ) {
-      this.day = day;
-      this.month = month;
-      this.year = year;
-       try {
-           this.validate();
-       }catch (InvalidDateException e) {
-           System.out.println("error : " + e.getMessage());
-       }
-   }
-   /**
-    * if no date is provided then the current date is used (Calendar class is used to get the current date)
-    * */
-   public OurDate(){
-     this.MakeTodaydate();
-   }
+    private int year ;
+    private int month;
+    private int day;
+    final int  currentYear = LocalDate.now().getYear();
+    /**
+     *
+     * @param day the day of the month
+     * @param month the month of the year
+     * @param year the year
+     * */
+    public OurDate(int day ,int month ,int  year ) {
+        this.day = day;
+        this.month = month;
+        this.year = year;
+        try {
+            this.validate();
+        }catch (InvalidDateException e) {
+            System.out.println("error : " + e.getMessage());
+        }
+    }
+    /**
+     * if no date is provided then the current date is used (Calendar class is used to get the current date)
+     * */
+    public OurDate(){
+        this.MakeTodaydate();
+    }
 
-       void MakeTodaydate(){
+    void MakeTodaydate(){
 
-           LocalDate today = LocalDate.now();
-           this.year = today.getYear();
-           this.month = today.getMonthValue();
-           this.day = today.getDayOfMonth();
+        LocalDate today = LocalDate.now();
+        this.year = today.getYear();
+        this.month = today.getMonthValue();
+        this.day = today.getDayOfMonth();
 
-       }
+    }
 
 
     void validate() throws InvalidDateException{
@@ -60,36 +60,34 @@ public class OurDate {
             throw new InvalidDateException("Invalid day: Day must be between 1 and " + daysInMonth + " for this month.");
         }
     }
-   /*
-   validate the input date , year and day and month should be in specified ranges
-   consider leap years , if leap year or not then verify  the month if it is february
-   if it is check the day (28, 29)
-
+   /**
+       validate the input date , year and day and month should be in specified ranges
+       consider leap years , if leap year or not then verify  the month if it is february
+       if it is check the day (28, 29)
     */
+    int getDaysInMonth() {
+        int[] daysInMonthLookup = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if (this.isLeapYear() && this.month == 2) {
+            return 29; // February has 29 days in a leap year
+        } else {
+            return daysInMonthLookup[this.month - 1];
+        }
+    }
 
-   int getDaysInMonth() {
-    int[] daysInMonthLookup = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-      if (this.isLeapYear() && this.month == 2) {
-         return 29; // February has 29 days in a leap year
-      } else {
-         return daysInMonthLookup[this.month - 1];
-      }
-   }
-
-   boolean  isLeapYear() {
-      return (this.year % 4 == 0 && this.year % 100 != 0) || (this.year % 400 == 0);
-   }
+    boolean  isLeapYear() {
+        return (this.year % 4 == 0 && this.year % 100 != 0) || (this.year % 400 == 0);
+    }
     /* verify the input year if it is leap or not <s
     /*to treat the all cases
      */
 
-   int getDay(){
-      return this.day;
-   }
-   int getMonth(){
+    public int getDay(){
+        return this.day;
+    }
+    public int getMonth(){
         return this.month;
     }
-    int getYear(){
+    public int getYear(){
         return this.year;
     }
 
@@ -200,18 +198,33 @@ public class OurDate {
     }
 
 
+    /**
+     * Parse a date string in the format day/month/year
+     * @param dateString the date string to parse
+     * @return a new OurDate object
+     * @throws InvalidDateException if the date string is not in the expected format
+     * */
+    public static OurDate parse(String dateString) throws InvalidDateException {
+        String[] parts = dateString.split("/");
+        if (parts.length != 3) {
+            throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+        }
+        int day = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        int year = Integer.parseInt(parts[2]);
+        return new OurDate(day, month, year);
+    }
 
-   public static void main(String[] args) {
-       OurDate a = new OurDate();
-       OurDate b = new OurDate(30,2,2024);
-       try{
-           System.out.println("the difference is " + OurDate.getDaysBetweenDates(a,b) );
-       }catch (InvalidDateException e) {
-           System.out.println(e.getMessage());
-       }
+
+    public static void main(String[] args) {
+        OurDate a = new OurDate();
+        OurDate b = new OurDate(30,5,2024);
+        try{
+            System.out.println("the difference is " + OurDate.getDaysBetweenDates(a,b) );
+        }catch (InvalidDateException e) {
+            System.out.println(e.getMessage());
+        }
 
 
-   }
-
-
+    }
 }
