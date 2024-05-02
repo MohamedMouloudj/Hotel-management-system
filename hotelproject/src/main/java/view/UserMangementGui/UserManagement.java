@@ -1,6 +1,7 @@
 package view.UserMangementGui;
 
 import net.miginfocom.swing.MigLayout;
+import view.components.Message;
 import view.components.OurButton;
 import view.components.items.MyTextField;
 import view.components.sacrollBar.ScrollBar;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 
 public abstract class UserManagement extends JPanel {
 
+        protected final Message msg = new Message();
         protected String collectionName;
         protected JPanel userInputPanel;
         protected JPanel mainPanel;
@@ -25,6 +27,7 @@ public abstract class UserManagement extends JPanel {
         protected MyTextField lastNameField;
         protected MyTextField emailField;
         protected Table table;
+        protected MigLayout layout;
 
         // Constructor
         public UserManagement(String collectionName) {
@@ -33,15 +36,13 @@ public abstract class UserManagement extends JPanel {
         }
 
         // Abstract methods
-        public abstract String[] getCollumnNames();
+        public abstract String[] getColumnNames();
 
         public abstract ActionListener addActionListener();
 
         public abstract ActionListener deleteActionListener();
 
         public abstract ActionListener clearActionListener();
-
-        public abstract ActionListener updateActionListener();
 
         // Initialize UI components
         private void initComponents() {
@@ -61,6 +62,7 @@ public abstract class UserManagement extends JPanel {
 
                 // Setting layout for the main panel
                 panel.setLayout(new GridLayout(1, 0, 10, 0));
+                panel.setBackground(Color.BLUE);
 
                 // Adding user management panel to the main panel
                 panel.add(createUserManagementPanel());
@@ -75,8 +77,8 @@ public abstract class UserManagement extends JPanel {
                 spTable.setBorder(null);
 
                 // Setting model for the table
-                table.setModel(new DefaultTableModel(new Object[][] {}, getCollumnNames()) {
-                        private final boolean[] canEdit = new boolean[getCollumnNames().length];
+                table.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
+                        private final boolean[] canEdit = new boolean[getColumnNames().length];
                         {
                                 Arrays.fill(canEdit, false);
                         }
@@ -111,35 +113,11 @@ public abstract class UserManagement extends JPanel {
                                                                                 Short.MAX_VALUE)
                                                                 .addGap(20)));
 
-                // Setting layout for the main panel
-                GroupLayout layout = new GroupLayout(this);
+
+                layout = new MigLayout("wrap 1,center", "push[95%,fill]push", "20[]10[]20");
                 setLayout(layout);
-                layout.setHorizontalGroup(
-                                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                                .addGap(20)
-                                                                .addGroup(layout.createParallelGroup(
-                                                                                GroupLayout.Alignment.TRAILING)
-                                                                                .addComponent(panelBorder1,
-                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                Short.MAX_VALUE)
-                                                                                .addComponent(panel,
-                                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                                875, Short.MAX_VALUE))
-                                                                .addGap(20)));
-                layout.setVerticalGroup(
-                                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                                .addGap(20)
-                                                                .addComponent(panel, GroupLayout.PREFERRED_SIZE,
-                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(20)
-                                                                .addComponent(panelBorder1, GroupLayout.DEFAULT_SIZE,
-                                                                                GroupLayout.DEFAULT_SIZE,
-                                                                                Short.MAX_VALUE)
-                                                                .addGap(20)));
+                add(panel, "cell 0 0");
+                add(panelBorder1, "cell 0 1");
 
                 // Setting vertical scrollbar for the table
                 spTable.setVerticalScrollBar(new ScrollBar());
@@ -150,6 +128,7 @@ public abstract class UserManagement extends JPanel {
                 JPanel corner = new JPanel();
                 corner.setBackground(Color.WHITE);
                 spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner);
+                spTable.setBorder(BorderFactory.createEmptyBorder());
         }
 
         private JPanel createUserManagementPanel() {
@@ -163,19 +142,18 @@ public abstract class UserManagement extends JPanel {
                 userInputPanel.setBorder(border);
 
                 // Creating JLabels for user input
-                JLabel nameLabel = new JLabel("Name:");
+                JLabel nameLabel = new JLabel("First name:");
                 nameLabel.setFont(new Font("SansSerif", Font.BOLD, 14)); // Setting font for nameLabel
-                JLabel lastNameLabel = new JLabel("LastName:");
+                JLabel lastNameLabel = new JLabel("Last name:");
                 lastNameLabel.setFont(new Font("SansSerif", Font.BOLD, 14)); // Setting font for lastNameLabel
                 JLabel emailLabel = new JLabel("Email:");
                 emailLabel.setFont(new Font("SansSerif", Font.BOLD, 14)); // Setting font for emailLabel
 
                 // Creating MyTextFields for user input
-                nameField = new MyTextField("Name", "/view/icons/user.png");
-                lastNameField = new MyTextField("LastName", "/view/icons/user.png");
-                emailField = new MyTextField("Email", "/view/icons/mail.png");
+                nameField = new MyTextField("First name", "hotelproject/src/main/java/view/icons/user.png");
+                lastNameField = new MyTextField("Last name", "hotelproject/src/main/java/view/icons/user.png");
+                emailField = new MyTextField("Email", "hotelproject/src/main/java/view/icons/mail.png");
 
-                // Adding components to the user input panel with MigLayout constraints
                 userInputPanel.add(nameLabel);
                 userInputPanel.add(nameField, "growx, width 60%");
                 userInputPanel.add(lastNameLabel);
@@ -196,13 +174,6 @@ public abstract class UserManagement extends JPanel {
                 // Adding add button to the button panel
                 buttonPanel.add(addButton, "w 50%, h 34");
 
-                // Creating and configuring update button
-                OurButton updateButton = new OurButton("Update");
-                updateButton.setButtonBgColor(new Color(0, 112, 255));
-                updateButton.addActionListener(updateActionListener());
-                // Adding update button to the button panel
-                buttonPanel.add(updateButton, "w 50%, h 34");
-
                 // Creating and configuring delete button
                 OurButton deleteButton = new OurButton("Delete");
                 deleteButton.setButtonBgColor(new Color(0xED1B24));
@@ -217,14 +188,10 @@ public abstract class UserManagement extends JPanel {
                 // Adding clear button to the button panel
                 buttonPanel.add(clearButton, "w 50%, h 34");
 
-                // Setting background color for the button panel
                 buttonPanel.setBackground(Color.WHITE);
 
-                // Adding user input panel and button panel to the main panel with MigLayout
-                // constraints
                 mainPanel.add(userInputPanel, "span 1 2, grow");
                 mainPanel.add(buttonPanel, "span 1 2, grow");
-                // Setting background color for the main panel
                 mainPanel.setBackground(Color.WHITE);
 
                 return mainPanel;

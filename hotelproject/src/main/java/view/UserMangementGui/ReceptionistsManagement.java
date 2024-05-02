@@ -1,43 +1,54 @@
 package view.UserMangementGui;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
+import java.util.Random;
+import controllers.Controller;
+import model.User;
+import model.supervisors.Receptionist;
+import view.components.Message;
 import view.components.items.MyTextField;
 
 public class ReceptionistsManagement extends UserManagement {
-
+    private MyTextField txtOasisMail;
+    private final Random random = new Random();
     public ReceptionistsManagement() {
         super("Receptionist");
         addOasisEmail(); // Add Oasis email field to user input panel
-        add(); // Add sample data to the table
+        Controller.initiateTable("Workers",getColumnNames(),table);
     }
 
     @Override
-    public String[] getCollumnNames() {
+    public String[] getColumnNames() {
         // Define column names for the table
         return new String[] { "firstName", "lastName", "email", "OasisMail" };
     }
 
     @Override
     public ActionListener addActionListener() {
-        // ActionListener for adding a new receptionist
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implementation for adding a new receptionist
-                System.out.println(12);
+                try {
+                    // Add a receptionist to the database
+                    Controller.addReceptionist(nameField.getText(), lastNameField.getText(), emailField.getText(),txtOasisMail.getText(),table);
+                    nameField.setText("");
+                    lastNameField.setText("");
+                    emailField.setText("");
+                    msg.displayMessage(Message.MessageType.SUCCESS, "Receptionist added successfully", (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                } catch (Exception ex) {
+                    msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                }
             }
         };
     }
 
     @Override
     public ActionListener deleteActionListener() {
-        // ActionListener for deleting a receptionist
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -62,27 +73,17 @@ public class ReceptionistsManagement extends UserManagement {
         };
     }
 
-    @Override
-    public ActionListener updateActionListener() {
-        // ActionListener for updating a receptionist
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Implementation for updating a receptionist
-            }
-        };
-    }
-
     // Method to add Oasis email field to the user input panel
     private void addOasisEmail() {
-        super.userInputPanel.add(new JLabel("OasisEmail: "));
-        // Create and add Oasis email field to user input panel
+        JLabel lblOasisMail = new JLabel("Oasis Mail:");
+        lblOasisMail.setFont(new Font("SansSerif", Font.BOLD, 14));
+        super.userInputPanel.add(lblOasisMail);
         super.userInputPanel.add(createOasisMailField(super.nameField, super.lastNameField), "growx, width 60%");
     }
 
     // Method to create Oasis email field
     private MyTextField createOasisMailField(MyTextField txtName, MyTextField txtLastName) {
-        MyTextField txtOasisMail = new MyTextField("OasisMail", "/view/icons/mail.png");
+        txtOasisMail = new MyTextField("OasisMail", "hotelproject/src/main/java/view/icons/mail.png");
 
         DocumentListener listener = new DocumentListener() {
             @Override
@@ -108,34 +109,42 @@ public class ReceptionistsManagement extends UserManagement {
                     txtOasisMail.setText("");
                     return;
                 }
-                txtOasisMail.setText(name + lastName + "@Oasis.dz");
+                String oasisMail=name + lastName ;
+                User rs;
+                rs=Controller.getUserFromModel("Workers","OasisMail",(oasisMail+Controller.DOMAIN_RECEPTIONIST));
+                if (rs==null){
+                    txtOasisMail.setText((oasisMail+Controller.DOMAIN_RECEPTIONIST));
+                }else{
+                    txtOasisMail.setText((oasisMail+random.nextInt(100)+Controller.DOMAIN_RECEPTIONIST));
+                }
             }
         };
 
         // Add document listener to update Oasis email dynamically
         txtName.getDocument().addDocumentListener(listener);
         txtLastName.getDocument().addDocumentListener(listener);
-        txtOasisMail.setEditable(false); // Make Oasis email field non-editable
+        txtOasisMail.setEditable(false);
         return txtOasisMail;
     }
 
     // Method to add sample data to the table
     public void add() {
-        // Add sample data rows to the table
-        table.addRow(new Object[] { "Mike", "Bhand", "mikebhand@gmail.com", "MikeBhand@Oasis.dz" });
-        table.addRow(new Object[] { "John", "Doe", "johndoe@example.com", "JohnDoe@oasis.dz", "15 May, 2019" });
-        table.addRow(new Object[] { "Emily", "Smith", "emilysmith@example.com", "EmilySmith@oasis.dz" });
-        table.addRow(new Object[] { "David", "Johnson", "davidjohnson@example.com", "DavidJohnson@oasis.dz" });
-        table.addRow(new Object[] { "Sarah", "Brown", "sarahbrown@example.com", "SarahBrown@oasis.dz" });
-        table.addRow(new Object[] { "Michael", "Williams", "michaelwilliams@example.com",
-                "MichaelWilliams@oasis.dz" });
-        table.addRow(new Object[] { "Jessica", "Taylor", "jessicataylor@example.com",
-                "JessicaTaylor@oasis.dz" });
-        table.addRow(new Object[] { "James", "Anderson", "jamesanderson@example.com",
-                "JamesAnderson@oasis.dz" });
-        table.addRow(new Object[] { "Emma", "Thomas", "emmathomas@example.com", "EmmaThomas@oasis.dz" });
-        table.addRow(new Object[] { "William", "Martinez", "williammartinez@example.com",
-                "WilliamMartinez@oasis.dz" });
-        table.addRow(new Object[] { "Olivia", "Garcia", "oliviagarcia@example.com", "OliviaGarcia@oasis.dz" });
+
+
+//        table.addRow(new Object[] { "Mike", "Bhand", "mikebhand@gmail.com", "MikeBhand@Oasis.dz" });
+//        table.addRow(new Object[] { "John", "Doe", "johndoe@example.com", "JohnDoe@oasis.dz", "15 May, 2019" });
+//        table.addRow(new Object[] { "Emily", "Smith", "emilysmith@example.com", "EmilySmith@oasis.dz" });
+//        table.addRow(new Object[] { "David", "Johnson", "davidjohnson@example.com", "DavidJohnson@oasis.dz" });
+//        table.addRow(new Object[] { "Sarah", "Brown", "sarahbrown@example.com", "SarahBrown@oasis.dz" });
+//        table.addRow(new Object[] { "Michael", "Williams", "michaelwilliams@example.com",
+//                "MichaelWilliams@oasis.dz" });
+//        table.addRow(new Object[] { "Jessica", "Taylor", "jessicataylor@example.com",
+//                "JessicaTaylor@oasis.dz" });
+//        table.addRow(new Object[] { "James", "Anderson", "jamesanderson@example.com",
+//                "JamesAnderson@oasis.dz" });
+//        table.addRow(new Object[] { "Emma", "Thomas", "emmathomas@example.com", "EmmaThomas@oasis.dz" });
+//        table.addRow(new Object[] { "William", "Martinez", "williammartinez@example.com",
+//                "WilliamMartinez@oasis.dz" });
+//        table.addRow(new Object[] { "Olivia", "Garcia", "oliviagarcia@example.com", "OliviaGarcia@oasis.dz" });
     }
 }

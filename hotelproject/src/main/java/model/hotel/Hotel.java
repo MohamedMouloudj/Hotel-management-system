@@ -44,7 +44,8 @@ public class Hotel {
                             continue;
                         }
                         for (Reservation reservation : guest.getReservations().values()) {
-                            reservationRequests.put(reservation.getRoomNumber(), reservation);
+                            if (!reservation.isPaid())
+                                reservationRequests.put(reservation.getRoomNumber(), reservation);
                         }
                     }
                }catch (Database.DBException e){
@@ -60,7 +61,8 @@ public class Hotel {
                             continue;
                         }
                         for (Reservation reservation : guest.getReservations().values()) {
-                            reservationRequests.put(reservation.getRoomNumber(), reservation);
+                            if (!reservation.isPaid())
+                                reservationRequests.put(reservation.getRoomNumber(), reservation);
                         }
                     }
                 }catch (Database.DBException e){

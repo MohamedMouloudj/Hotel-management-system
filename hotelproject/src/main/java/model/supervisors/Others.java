@@ -5,7 +5,7 @@ package model.supervisors;
  * */
 public class Others extends Worker{
     public Others(String firstName, String lastName, String email) {
-        super(firstName, lastName, email, firstName + "123");
+        super(firstName, lastName,email,firstName+ lastName + "123" );
         this.role = Role.OtherEmployee;
     }
 }

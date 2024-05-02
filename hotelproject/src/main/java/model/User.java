@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 
 public abstract class User {
 
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
     protected String firstName;
     protected String lastName;
     protected String password;
@@ -55,21 +53,13 @@ public abstract class User {
         return email;
     }
 
-    public static boolean isValidEmail(String email) {
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
-
-    public static void deleteByEmail(String collectionName, String email) {
-        try{
-            // Retrieving the specified collection
-            MongoCollection<Document> collection = Hotel.hotelDatabase.getCollection(collectionName);
-
-            // Deleting the document with the given email
-            collection.deleteOne(new Document("email", email));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

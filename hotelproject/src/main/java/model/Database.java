@@ -47,7 +47,6 @@ public class Database {
         MongoCollection<Document> roomCollection = retreiveCollectionFromDB("Rooms");
         if (roomCollection == null)
             return;
-        System.out.println("Number of documents in Rooms: " + roomCollection.countDocuments());
         try {
             MongoCursor<Document> cursor = roomCollection.find().iterator();
             while (cursor.hasNext()) {
@@ -72,7 +71,6 @@ public class Database {
         MongoCollection<Document> guestCollection = retreiveCollectionFromDB("Guests");
         if (guestCollection == null)
             return;
-        System.out.println("Number of documents in Guests: " + guestCollection.countDocuments());
         try {
             MongoCursor<Document> cursor = guestCollection.find().iterator();
             while (cursor.hasNext()) {
@@ -105,7 +103,6 @@ public class Database {
         MongoCollection<Document> receptionistCollection = retreiveCollectionFromDB("Workers");
         if (receptionistCollection == null)
             return;
-        System.out.println("Number of documents in Workers: " + receptionistCollection.countDocuments());
         try {
             MongoCursor<Document> cursor = receptionistCollection.find().iterator();
             while (cursor.hasNext()) {
@@ -114,12 +111,14 @@ public class Database {
                     Receptionist receptionist = new Receptionist(workerDocument.getString("firstName"),
                             workerDocument.getString("lastName"),
                             workerDocument.getString("email"));
-                    workers.put(receptionist.getEmail(), receptionist);
+                    receptionist.setOasisMail(workerDocument.getString("OasisMail"));
+                    workers.put(receptionist.getOasisMail(), receptionist);
                 }
                 if (workerDocument.getString("role").equals(Role.OtherEmployee.toString())){
                     Others otherWorkerType = new Others(workerDocument.getString("firstName"),
                             workerDocument.getString("lastName"),
                             workerDocument.getString("email"));
+                    otherWorkerType.setOasisMail(workerDocument.getString("OasisMail"));
                     workers.put(otherWorkerType.getEmail(), otherWorkerType);
                 }
             }
@@ -162,9 +161,6 @@ public class Database {
             for (Map.Entry<String, String> entry : fields.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                if (key.equals("password")) {
-                    value = PasswordHashing.hashPassword(value);
-                }
                 if (key.equals("isAvailable")){
                     document.append(key, Boolean.parseBoolean(value));
                     continue;

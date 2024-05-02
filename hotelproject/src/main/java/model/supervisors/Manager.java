@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 abstract public class Manager extends Worker {
 
-    public Manager(String firstName, String lastName, String password, String email) {
-        super(firstName, lastName, password, email);
+    public Manager(String firstName, String lastName,String email ,String password ) {
+        super(firstName, lastName,password,email);
     }
 
     ////////////////////////////Workers Management////////////////////////////

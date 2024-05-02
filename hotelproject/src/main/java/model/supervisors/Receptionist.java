@@ -1,15 +1,18 @@
 package model.supervisors;
 
+import controllers.Controller;
 import model.Database;
 import model.Guest;
 import org.bson.Document;
+import view.components.table.Table;
+
 import java.util.HashMap;
 import java.util.Objects;
 
 public class Receptionist extends Worker {
 
     public Receptionist(String firstName, String lastName, String email) {
-        super(firstName, lastName, email, firstName + "123");
+        super(firstName, lastName,email,null );
         this.role = Role.RECEPTIONIST;
     }
     public static void addGuestToDataBase(Guest guest){
@@ -25,26 +28,5 @@ public class Receptionist extends Worker {
         guestDocument.put("Reservations", tmpDocument.toJson());
 
         Database.addToDataBase("Guests", guestDocument);
-    }
-    public static void removeGuestFromDataBase(String email){
-        try {
-            Database.removeFromDataBase("Guests", "email", email);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-    public static void updateGuestInDataBase(String email, String key, Object updatedValue){
-        try {
-            if(!Objects.equals(key, "Reservations")){
-                Database.updateFieldInDataBase("Guests", "email", email, key, (String) updatedValue);
-            }
-            if (Objects.equals(key, "Reservations")){
-                HashMap<String, Object> objectHashMap = new HashMap<>((HashMap<String, Object>) updatedValue);
-                Document tmpDocument = new Document(objectHashMap);
-                Database.updateFieldInDataBase("Guests", "email", email, key, tmpDocument.toJson());
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
     }
 }
