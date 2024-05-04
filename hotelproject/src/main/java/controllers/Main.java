@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 public class Main {
         public static Hotel hotel;
 
-
         public static void main(String[] args) {
                 Logger mongoLogger = Logger.getLogger( "org.mongodb.driver" );
                 mongoLogger.setLevel(Level.SEVERE);
