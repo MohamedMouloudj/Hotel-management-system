@@ -13,7 +13,6 @@ public class PanelBorder extends JPanel {
         initComponents();
 
     }
-
     private void initComponents() {
         setOpaque(false);
         GroupLayout layout = new GroupLayout(this);

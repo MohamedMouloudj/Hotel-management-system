@@ -13,7 +13,7 @@ public class TableHeader extends JLabel {
         super(text); // Call JLabel constructor with the provided text
         setOpaque(true); // Ensure that the label is opaque
         setBackground(Color.WHITE); // Set background color to white
-        setFont(new Font("sansserif", 1, 12)); // Set font to sans-serif, bold, size 12
+        setFont(new Font("sansserif", Font.BOLD, 12)); // Set font to sans-serif, bold, size 12
         setForeground(new Color(102, 102, 102)); // Set text color to a shade of gray
         setBorder(new EmptyBorder(10, 0, 10, 0)); // Set an empty border around the label for padding
     }

@@ -1,6 +1,8 @@
 package view.UserGui;
 
+import controllers.Controller;
 import controllers.UserType;
+import model.Guest;
 import view.ImageNotFoundedException;
 
 import view.components.WelcomePage;
@@ -36,11 +38,16 @@ public abstract class UserGui<T extends User> extends JFrame {
 
         /**
          * Constructs a UserGui instance for a given user.
-         *
          * @param user the user object for which the GUI is being created
          */
         public UserGui(T user) {
                 this.user = user;
+        }
+
+        /**
+         * Initialize the GUI components
+         * */
+        public void init() {
                 initializeComponents(); // Initialize the GUI components
                 setupPanels(); // Set up the form panels
         }
@@ -65,25 +72,15 @@ public abstract class UserGui<T extends User> extends JFrame {
          */
         private void setupPanels() {
                 panelMap = getPanels(); // Get the map of form panels
+                if (user instanceof Guest)
+                        Controller.setActivePanel(mainContentPanel,new WelcomePage(UserType.GUEST)); // Set the welcome page as the default panel
                 sideMenu.initMoving(UserGui.this); // Initialize the side menu movement
-                sideMenu.addEventMenuSelected(index -> setActivePanel(panelMap.get(index))); // Add event listener
+                sideMenu.addEventMenuSelected(index -> Controller.setActivePanel(mainContentPanel,panelMap.get(index))); // Add event listener
                                                                                                 // for side menu selection
         }
 
         /**
-         * Sets the active panel in the main content area.
-         *
-         * @param panel the panel to be displayed
-         */
-        private void setActivePanel(JComponent panel) {
-                mainContentPanel.removeAll(); // Remove all existing components from the main content panel
-                mainContentPanel.add(panel); // Add the new panel
-                mainContentPanel.repaint(); // Repaint the main content panel
-                mainContentPanel.revalidate(); // Revalidate the layout of the main content panel
-        }
-
-        /**
-         * Initializes the GUI components.
+         * Initializes the GUI components for this frame.
          */
         private void initializeComponents() {
                 initializeMainPanels(); // Initialize the main panels
@@ -158,7 +155,6 @@ public abstract class UserGui<T extends User> extends JFrame {
         private void setApplicationProperties() {
                 setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Set the default close operation to exit the //
                 setResizable(true); // Set the frame to be non-resizable
-                setLocationRelativeTo(null); // Center the frame on the screen
                 try {
                         ImageIcon icon = new ImageIcon(PROGRAM_ICON_PATH);
                         ImageNotFoundedException.imageNotFound(icon);
@@ -167,8 +163,10 @@ public abstract class UserGui<T extends User> extends JFrame {
                         System.out.println(e.getMessage());
                         e.printStackTrace();
                 }
-                setSize(1200, 700); // Set the size of the frame
+                setTitle("Oasis Hotel");
+                setPreferredSize(new Dimension(1200,700)); // Set the size of the frame
                 pack();
+                setLocationRelativeTo(null); // Center the frame on the screen
         }
 
         /**

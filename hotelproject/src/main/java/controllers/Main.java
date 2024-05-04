@@ -16,10 +16,10 @@ public class Main {
                 mongoLogger.setLevel(Level.SEVERE);
                 LogInForm.runForm(); //(1st step)
                 // TODO: After login result, decide which UI to show and which what type of connected users to be passed to Hotel instance
-                Manager.addRoom(RoomType.Standard,true, 9000);
-                Manager.addRoom(RoomType.Double,true, 12000);
-                Manager.addRoom(RoomType.Suite,false, 18000);
-                Manager.addRoom(RoomType.Standard,true, 25000);
+//                Manager.addRoom(RoomType.Family,true, 9000);
+//                Manager.addRoom(RoomType.Double,true, 12000);
+//                Manager.addRoom(RoomType.Suite,false, 18000);
+//                Manager.addRoom(RoomType.Standard,true, 25000);
         }
 }
 

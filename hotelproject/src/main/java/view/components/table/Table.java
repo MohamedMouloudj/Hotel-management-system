@@ -2,7 +2,7 @@ package view.components.table;
 
 import java.awt.Color;
 import java.awt.Component;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -52,8 +52,9 @@ public class Table extends JTable {
         tableModel.addRow(rowData); // Add row to the table model
     }
 
-    // Method to delete a row from the table (Not implemented yet)
-    public void deleteRow() {
-        // To be implemented
+    // Method to delete a row from the table
+    public void deleteRow(int i) {
+        DefaultTableModel tableModel=(DefaultTableModel) getModel();
+        tableModel.removeRow(i);
     }
 }

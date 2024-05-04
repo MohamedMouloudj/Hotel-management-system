@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import javax.swing.JPanel;
 
 import controllers.Controller;
+import controllers.UserType;
 import model.supervisors.Receptionist;
 import model.supervisors.Role;
 import view.UserMangementGui.GuestManagement;
@@ -17,6 +18,7 @@ public class ReceptionistGui extends UserGui<Receptionist> {
 
     public ReceptionistGui(Receptionist user) {
         super(user);
+        super.init();
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ReceptionistGui extends UserGui<Receptionist> {
 
         HashMap<Integer, JPanel> panelMap = new HashMap<>();
 
-        ProfileUi profile = new ProfileUi();
+        ProfileUi profile = new ProfileUi(UserType.RECEPTIONIST);
         profile.addFirstName(user.getFirstName());
         profile.addLastName(user.getLastName());
         profile.addEmail(user.getEmail());

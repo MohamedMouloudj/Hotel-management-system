@@ -1,5 +1,7 @@
 package view.components;
 
+import controllers.Controller;
+import controllers.UserType;
 import model.supervisors.Receptionist;
 import model.supervisors.Role;
 import net.miginfocom.swing.MigLayout;
@@ -11,27 +13,29 @@ import java.awt.event.ActionListener;
 
 public class ProfileUi extends JPanel {
     private JPanel container;
-    private JLabel Email;
+    private JLabel emailLabel;
+    private JLabel emailLabelData;
+    private String email;
     private JLabel firstNameLabel;
+    private JLabel firstNameLabelData;
     private String firstName;
     private JLabel lastNameLabel;
     private String lastName;
-    private JLabel firstNameLabelData;
     private JLabel lastNameLabelData;
-    private JLabel emailLabel;
+    protected UserType userType;
     private OurButton editButton = new OurButton("Edit");
     private ProfileEdit editProfile = new ProfileEdit();
 
-    public ProfileUi() {
+    public ProfileUi(UserType userType) {
+        this.userType=userType;
         initComponents();
     }
 
     private void initComponents() {
-
         container = new JPanel();
         lastNameLabel = new JLabel();
         firstNameLabel = new JLabel();
-        Email = new JLabel();
+        emailLabel = new JLabel();
 
         editButton.setButtonBgColor(new Color(0xC0C0C0));
         editButton.setForeground(Color.BLACK);
@@ -66,10 +70,12 @@ public class ProfileUi extends JPanel {
         lastNameLabel.setText("Last name:");
         container.add(lastNameLabel, "cell 0 1");
 
-        Email.setFont(new Font("Arial", Font.BOLD, 12)); // NOI18N
-        Email.setHorizontalAlignment(SwingConstants.LEFT);
-        Email.setText("Email:");
-        container.add(Email, "cell 0 2");
+        if (userType!=UserType.GUEST){
+            emailLabel.setFont(new Font("Arial", Font.BOLD, 12)); // NOI18N
+            emailLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            emailLabel.setText("Email:");
+            container.add(emailLabel, "cell 0 2");
+        }
 
         container.add(editButton, "cell 0 4,alignx center,spanx 2,gapy 10");
 
@@ -95,17 +101,17 @@ public class ProfileUi extends JPanel {
     }
 
     public void addEmail(String email) {
-        emailLabel = new JLabel();
-        emailLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        emailLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        emailLabel.setText(email);
-        container.add(emailLabel, "cell 1 2");
+        this.email = email;
+        emailLabelData = new JLabel();
+        emailLabelData.setFont(new Font("Arial", Font.PLAIN, 12));
+        emailLabelData.setHorizontalAlignment(SwingConstants.LEFT);
+        emailLabelData.setText(email);
+        container.add(emailLabelData, "cell 1 2");
     }
 
     public void updateFirstName(String firstName) {
         this.firstName = firstName;
         firstNameLabelData.setText(firstName);
-        Receptionist.updateGuestInDataBase(this.emailLabel.getText(), "firstName", firstName);
         revalidate();
         repaint();
     }
@@ -113,7 +119,12 @@ public class ProfileUi extends JPanel {
     public void updateLastName(String lastName) {
         this.lastName = lastName;
         lastNameLabelData.setText(lastName);
-        Receptionist.updateGuestInDataBase(this.emailLabel.getText(), "lastName", lastName);
+        revalidate();
+        repaint();
+    }
+    public void updateEmail(String email) {
+        this.email = email;
+        emailLabelData.setText(email);
         revalidate();
         repaint();
     }
@@ -139,16 +150,29 @@ public class ProfileUi extends JPanel {
     protected JPanel getContainer() {
         return container;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
 }
 
 class ProfileEdit extends JPanel {
     private JLabel FirstName;
     private JLabel LastName;
+    private JLabel Email;
     private OurButton confirm = new OurButton("Confirm");
     private OurButton cancel = new OurButton("Cancel");
-
     private JTextField firstNameField;
     private JTextField lastNameField;
+    private JTextField emailField;
 
     ProfileEdit() {
         initComponents();
@@ -158,36 +182,58 @@ class ProfileEdit extends JPanel {
 
         LastName = new JLabel();
         FirstName = new JLabel();
+        Email = new JLabel();
 
         confirm.setButtonBgColor(new Color(0xC0C0C0));
         confirm.setButtonTxtColor(Color.BLACK);
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean isUpdated = false;
                 Message msg = new Message();
-                ProfileUi profilePanel = (ProfileUi) getParent();
+                ProfileUi profilePanel= (ProfileUi) getParent();
+                String firstName=firstNameField.getText();
+                String lastName=lastNameField.getText();
+                String email="";
+                if (profilePanel.userType!=UserType.GUEST)
+                    email=emailField.getText();
+                boolean isUpdated=false;
                 try {
-                    if (firstNameField.getText().isEmpty() && lastNameField.getText().isEmpty()) {
-                        throw new InputException("Please fill at least one field");
-                    }
-                    if (!firstNameField.getText().isEmpty()) {
-                        profilePanel.updateFirstName(firstNameField.getText());
+                    if (!firstName.isEmpty()) {
+                        if (profilePanel.userType==UserType.GUEST){
+                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"firstName",firstName);
+                        }else{
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"firstName",firstName);
+                        }
+                        isUpdated=true;
                         firstNameField.setText("");
-                        isUpdated = true;
+                        profilePanel.updateFirstName(firstName);
                     }
-                    if (!lastNameField.getText().isEmpty()) {
-                        profilePanel.updateLastName(lastNameField.getText());
+                    if (!lastName.isEmpty()) {
+                        if (profilePanel.userType==UserType.GUEST){
+                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"lastName",lastName);
+                        }else{
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"lastName",lastName);
+                        }
+                        isUpdated=true;
                         lastNameField.setText("");
-                        isUpdated = true;
+                        profilePanel.updateLastName(lastName);
                     }
-                } catch (InputException ex) {
+                    if (!email.isEmpty()) {
+                        if (profilePanel.userType!=UserType.GUEST){
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"email",email);
+                        }
+                        isUpdated=true;
+                        emailField.setText("");
+                        profilePanel.updateEmail(email);
+                    }
+                    if (!isUpdated)
+                        throw new Exception("Please fill at least one field");
+                } catch (Exception ex){
                     msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), profilePanel, null);
                 }
-                if (isUpdated) {
+                if (isUpdated)
                     msg.displayMessage(Message.MessageType.SUCCESS, "Profile updated successfully",
-                            profilePanel, null);
-                }
+                        profilePanel, null);
                 profilePanel.removeAll();
                 profilePanel.add(profilePanel.getContainer());
                 profilePanel.revalidate();
@@ -203,6 +249,8 @@ class ProfileEdit extends JPanel {
                 profilePanel.add(profilePanel.getContainer());
                 firstNameField.setText("");
                 lastNameField.setText("");
+                if (profilePanel.userType!=UserType.GUEST)
+                    emailField.setText("");
                 profilePanel.revalidate();
                 profilePanel.repaint();
             }
@@ -229,16 +277,20 @@ class ProfileEdit extends JPanel {
         lastNameField.setPreferredSize(new Dimension(100, 30));
         add(lastNameField, "cell 1 1");
 
+        if(Controller.getUser() instanceof Receptionist){
+            Email.setFont(new Font("Arial", Font.BOLD, 12)); // NOI18N
+            Email.setHorizontalAlignment(SwingConstants.LEFT);
+            Email.setText("Email:");
+            add(Email, "cell 0 2");
+            emailField = new JTextField(15);
+            emailField.setPreferredSize(new Dimension(100, 30));
+            add(emailField, "cell 1 2");
+        }
+
         JPanel buttonsContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,
                 5));
         buttonsContainer.add(confirm);
         buttonsContainer.add(cancel);
         add(buttonsContainer, "cell 0 3,alignx center,spanx 2");
-    }
-}
-
-class InputException extends Exception {
-    public InputException(String message) {
-        super(message);
     }
 }

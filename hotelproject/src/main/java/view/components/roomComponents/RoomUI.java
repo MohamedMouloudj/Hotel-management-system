@@ -80,7 +80,6 @@ public class RoomUI extends JPanel {
         System.out.println("selected date " + checkIn.getDate());
 
 
-
         /////check out date
         JXDatePicker checkOut = new JXDatePicker();
 
@@ -144,7 +143,7 @@ public class RoomUI extends JPanel {
             // Show the RoomsPanel again
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
             JPanel rooms = (JPanel) this.getParent();
-            rooms.add(roomsPanel.filter , "center");
+//            roomsPanel.add(roomsPanel.filter , "center");
             for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof RoomOnList) {
                     rooms.add(component , "center");

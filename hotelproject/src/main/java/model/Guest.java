@@ -1,6 +1,7 @@
 package model;
 
 import controllers.OurDate;
+import controllers.PasswordHashing;
 import model.hotel.Reservation;
 import model.hotel.RoomType;
 
@@ -49,5 +50,13 @@ public class Guest extends User {
 
     public void addReservation(Reservation reservation) {
         reservations.put(reservation.getRoomNumber(), reservation);
+    }
+
+    @Override
+    public String toString() {
+        return "Guest{" +
+                "reservations=" + reservations +
+                super.toString() +
+                '}';
     }
 }

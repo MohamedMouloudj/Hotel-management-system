@@ -1,15 +1,13 @@
 package model.supervisors;
 
+import controllers.PasswordHashing;
 import model.User;
 
 public abstract class Worker extends User {
-
     protected Role role;
-    private final String domain = "@Oasis.dz";
     private String oasisMail;
-    public Worker(String firstName, String lastName, String password, String email) {
-        super(firstName, lastName, password, email);
-        this.oasisMail = firstName + lastName + domain;
+    public Worker(String firstName, String lastName, String email,String password ) {
+        super(firstName, lastName, email, password);
     }
 
     public String getOasisMail() {
@@ -25,4 +23,12 @@ public abstract class Worker extends User {
         return role;
     }
 
+    @Override
+    public String toString() {
+        return "Worker{" +
+                "role=" + role +
+                ", oasisMail='" + oasisMail + '\'' +
+                super.toString() +
+                '}';
+    }
 }
