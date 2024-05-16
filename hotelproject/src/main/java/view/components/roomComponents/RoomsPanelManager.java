@@ -5,33 +5,46 @@ import net.miginfocom.swing.MigLayout;
 import view.components.OurButton;
 import view.components.items.MyTextField;
 import view.components.sacrollBar.ScrollBar;
+import view.components.table.Table;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.image.Kernel;
-import java.util.HashMap;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-public class RoomsPanelManager extends JPanel {
+public  class  RoomsPanelManager extends JPanel {
+
+    protected Table table;
+    public String[] getColumnNames() {
+        return new String[] { "RoomNumber", "RoomType", "Available" };
+    }
+
     /**
      * LinkedHashMap to hold the room management panels (room management panel contains: a panel to manipulate room data and a table)
      * */
+
     private final LinkedHashMap<String, JPanel> roomsManagements;
     /**
      * Represents the big Panel that holds all four room categories.
      * */
-    public RoomsPanelManager() {
+    public RoomsPanelManager(){
         setLayout(new MigLayout("wrap 1, insets 20 0 20 0,center", "push[100%,fill]push", "push[]push"));
         setBackground(new Color(242, 242, 242));
         roomsManagements = new LinkedHashMap<>();
         createRoomManagementPanel();
-
     }
 
 
     private void createRoomManagementPanel() {
+
         JPanel panelToScroll = new JPanel(new MigLayout("wrap 1,center", "push[95%,fill]push", "20[]10[]20"));
+        // Creating scroll pane for the table
+
+
         for (RoomType roomType : RoomType.values()){
             JPanel roomPanel = new JPanel(new MigLayout("wrap 3, insets 10", "[][fill][fill]"));
             Border border = BorderFactory.createTitledBorder(roomType.toString() + " rooms");
@@ -69,7 +82,7 @@ public class RoomsPanelManager extends JPanel {
 //        // Creating and configuring add button
             OurButton addButton = new OurButton("Add");
             addButton.setButtonBgColor(new Color(0, 112, 255));
-//        addButton.addActionListener(addActionListener());
+      //      addButton.addActionListener(addActionListener(roomPriceInput ,roomAvailabilityCheckBox));
             buttonPanel.add(addButton, "w 50%, h 34");
 //
 //        // Creating and configuring update button
@@ -81,7 +94,7 @@ public class RoomsPanelManager extends JPanel {
 //        // Creating and configuring delete button
             OurButton deleteButton = new OurButton("Delete");
             deleteButton.setButtonBgColor(new Color(0xED1B24));
-//        deleteButton.addActionListener(deleteActionListener());
+//          deleteButton.addActionListener(deleteActionListener());
             buttonPanel.add(deleteButton, "w 50%, h 34");
 
             buttonPanel.setBackground(Color.WHITE);
@@ -91,12 +104,77 @@ public class RoomsPanelManager extends JPanel {
             roomPanel.add(buttonPanel, "center,pushx, growx");
 
             roomPanel.setBackground(Color.WHITE);
+            ////////////////////////table UI////////////////////////
+
+            JScrollPane spTable = new JScrollPane();
+            // Creating table
+            table = new Table();
+
+
+            // Setting border for the scroll pane
+            spTable.setBorder(null);
+
+            // Setting model for the table
+            table.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
+                private final boolean[] canEdit = new boolean[getColumnNames().length];
+                {
+                    Arrays.fill(canEdit, false);
+                }
+                @Override
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit[columnIndex];
+                }
+            });
+            // Setting table view in the scroll pane
+            spTable.setViewportView(table);
+
+
+
+            // Setting vertical scrollbar for the table
+            spTable.setVerticalScrollBar(new ScrollBar());
+            // Setting background color for the vertical scrollbar and viewport
+            spTable.getVerticalScrollBar().setBackground(Color.WHITE);
+            spTable.getViewport().setBackground(Color.WHITE);
+
+            // Setting corner panel color to match background
+            JPanel corner = new JPanel();
+            corner.setBackground(Color.WHITE);
+            spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner);
+            spTable.setBorder(BorderFactory.createEmptyBorder());
+
+
 
             //Adding extra panel to add a Table later
             JPanel container=new JPanel();
             container.setLayout(new MigLayout("wrap 1,center","[grow,fill]","[grow,fill]"));
             container.setBackground(Color.WHITE);
+
+            //button to hide the table
+            OurButton HideTableButton = new OurButton("hide");
+            HideTableButton.setButtonBgColor(new Color(0, 112, 255));
+            HideTableButton.addActionListener(
+                    new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if(spTable.isVisible()){
+                                spTable.setVisible(false);
+                                HideTableButton.setText("Show");
+                                container.remove(spTable);
+                                container.revalidate();
+                                container.repaint();
+                            }else{
+                                spTable.setVisible(true);
+                                container.add(spTable, "push, grow, gap 60 10 10 10");
+                                HideTableButton.setText("Hide");
+
+                            }
+                        }
+                    }
+            );
+
+
             container.add(roomPanel,"push, grow, gap 10 10 10 10");
+            container.add(HideTableButton , "align center , pushx, growx , w 50%");
 
             panelToScroll.add(container, "push, grow");
             roomsManagements.put(roomType.toString(), container);
@@ -116,10 +194,33 @@ public class RoomsPanelManager extends JPanel {
         add(scrollPane, "push, grow");
     }
 
-    private void addTablesToRoomsManagements(){
-        for (String roomType : roomsManagements.keySet()){
-            JPanel roomManagement = roomsManagements.get(roomType);
-            // TODO: Add table to roomManagement
-        }
-    }
+//    public ActionListener addActionListener(MyTextField roomPriceInput , JCheckBox roomAvailabilityCheckBox) {
+//        return new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                try {
+//                    String roomPrice =roomPriceInput.getText();
+//                    boolean roomAvailability = roomAvailabilityCheckBox.isSelected();
+//
+//                    // Create a new row with the room number, price, and availability
+//                    Object[] newRow = new Object[] {table.getRowCount() + 1, roomPrice, roomAvailability};
+//
+//                    // Add the new row to the table's model
+//                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+//                    model.addRow(newRow);
+//                } catch (Exception ex) {
+//
+//                }
+//            }
+//        };
+
+//    private void addTablesToRoomsManagements(){
+//        for (String roomType : roomsManagements.keySet()){
+//            JPanel roomManagement = roomsManagements.get(roomType);
+//            // TODO: Add table to roomManagement
+//
+//        }
+//    }
+
+
 }

@@ -1,17 +1,17 @@
 package view.UserMangementGui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import controllers.Controller;
+import model.User;
+import view.components.Message;
+import view.components.items.MyTextField;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
-import controllers.Controller;
-import model.User;
-import model.supervisors.Receptionist;
-import view.components.Message;
-import view.components.items.MyTextField;
 
 public class ReceptionistsManagement extends UserManagement {
     private MyTextField txtOasisMail;
@@ -53,7 +53,7 @@ public class ReceptionistsManagement extends UserManagement {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Implementation for deleting a receptionist
-                System.out.println(12);
+
                 throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
             }
         };
