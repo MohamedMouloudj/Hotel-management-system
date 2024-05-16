@@ -1,8 +1,6 @@
 package controllers;
 
 import model.hotel.Hotel;
-import model.hotel.RoomType;
-import model.supervisors.Manager;
 import view.login.loginMain.LogInForm;
 
 import java.util.logging.Level;
@@ -10,7 +8,6 @@ import java.util.logging.Logger;
 
 public class Main {
         public static Hotel hotel;
-
         public static void main(String[] args) {
                 Logger mongoLogger = Logger.getLogger( "org.mongodb.driver" );
                 mongoLogger.setLevel(Level.SEVERE);
