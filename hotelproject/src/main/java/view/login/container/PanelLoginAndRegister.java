@@ -63,25 +63,8 @@ public class PanelLoginAndRegister extends JPanel{
         register.add(txtEmail, "w 70%");
         register.add(txtPass, "w 70%");
         btnRegister.setBackground(new Color(0x1E90FF));
-        btnRegister.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                String name = txtName.getText();
-                String lastName = txtLastName.getText();
-                String email = txtEmail.getText();
-                String password = String.valueOf(txtPass.getPassword());
-                try {
-                    Controller.checkRegistration(name, lastName, email, password);
-                    msg.displayMessage(Message.MessageType.SUCCESS, "Registered successfully", bg, layout);
-                } catch (Exception exception) {
-                    msg.displayMessage(MessageType.ERROR, exception.getMessage(), bg, layout);
-                }
-                txtName.setText("");
-                txtLastName.setText("");
-                txtEmail.setText("");
-                txtPass.setText("");
-            }
-        });
+
+        Controller.checkRegistration(btnRegister,txtName, txtLastName, txtEmail, txtPass, msg, bg, layout);
 
         // Add the registration button to the register panel
         register.add(btnRegister, "w 40%, h 40");
@@ -113,26 +96,17 @@ public class PanelLoginAndRegister extends JPanel{
         btnRegisterForget.setFocusPainted(false); // Remove focus border
         btnRegisterForget.setBorderPainted(false); // Remove border
         btnRegisterForget.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // Set cursor
-        btnRegisterForget.addActionListener(e -> Controller.launchForgotPasswordUI(PanelLoginAndRegister.this));
-        login.add(btnRegisterForget); // Add button to the login panel
 
+        Controller.launchForgotPasswordUI(btnRegisterForget,PanelLoginAndRegister.this);
+
+        login.add(btnRegisterForget); // Add button to the login panel
         btnLogIn.setBackground(new Color(0x1E90FF));
-        btnLogIn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String email = txtEmail.getText();
-                String password = String.valueOf(txtPass.getPassword());
-                try {
-                    Controller.checkLogin(email, password,bg);
-                } catch (Exception exception) {
-                    msg.displayMessage(MessageType.ERROR, exception.getMessage(), bg, layout); // Display error message
-                }
-            }
-        });
+
+        Controller.checkLogin(btnLogIn,txtEmail, txtPass,msg,bg,layout);
+
         // Add the sign-in button to the login panel
         login.add(btnLogIn, "w 40%, h 40");
     }
-
     public void showRegister(boolean show) {
         register.setVisible(show);
         login.setVisible(!show);

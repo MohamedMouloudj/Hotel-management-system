@@ -152,11 +152,8 @@ public class ForgetPassword extends JPanel {
         panel.add(backToLoginBtn, "center, wrap");
 
 
-
-
         return panel;
     }
-
 
 
     private JPanel createVerificationCodeInputPanel() {

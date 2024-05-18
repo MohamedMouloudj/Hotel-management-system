@@ -20,6 +20,7 @@ public class RoomOnList extends JPanel implements ActionListener {
     private JLabel isAvailableLabel;
     private OurButton bookButton=new OurButton("Book now");
 
+
     public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, boolean available){
 
         this.roomType = roomType;

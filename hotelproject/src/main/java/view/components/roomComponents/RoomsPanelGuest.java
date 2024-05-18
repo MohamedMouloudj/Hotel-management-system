@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class RoomsPanelGuest extends JPanel {
     private JScrollPane scrollPane;
-    private final JPanel panel;
+    protected final JPanel panel;
 
     protected HashMap<String, RoomOnList> rooms = new HashMap<String , RoomOnList>();
     protected Set<String> keys = rooms.keySet(); // get the keys (roomType)

@@ -52,8 +52,13 @@ public class CounterPanel extends JPanel {
         incrementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                counter++;
-                counterLabel.setText(String.valueOf(counter));
+                if(counter <=10) {
+                    counter++;
+                    counterLabel.setText(String.valueOf(counter));
+                    if (counter == 10) {
+                        incrementButton.setEnabled(false);
+                    }
+                }
                 if (!decrementButton.isEnabled()) {
                     decrementButton.setEnabled(true);
                 }

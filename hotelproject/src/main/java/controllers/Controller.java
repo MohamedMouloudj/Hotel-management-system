@@ -6,13 +6,19 @@ import model.Database;
 import model.Guest;
 import model.User;
 import model.hotel.Hotel;
+import model.hotel.Reservation;
 import model.hotel.Room;
 import model.hotel.RoomType;
 import model.supervisors.*;
+import net.miginfocom.swing.MigLayout;
 import org.bson.Document;
+import org.jdesktop.swingx.JXDatePicker;
 import view.UserGui.GuestUi;
 import view.UserGui.ManagerGui;
 import view.UserGui.ReceptionistGui;
+import view.components.Message;
+import view.components.OurButton;
+import view.components.roomComponents.CounterPanel;
 import view.components.roomComponents.RoomOnList;
 import view.components.table.Table;
 import view.login.container.ForgetPassword;
@@ -20,8 +26,11 @@ import view.login.container.ForgetPassword;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,53 +66,87 @@ public class Controller {
         }
     }
 
-    public static void checkRegistration(String name, String lastName, String email, String password) throws AccessAppException {
-        if (name.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            throw new AccessAppException("All the Fields Are Required");
-        } else if (!isValidEmail(email)) {
-            throw new AccessAppException("Invalid Email");
-        } else if (getUserFromModel("Guests", "email", email) != null) {
-            throw new AccessAppException("Email already exists");
-        } else {
-            addGuestFromInputs(name, lastName, email, password);
-        }
-    }
-    public static void checkLogin(String email, String password, JPanel bg)throws AccessAppException{
-        User loginUser;
-        if (email.isEmpty() || password.isEmpty()) {
-            throw new AccessAppException("All the Fields Are Required");
-        } else if (email.equals(MANAGER_EMAIL) && password.equals(MANAGER_PASSWORD)) {
-            setHotelUserAndOpenUI(null);
-            SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
-            return;
-        } else if (!isValidEmail(email)) {
-            throw new AccessAppException("Invalid Email");
-        } else {
-            if (email.endsWith(DOMAIN_RECEPTIONIST)) { // Receptionist
-                loginUser = getUserFromModel("Workers", "OasisMail", email);
-            } else {
-                loginUser = getUserFromModel("Guests", "email", email);
-            }
+    public static void checkRegistration(JButton btnRegister,JTextField nameInput, JTextField lastNameInput, JTextField emailInput, JPasswordField passwordInput,Message msg, JPanel bg, MigLayout layout) {
 
-            if (loginUser == null) {
-                throw new AccessAppException("User not found");
-            } else {
-                String truePassword = loginUser.getPassword();
-                if (!PasswordHashing.verifyPassword(password, truePassword)) {
-                    throw new AccessAppException("Incorrect Password");
-                } else {
-                    setHotelUserAndOpenUI(loginUser);
+        btnRegister.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                String name = nameInput.getText();
+                String lastName = lastNameInput.getText();
+                String email = emailInput.getText();
+                String password = String.valueOf(passwordInput.getPassword());
+                try {
+                    if (name.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                        throw new AccessAppException("All the Fields Are Required");
+                    } else if (!isValidEmail(email)) {
+                        throw new AccessAppException("Invalid Email");
+                    } else if (getUserFromModel("Guests", "email", email) != null) {
+                        throw new AccessAppException("Email already exists");
+                    } else {
+                        addGuestFromInputs(name, lastName, email, password);
+                    }
+                    msg.displayMessage(Message.MessageType.SUCCESS, "Registered successfully", bg, layout);
+                } catch (AccessAppException exception) {
+                    msg.displayMessage(Message.MessageType.ERROR, exception.getMessage(), bg, layout);
                 }
-                SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
+                nameInput.setText("");
+                lastNameInput.setText("");
+                emailInput.setText("");
+                passwordInput.setText("");
             }
-        }
+        });
+
     }
-    public static void launchForgotPasswordUI(Component c){
-        ForgetPassword forgetPasswordPanel = new ForgetPassword();
-        JFrame parentContainer = (JFrame) SwingUtilities.getWindowAncestor(c);
-        parentContainer.setContentPane(forgetPasswordPanel);
-        parentContainer.revalidate();
-        parentContainer.repaint();
+    public static void checkLogin(JButton btn, JTextField emailInput, JPasswordField passwordInput, Message msg, JPanel bg, MigLayout layout)throws RuntimeException{
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User loginUser;
+                String email=emailInput.getText();
+                String password=String.valueOf(passwordInput.getPassword() );
+                try{
+                    if (email.isEmpty() || password.isEmpty()) {
+                        throw new AccessAppException("All the Fields Are Required");
+                    } else if (email.equals(MANAGER_EMAIL) && password.equals(MANAGER_PASSWORD)) {
+                        setHotelUserAndOpenUI(null);
+                        SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
+                        return;
+                    } else if (!isValidEmail(email)) {
+                        throw new AccessAppException("Invalid Email");
+                    } else {
+                        if (email.endsWith(DOMAIN_RECEPTIONIST)) { // Receptionist
+                            loginUser = getUserFromModel("Workers", "OasisMail", email);
+                        } else {
+                            loginUser = getUserFromModel("Guests", "email", email);
+                        }
+
+                        if (loginUser == null) {
+                            throw new AccessAppException("User not found");
+                        } else {
+                            String truePassword = loginUser.getPassword();
+                            if (!PasswordHashing.verifyPassword(password, truePassword)) {
+                                throw new AccessAppException("Incorrect Password");
+                            } else {
+                                setHotelUserAndOpenUI(loginUser);
+                            }
+                            SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
+                        }
+                    }
+                }catch (AccessAppException ex){
+                    msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout); // Display error message
+                }
+            }
+        });
+
+    }
+    public static void launchForgotPasswordUI(JButton btnRegisterForget,Component c){
+        btnRegisterForget.addActionListener(e->{
+            ForgetPassword forgetPasswordPanel = new ForgetPassword();
+            JFrame parentContainer = (JFrame) SwingUtilities.getWindowAncestor(c);
+            parentContainer.setContentPane(forgetPasswordPanel);
+            parentContainer.revalidate();
+            parentContainer.repaint();
+        });
     }
     private static Guest addGuestFromInputs(String firstName, String lastName, String email, String password) {
         Guest guest = new Guest(firstName, lastName, email, PasswordHashing.hashPassword(password));
@@ -127,10 +170,22 @@ public class Controller {
                     }else if (Hotel.getGuests().isEmpty()) {
                        Document guestDoc=Database.findInDataBase(collectionName, researchBy, matchingField);
                           if (guestDoc!=null){
-                              return new Guest(guestDoc.getString("firstName"),
+                              System.out.println("Guest found in DB");
+                              Document reservationsDocument = Document.parse(guestDoc.getString("Reservations"));
+                              // Convert the Document back to a HashMap
+                              HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
+                              // Convert each Object in reservationsHashMap to a Reservation
+                              HashMap<String, Reservation> reservations = new HashMap<>();
+                              for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
+                                  Document reservationDocument = (Document) entry.getValue();
+                                  reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+                              }
+                              Guest guest=new Guest(guestDoc.getString("firstName"),
                                       guestDoc.getString("lastName"),
                                       guestDoc.getString("email"),
                                       guestDoc.getString("password"));
+                                guest.setReservations(reservations);
+                              return guest;
                           }
                     }
             }
@@ -357,6 +412,48 @@ public class Controller {
             }
         }
         return roomsUiList;
+    }
+
+    public static void openBookingUI(OurButton bookButton, double price,
+                                     CounterPanel AdultsCounter , CounterPanel ChildrenCounter,
+                                     JXDatePicker checkIn, JXDatePicker checkOut, JTextField creditCardField,
+                                     JTextField phoneNumberField,Message msg,JPanel bg, MigLayout layout){
+
+        bookButton.addActionListener(e -> {
+            int adults = AdultsCounter.getCount();
+            int children = ChildrenCounter.getCount();
+            String creditCard = creditCardField.getText();
+            String phoneNumber = phoneNumberField.getText();
+            if (checkIn.getDate() == null || checkOut.getDate() == null || creditCardField.getText().isEmpty() || phoneNumberField.getText().isEmpty()){
+                msg.displayMessage(Message.MessageType.ERROR, "Please fill all the data", bg, layout);
+                return;
+            }
+            if(checkIn.getDate().compareTo(checkOut.getDate()) >= 0){
+                msg.displayMessage(Message.MessageType.ERROR, "Check-out date must be after check-in date", bg, layout);
+                return;
+            }
+            if (creditCard.length() != 16 || !creditCard.matches("[0-9]+")){
+                msg.displayMessage(Message.MessageType.ERROR, "Invalid credit card number", bg, layout);
+                return;
+            }
+            if (phoneNumber.length() != 10 || !phoneNumber.matches("[0-9]+")){
+                msg.displayMessage(Message.MessageType.ERROR, "Invalid phone number", bg, layout);
+                return;
+            }
+            //this calculated price will have a different value depending on the children number and adults number
+//            double time= (double) (checkOut.getDate().getTime() - checkIn.getDate().getTime()) /(1000*60*60*24);//time in days
+            double CalculatedPrice = (price+ 0.2*adults*price + 0.15*children*price);
+            int response = JOptionPane.showConfirmDialog(null,
+                    "The price is " + CalculatedPrice + " DZD/Night. Do you want to confirm the booking?",
+                    "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (response == JOptionPane.YES_OPTION) {
+                // Handle the booking confirmation here
+                System.out.println("Booking confirmed");
+            } else {
+                System.out.println("Booking cancelled");
+            }
+        });
     }
 
 
