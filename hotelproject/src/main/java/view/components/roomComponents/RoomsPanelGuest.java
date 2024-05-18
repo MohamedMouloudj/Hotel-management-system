@@ -175,7 +175,5 @@ public class RoomsPanelGuest extends JPanel {
 
         add(scrollPane, "grow, growy, push");
 
-
-
     }
 }
