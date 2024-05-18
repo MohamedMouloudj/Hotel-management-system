@@ -21,7 +21,6 @@ public class RoomsPanelGuest extends JPanel {
     protected Set<String> keys = rooms.keySet(); // get the keys (roomType)
     //used a set to avoid duplicates
     protected JPanel filter;
-
     /**
         using the hashmap to index all the rooms by their type
         and then using the combobox to select the room type

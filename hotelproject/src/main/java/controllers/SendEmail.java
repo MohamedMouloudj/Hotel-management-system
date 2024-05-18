@@ -12,19 +12,10 @@ import java.util.Properties;
 public class SendEmail
 {
 
-    //SETUP MAIL SERVER PROPERTIES
-    //DRAFT AN EMAIL
-    //SEND EMAIL
+
 
     Session newSession = null;
     MimeMessage mimeMessage = null;
-//    public static void main(String args[]) throws AddressException, MessagingException, IOException
-//    {
-//        SendEmail mail = new SendEmail();
-//        mail.setupServerProperties();
-//        mail.draftEmail();
-//        mail.sendEmail();
-//    }
 
     public boolean sendEmail(String Email) {
         String fromUser = "hermezabderrahim568@gmail.com";

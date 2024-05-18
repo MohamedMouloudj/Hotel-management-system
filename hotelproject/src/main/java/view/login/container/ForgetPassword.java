@@ -256,11 +256,11 @@ public class ForgetPassword extends JPanel {
 
         //confirm the passwordField label
         JLabel confirmPasswordLabel = new JLabel("confirm your new password");
-        confirmPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18)); // Set font and size
-        confirmPasswordLabel.setForeground(Color.DARK_GRAY); // Set text color
+        confirmPasswordLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        confirmPasswordLabel.setForeground(Color.DARK_GRAY);
 
         // for the password field confirmation
-        JPasswordField confirmPasword = new JPasswordField(25); // 20 columns wide
+        JPasswordField confirmPasword = new JPasswordField(25);
         confirmPasword.setPreferredSize(new Dimension(confirmPasword.getPreferredSize().width, 40)); // Set height
         confirmPasword.setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
         confirmPasword.setForeground(Color.DARK_GRAY); // Set text color
@@ -275,9 +275,10 @@ public class ForgetPassword extends JPanel {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.print(arePasswordsMatching(passwordField, confirmPasword, panel, layout));
                 if (arePasswordsMatching(passwordField, confirmPasword, panel, layout)) {
                     System.out.print("the email after :" + userEmail);
-                    String email =  userEmail;
+                    String email = userEmail;
                     String newPassword = passwordField.getText();
                     try {
                         Database.updateFieldInDataBase("Guests", "email", email, "password", PasswordHashing.hashPassword(newPassword));
@@ -286,14 +287,15 @@ public class ForgetPassword extends JPanel {
                         dbException.printStackTrace();
                         msg.displayMessage(Message.MessageType.ERROR, "Failed to update password", panel, layout);
                     }
+
+
+                    JFrame parentContainer = (JFrame) SwingUtilities.getWindowAncestor(ForgetPassword.this);
+                    parentContainer.setVisible(false); // Hide the current JFrame
+
+                    // Ensure LogInForm is a JFrame
+                    LogInForm loginFormFrame = new LogInForm();
+                    loginFormFrame.setVisible(true); // Show the other JFrame
                 }
-
-                JFrame parentContainer = (JFrame) SwingUtilities.getWindowAncestor(ForgetPassword.this);
-                parentContainer.setVisible(false); // Hide the current JFrame
-
-                // Ensure LogInForm is a JFrame
-                LogInForm loginFormFrame = new LogInForm();
-                loginFormFrame.setVisible(true); // Show the other JFrame
 
             }
 
