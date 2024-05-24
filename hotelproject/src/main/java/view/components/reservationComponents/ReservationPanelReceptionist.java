@@ -12,10 +12,7 @@ import java.util.Arrays;
 public class ReservationPanelReceptionist extends JPanel {
     private Table requestsTable;
     private Table reservationsTable;
-    private String[] getRequestsColumnNames() {
-        return new String[] { "email","phone", "checkIn", "checkOut","adults", "children", "price" };
-    }
-    private String[] getReservationsColumnNames() {
+    private String[] getColumnNames() {
         return new String[] { "roomNumber","email","phone", "checkIn", "checkOut","adults", "children", "price" };
     }
     public ReservationPanelReceptionist(){
@@ -25,8 +22,8 @@ public class ReservationPanelReceptionist extends JPanel {
 
         JScrollPane scrollPaneRequests = new JScrollPane();
         requestsTable = new Table();
-        requestsTable.setModel(new DefaultTableModel(new Object[][] {}, getRequestsColumnNames()) {
-            private final boolean[] canEdit = new boolean[getRequestsColumnNames().length];
+        requestsTable.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
+            private final boolean[] canEdit = new boolean[getColumnNames().length];
             {
                 Arrays.fill(canEdit, false);
             }
@@ -53,8 +50,8 @@ public class ReservationPanelReceptionist extends JPanel {
         JScrollPane scrollPaneReservations = new JScrollPane();
         reservationsTable = new Table();
         //TODO: use Controller.initTableResReq("Reservations",getReservationsColumnNames(),reservationsTable);
-        reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getReservationsColumnNames()) {
-            private final boolean[] canEdit = new boolean[getReservationsColumnNames().length];
+        reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
+            private final boolean[] canEdit = new boolean[getColumnNames().length];
             {
                 Arrays.fill(canEdit, false);
             }

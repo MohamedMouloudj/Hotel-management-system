@@ -26,7 +26,7 @@ public class Reservation {
         this.roomNumber = roomNumber;
         this.guestEmail = guestEmail;
         this.checkInDate = checkInDate;
-        calculateCutoffDays();
+//        calculateCutoffDays();
         this.checkOutDate = checkOutDate;
         this.adults = adults;
         this.children = children;
@@ -60,12 +60,12 @@ public class Reservation {
 
     public void setCheckInDate(OurDate checkInDate) {
         this.checkInDate = checkInDate;
-        calculateCutoffDays();
+//        calculateCutoffDays();
 
     }
     public void setCheckOutDate(OurDate checkOutDate) {
         this.checkOutDate = checkOutDate;
-        calculateCutoffDays();
+//        calculateCutoffDays();
     }
 
     public String getReservationId() {
@@ -80,14 +80,14 @@ public class Reservation {
         this.totalCost = totalCost;
     }
 
-    private void calculateCutoffDays(){
-        OurDate today = new OurDate();
-        try {
-            cutOffDays = OurDate.getDaysBetweenDates(today, checkInDate) * CUTOFF_PERCENTAGE;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    private void calculateCutoffDays(){
+//        OurDate today = new OurDate();
+//        try {
+//            cutOffDays = OurDate.getDaysBetweenDates(today, checkInDate) * CUTOFF_PERCENTAGE;
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * @return the number of days (20%) before the check in date that the guest can
