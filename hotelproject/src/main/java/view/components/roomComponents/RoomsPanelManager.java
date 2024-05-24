@@ -6,7 +6,6 @@ import view.components.OurButton;
 import view.components.items.MyTextField;
 import view.components.sacrollBar.ScrollBar;
 import view.components.table.Table;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
@@ -150,7 +149,7 @@ public  class  RoomsPanelManager extends JPanel {
             container.setBackground(Color.WHITE);
 
             //button to hide the table
-            OurButton HideTableButton = new OurButton("hide");
+            OurButton HideTableButton = new OurButton("Show");
             HideTableButton.setButtonBgColor(new Color(0, 112, 255));
             HideTableButton.addActionListener(
                     new ActionListener() {
@@ -158,14 +157,14 @@ public  class  RoomsPanelManager extends JPanel {
                         public void actionPerformed(ActionEvent e) {
                             if(spTable.isVisible()){
                                 spTable.setVisible(false);
-                                HideTableButton.setText("Show");
+                                HideTableButton.setText("Hide");
                                 container.remove(spTable);
                                 container.revalidate();
                                 container.repaint();
                             }else{
                                 spTable.setVisible(true);
                                 container.add(spTable, "push, grow, gap 60 10 10 10");
-                                HideTableButton.setText("Hide");
+                                HideTableButton.setText("Show");
 
                             }
                         }

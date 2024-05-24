@@ -12,6 +12,7 @@ import model.supervisors.Role;
 import view.UserMangementGui.GuestManagement;
 import view.components.pagePanel;
 import view.components.ProfileUi;
+import view.components.reservationComponents.ReservationPanelReceptionist;
 import view.components.roomComponents.RoomsPanelGuest;
 
 public class ReceptionistGui extends UserGui<Receptionist> {
@@ -48,9 +49,8 @@ public class ReceptionistGui extends UserGui<Receptionist> {
 
         panelMap.put(1, roomsPanel);
         panelMap.put(2, new GuestManagement());
-        panelMap.put(3, new pagePanel("Requests"));
+        panelMap.put(3, new ReservationPanelReceptionist());
         panelMap.put(4, profile);
-
 
         return panelMap;
     }

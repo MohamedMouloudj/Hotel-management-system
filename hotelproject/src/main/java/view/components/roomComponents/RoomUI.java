@@ -1,8 +1,10 @@
 package view.components.roomComponents;
 
+import controllers.Controller;
 import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
+import view.components.Message;
 import view.components.OurButton;
 
 import javax.swing.*;
@@ -12,10 +14,12 @@ import java.text.SimpleDateFormat;
 
 public class RoomUI extends JPanel {
     private final double imageWidth = 45;
+    private final Message msg = new Message();
+    private final MigLayout layout=new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]");
 
     RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price){
 
-        setLayout(new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]"));
+        setLayout(layout);
         setBackground(new Color(242, 242, 242));
 
         //// room photo ////
@@ -77,8 +81,6 @@ public class RoomUI extends JPanel {
         checkIn.setPreferredSize(new Dimension(200, 30)); // Set preferred
         infoCollect.add(checkIn);
 
-        System.out.println("selected date " + checkIn.getDate());
-
 
         /////check out date
         JXDatePicker checkOut = new JXDatePicker();
@@ -87,8 +89,6 @@ public class RoomUI extends JPanel {
         checkOut.setBorder(null);
         checkOut.setPreferredSize(new Dimension(200, 30));
         infoCollect.add(checkOut);
-        System.out.println("selected date " + checkOut.getDate());
-
 
 
 // Create JLabel and JTextField for phone number
@@ -142,33 +142,23 @@ public class RoomUI extends JPanel {
             this.removeAll();
             // Show the RoomsPanel again
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
-            JPanel rooms = (JPanel) this.getParent();
-//            roomsPanel.add(roomsPanel.filter , "center");
+            roomsPanel.panel.removeAll();
+
             for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof RoomOnList) {
-                    rooms.add(component , "center");
+                    roomsPanel.panel.add(component , "center");
                 }
             }
             // Revalidate and repaint the RoomsPanel for layout updates
-            roomsPanel.revalidate();
+            roomsPanel.panel.revalidate();
+            roomsPanel.panel.repaint();
             roomsPanel.repaint();
+            roomsPanel.revalidate();
         });
 
          roomDetailedInfo.add(backButton ,"wrap");
 
-        bookButton.addActionListener(e -> {
-            //this calculated price will have a different value depending on the date children and adults
-            double CalculatedPrice = price+ 0.2*AdultsCounter.getCount() + 0.15*ChildrenCounter.getCount();//this one to revise
-            int response = JOptionPane.showConfirmDialog(null,
-                    "The price is " + CalculatedPrice + " DZD/Night. Do you want to confirm the booking?",
-                    "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-            if (response == JOptionPane.YES_OPTION) {
-
-            } else {
-                System.out.println("Booking cancelled");
-            }
-        });
+        Controller.openBookingUI(bookButton,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,layout);
 
     }
 
