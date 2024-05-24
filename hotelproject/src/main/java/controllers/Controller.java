@@ -271,6 +271,43 @@ public class Controller {
             e.printStackTrace();
         }
     }
+    /**
+     * initTable, reservations requests version
+     * @param tableType The type of table to be initialized, 1: Requests, 2: Reservations
+     * @param columnNames The names of the columns
+     * @param table The table to be initialized
+     *  */
+    public void initTableResReq(int tableType, String[] columnNames, Table table){
+        try{
+            int index;
+            for (Guest g : Hotel.getGuests().values()) {
+                for (Reservation r : g.getReservations().values()) {
+                    index=0;
+                    Object[] row = new Object[columnNames.length];
+                    if(tableType==2) {
+                        row[index] = r.getRoomNumber();
+                        index++;
+                    }
+                    row[index] = g.getEmail();
+                    index++;
+                    row[index] = r.getPhoneNumber();
+                    index++;
+                    row[index] = r.getCheckInDate();
+                    index++;
+                    row[index] = r.getCheckInDate();
+                    index++;
+                    row[index] = r.getAdults();
+                    index++;
+                    row[index] = r.getChildren();
+                    index++;
+                    row[index] = r.getTotalCost();
+                    table.addRow(row);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     public static void addGuest(String firstName, String lastName, String email,Table table) throws AccessAppException {
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
             throw new AccessAppException("All the Fields Are Required");

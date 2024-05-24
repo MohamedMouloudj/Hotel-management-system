@@ -25,11 +25,11 @@ abstract public class Manager extends Worker {
         workerDocument.put("password", worker.getPassword());
         workerDocument.put("OasisMail", worker.getOasisMail());
         workerDocument.put("role", worker.role.toString());
-        if (worker.role.equals(Role.RECEPTIONIST)) {
-            HashMap<String, Object> objectHashMap = new HashMap<>(((Receptionist) worker).getReservations());
-            Document tmpDocument = new Document(objectHashMap);
-            workerDocument.put("Reservations",tmpDocument.toJson());
-        }
+//        if (worker.role.equals(Role.RECEPTIONIST)) {
+//            HashMap<String, Object> objectHashMap = new HashMap<>(((Receptionist) worker).getReservations());
+//            Document tmpDocument = new Document(objectHashMap);
+//            workerDocument.put("Reservations",tmpDocument.toJson());
+//        }
         Database.addToDataBase("Workers", workerDocument);
     }
     public static void removeWorkerFromDataBase(String OasisEmail) {

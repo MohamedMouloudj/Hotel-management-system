@@ -109,20 +109,20 @@ public class Database {
                 Document workerDocument = cursor.next();
                 if(workerDocument.getString("role").equals(Role.RECEPTIONIST.toString())){
 
-                    Document reservationsDocument = Document.parse(workerDocument.getString("Reservations"));
-
-                    HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
-                    HashMap<String, Reservation> reservations = new HashMap<>();
-                    for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
-                        Document reservationDocument = (Document) entry.getValue();
-                        reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
-                    }
+//                    Document reservationsDocument = Document.parse(workerDocument.getString("Reservations"));
+//
+//                    HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
+//                    HashMap<String, Reservation> reservations = new HashMap<>();
+//                    for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
+//                        Document reservationDocument = (Document) entry.getValue();
+//                        reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+//                    }
 
                     Receptionist receptionist = new Receptionist(workerDocument.getString("firstName"),
                             workerDocument.getString("lastName"),
                             workerDocument.getString("email"));
                     receptionist.setOasisMail(workerDocument.getString("OasisMail"));
-                    receptionist.setReservations(reservations);
+//                    receptionist.setReservations(reservations);
                     workers.put(receptionist.getOasisMail(), receptionist);
                 }
                 if (workerDocument.getString("role").equals(Role.OtherEmployee.toString())){

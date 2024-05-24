@@ -146,23 +146,19 @@ public class Reservation {
     }
 
     /**
-     * This method is used to calculate the total cost of the reservations of a
-     * guest, if a room number is provided it will return the cost of that room
-     * only, otherwise it will return the total cost of all non paid reservations
+     * Will return the total cost of all non paid reservations
      *
-     * @param roomNumber String
+     * @param guest Guest
      */
-    public static double calculateTotalCost(Guest guest, String roomNumber) {
-        if (roomNumber != null) {
-            return Hotel.getRooms().get(roomNumber).getRoomPrice();
-        }
+    public static double calculateAllTotalCosts(Guest guest) {
+
         double totalCost = 0;
         Iterator<String> keys = guest.getReservations().keySet().iterator();
         while (keys.hasNext()) {
             String key = keys.next();
             if (!guest.getReservations().get(key).isPaid()) {
                 totalCost +=
-                        Hotel.getRooms().get(key).getRoomPrice();
+                        guest.getReservations().get(key).getTotalCost();
             }
         }
         return totalCost;
