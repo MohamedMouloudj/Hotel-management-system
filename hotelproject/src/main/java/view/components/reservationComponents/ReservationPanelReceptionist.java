@@ -71,7 +71,6 @@ public class ReservationPanelReceptionist extends JPanel {
         JScrollPane scrollPaneReservations = new JScrollPane();
         scrollPaneReservations.setBackground(new Color(242, 242, 242));
         reservationsTable = new Table();
-        //TODO: use Controller.initTableResReq("Reservations",getReservationsColumnNames(),reservationsTable);
         reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getReservationColumnNames()) {
             private final boolean[] canEdit = new boolean[getReservationColumnNames().length];
             {
@@ -83,6 +82,9 @@ public class ReservationPanelReceptionist extends JPanel {
             }
         });
         scrollPaneReservations.setViewportView(reservationsTable);
+
+        Controller.initTableResReqRecV(getRequestColumnNames(),requestsTable,getReservationColumnNames(),reservationsTable);
+
         scrollPaneReservations.setVerticalScrollBar(new ScrollBar());
         scrollPaneReservations.getVerticalScrollBar().setBackground(Color.WHITE);
         scrollPaneReservations.getViewport().setBackground(Color.WHITE);
@@ -97,10 +99,8 @@ public class ReservationPanelReceptionist extends JPanel {
         container2.setBackground(Color.WHITE);
         panelToScroll.add(container2, "push, grow");
 
-
-        Controller.addReservation(confirmReservation,requestsTable,reservationsTable,msg,panelToScroll,layout);
+        Controller.addReservationRecV(confirmReservation,requestsTable,reservationsTable,msg,panelToScroll,layout);
         Controller.payReservation(confirmPay,reservationsTable);
-
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(panelToScroll);

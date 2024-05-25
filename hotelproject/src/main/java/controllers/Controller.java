@@ -274,43 +274,100 @@ public class Controller {
     }
     /**
      * initTable, reservations requests version
-     * @param tableType The type of table to be initialized, 1: Requests, 2: Reservations
-     * @param columnNames The names of the columns
-     * @param table The table to be initialized
+     * @param reqColumnNames The names of the columns
+     * @param reqTable The table to be initialized
+     * @param resTable The table to be initialized
      *  */
-    public void initTableResReq(int tableType, String[] columnNames, Table table){
-        try{
-            int index;
-            for (Guest g : Hotel.getGuests().values()) {
-                for (Reservation r : g.getReservations().values()) {
-                    index=0;
-                    Object[] row = new Object[columnNames.length];
-                    if(tableType==2) {
-                        row[index] = r.getRoomNumber();
-                        index++;
+    public static void initTableResReqRecV(String[] reqColumnNames, Table reqTable,String[] resColumnNames,Table resTable){
+        if (getUser() instanceof Guest){
+            try{
+                Guest user = (Guest) getUser();
+                for (Reservation r : user.getReservations().values()) {
+                    if(!r.isReservation()){
+                        Object[] row = new Object[reqColumnNames.length];
+                        row[0] = r.getRoomNumber();
+                        row[1] = user.getEmail();
+                        row[2] = r.getPhoneNumber();
+                        row[3] = r.getCheckInDate();
+                        row[4] = r.getCheckInDate();
+                        row[5] = r.getAdults();
+                        row[6] = r.getChildren();
+                        row[7] = r.getTotalCost();
+                        row[8] = r.isPaid();
+                        row[9] = r.isConfirmed();
+                        reqTable.addRow(row);
+                    }else {
+                        Object[] row = new Object[resColumnNames.length];
+                        row[0] = r.getRoomNumber();
+                        row[1] = user.getEmail();
+                        row[2] = r.getPhoneNumber();
+                        row[3] = r.getCheckInDate();
+                        row[4] = r.getCheckInDate();
+                        row[5] = r.getAdults();
+                        row[6] = r.getChildren();
+                        row[7] = r.getTotalCost();
+                        row[8] = r.isPaid();
+                        resTable.addRow(row);
                     }
-                    row[index] = g.getEmail();
-                    index++;
-                    row[index] = r.getPhoneNumber();
-                    index++;
-                    row[index] = r.getCheckInDate();
-                    index++;
-                    row[index] = r.getCheckInDate();
-                    index++;
-                    row[index] = r.getAdults();
-                    index++;
-                    row[index] = r.getChildren();
-                    index++;
-                    row[index] = r.getTotalCost();
-                    index++;
-                    row[index] = r.isPaid();
-                    index++;
-                    row[index]=r.isConfirmed();
-                    table.addRow(row);
                 }
+            }catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
+        }else{
+            try{
+                int index;
+                for (Guest g : Hotel.getGuests().values()) {
+                    for (Reservation r : g.getReservations().values()) {
+                        if(!r.isReservation()){
+                            index = 0;
+                            Object[] row = new Object[reqColumnNames.length];
+                            row[index] = r.getRoomNumber();
+                            index++;
+                            row[index] = g.getEmail();
+                            index++;
+                            row[index] = r.getPhoneNumber();
+                            index++;
+                            row[index] = r.getCheckInDate();
+                            index++;
+                            row[index] = r.getCheckInDate();
+                            index++;
+                            row[index] = r.getAdults();
+                            index++;
+                            row[index] = r.getChildren();
+                            index++;
+                            row[index] = r.getTotalCost();
+                            index++;
+                            row[index] = r.isPaid();
+                            index++;
+                            row[index] = r.isConfirmed();
+                            reqTable.addRow(row);
+                        }else {
+                            index = 0;
+                            Object[] row = new Object[resColumnNames.length];
+                            row[index] = r.getRoomNumber();
+                            index++;
+                            row[index] = g.getEmail();
+                            index++;
+                            row[index] = r.getPhoneNumber();
+                            index++;
+                            row[index] = r.getCheckInDate();
+                            index++;
+                            row[index] = r.getCheckInDate();
+                            index++;
+                            row[index] = r.getAdults();
+                            index++;
+                            row[index] = r.getChildren();
+                            index++;
+                            row[index] = r.getTotalCost();
+                            index++;
+                            row[index] = r.isPaid();
+                            resTable.addRow(row);
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
     public static void addGuest(String firstName, String lastName, String email,Table table) throws AccessAppException {
@@ -360,7 +417,7 @@ public class Controller {
         if (managerGui!=null && Hotel.getUser() instanceof Manager)
             managerGui.getWelcomePage().updateCard("Workers",Hotel.getWorkers().size());
     }
-    public static void addReservation(OurButton btn,Table reqTable, Table resTable,Message msg, JPanel bg, MigLayout layout){
+    public static void addReservationRecV(OurButton btn, Table reqTable, Table resTable, Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             int row = reqTable.getSelectedRow();
             if (row == -1) {
@@ -383,9 +440,14 @@ public class Controller {
             reqTable.remove(row);
             try{
                 Guest user = (Guest) getUser();
-                user.getReservations().get(roomNumber + email + checkInDate.toString()).setConfirmed(true);
+                Reservation res=user.getReservations().get(roomNumber + email + checkInDate.toString());
+                res.setConfirmed(true);
+                res.setReservation(true);
+                handleUpdates("Guest",roomNumber,email,"Reservations",user.getReservations());
             }catch (ClassCastException ex){
                 ex.printStackTrace();
+            } catch (AccessAppException ex) {
+                System.out.println("In addReservationRecV: "+ex.getMessage());
             }
             resTable.addRow(new Object[]{roomNumber,email,phoneNumber,checkInDate,checkOutDate,adults,children,totalCost,isPaid});
         });
@@ -403,8 +465,11 @@ public class Controller {
             try{
                 Guest user = (Guest) getUser();
                 user.getReservations().get(roomNumber + email + checkInDate.toString()).setPaid(true);
+                handleUpdates("Guest",roomNumber,email,"Reservations",user.getReservations());
             }catch (ClassCastException ex){
                 ex.printStackTrace();
+            } catch (AccessAppException ex) {
+                System.out.println("In payReservation: "+ex.getMessage());
             }
         });
 

@@ -20,6 +20,7 @@ public class Reservation {
     private double totalCost;
     private boolean isPaid;
     private boolean isConfirmed;
+    private boolean isReservation;
 
     public Reservation(String roomNumber, String guestEmail, OurDate checkInDate, OurDate checkOutDate,
                        int adults, int children, int phoneNumber, int creditCardNumber,double totalCost) {
@@ -36,6 +37,7 @@ public class Reservation {
         this.totalCost = totalCost;
         this.isPaid = false;
         this.isConfirmed = false;
+        this.isReservation = false;
     }
 
     public String getRoomNumber() {
@@ -66,6 +68,14 @@ public class Reservation {
     public void setCheckOutDate(OurDate checkOutDate) {
         this.checkOutDate = checkOutDate;
 //        calculateCutoffDays();
+    }
+
+    public boolean isReservation() {
+        return isReservation;
+    }
+
+    public void setReservation(boolean reservation) {
+        isReservation = reservation;
     }
 
     public String getReservationId() {
@@ -183,9 +193,11 @@ public class Reservation {
             double totalCost = document.getDouble("totalCost");
             boolean isPaid = document.getBoolean("isPaid");
             boolean isConfirmed = document.getBoolean("isConfirmed");
+            boolean isReservation = document.getBoolean("isReservation");
             Reservation reservation = new Reservation(roomNumber, guestEmail, checkInDate, checkOutDate, adults, children, phoneNumber, creditCardNumber, totalCost);
             reservation.setPaid(isPaid);
             reservation.setConfirmed(isConfirmed);
+            reservation.setReservation(isReservation);
             return reservation;
         }catch (Exception e){
             e.printStackTrace();
