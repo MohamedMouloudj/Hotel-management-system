@@ -70,12 +70,12 @@ public class ProfileUi extends JPanel {
         lastNameLabel.setText("Last name:");
         container.add(lastNameLabel, "cell 0 1");
 
-        if (userType!=UserType.GUEST){
+//        if (userType!=UserType.GUEST){
             emailLabel.setFont(new Font("Arial", Font.BOLD, 12)); // NOI18N
             emailLabel.setHorizontalAlignment(SwingConstants.LEFT);
             emailLabel.setText("Email:");
             container.add(emailLabel, "cell 0 2");
-        }
+//        }
 
         container.add(editButton, "cell 0 4,alignx center,spanx 2,gapy 10");
 
@@ -105,7 +105,7 @@ public class ProfileUi extends JPanel {
         emailLabelData = new JLabel();
         emailLabelData.setFont(new Font("Arial", Font.PLAIN, 12));
         emailLabelData.setHorizontalAlignment(SwingConstants.LEFT);
-        emailLabelData.setText(email);
+        emailLabelData.setText(this.email);
         container.add(emailLabelData, "cell 1 2");
     }
 

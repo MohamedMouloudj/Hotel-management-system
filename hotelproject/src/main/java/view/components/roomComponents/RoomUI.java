@@ -142,8 +142,10 @@ public class RoomUI extends JPanel {
             this.removeAll();
             // Show the RoomsPanel again
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
+            JPanel filter = roomsPanel.filter;
             roomsPanel.panel.removeAll();
-
+            roomsPanel.remove(filter);
+            roomsPanel.panel.add(filter, "center");
             for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof RoomOnList) {
                     roomsPanel.panel.add(component , "center");

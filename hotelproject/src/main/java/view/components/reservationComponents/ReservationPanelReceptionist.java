@@ -1,6 +1,9 @@
 package view.components.reservationComponents;
 
+import controllers.Controller;
 import net.miginfocom.swing.MigLayout;
+import view.components.Message;
+import view.components.OurButton;
 import view.components.sacrollBar.ScrollBar;
 import view.components.table.Table;
 
@@ -10,20 +13,27 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class ReservationPanelReceptionist extends JPanel {
-    private Table requestsTable;
-    private Table reservationsTable;
-    private String[] getColumnNames() {
-        return new String[] { "roomNumber","email","phone", "checkIn", "checkOut","adults", "children", "price" };
+    private final Table requestsTable;
+    private final Table reservationsTable;
+    private final Message msg = new Message();
+    private String[] getRequestColumnNames() {
+        return new String[] { "roomNumber","email","phone", "checkIn", "checkOut","adults", "children", "price","isPaid", "status"};
+    }
+    private String[] getReservationColumnNames() {
+        return new String[] { "roomNumber","email","phone", "checkIn", "checkOut","adults", "children", "price","isPaid"};
     }
     public ReservationPanelReceptionist(){
         setLayout(new MigLayout("wrap 2, insets 20 0 20 0,center", "push[100%,fill]push", "push[]push"));
         JPanel panelToScroll=new JPanel(new MigLayout("wrap 1,center", "push[95%,fill]push", "20[]10[]20"));
         panelToScroll.setBackground(new Color(242, 242, 242));
 
+        OurButton confirmReservation = new OurButton("add Reservation");
+        confirmReservation.setButtonBgColor(new Color(0, 112, 255));
+
         JScrollPane scrollPaneRequests = new JScrollPane();
         requestsTable = new Table();
-        requestsTable.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
-            private final boolean[] canEdit = new boolean[getColumnNames().length];
+        requestsTable.setModel(new DefaultTableModel(new Object[][] {}, getRequestColumnNames()) {
+            private final boolean[] canEdit = new boolean[getRequestColumnNames().length];
             {
                 Arrays.fill(canEdit, false);
             }
@@ -38,20 +48,32 @@ public class ReservationPanelReceptionist extends JPanel {
         scrollPaneRequests.getVerticalScrollBar().setBackground(Color.WHITE);
         scrollPaneRequests.getViewport().setBackground(Color.WHITE);
         scrollPaneRequests.setBorder(BorderFactory.createEmptyBorder());
+
         JPanel corner1 = new JPanel();
         corner1.setBackground(Color.WHITE);
         scrollPaneRequests.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner1);
-        JPanel container1=new JPanel(new MigLayout("wrap 1,center", "push[65%,fill]push", "20[]10[]20"));
+        scrollPaneRequests.setBackground(new Color(242, 242, 242));
+
+        MigLayout layout=new MigLayout("wrap 1,center", "push[85%,fill]push", "20[]10[]20");
+        JPanel container1=new JPanel(layout);
         container1.setBorder(BorderFactory.createTitledBorder("Requests"));
+        container1.add(confirmReservation, "center, w 40%!");
         container1.add(scrollPaneRequests, "push, grow");
         container1.setBackground(Color.WHITE);
         panelToScroll.add(container1, "push, grow");
 
+        //////////////////////////////////////////
+
+
+        OurButton confirmPay = new OurButton("Set as Paid");
+        confirmPay.setButtonBgColor(new Color(33, 168, 12));
+
         JScrollPane scrollPaneReservations = new JScrollPane();
+        scrollPaneReservations.setBackground(new Color(242, 242, 242));
         reservationsTable = new Table();
         //TODO: use Controller.initTableResReq("Reservations",getReservationsColumnNames(),reservationsTable);
-        reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
-            private final boolean[] canEdit = new boolean[getColumnNames().length];
+        reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getReservationColumnNames()) {
+            private final boolean[] canEdit = new boolean[getReservationColumnNames().length];
             {
                 Arrays.fill(canEdit, false);
             }
@@ -68,11 +90,17 @@ public class ReservationPanelReceptionist extends JPanel {
         JPanel corner2 = new JPanel();
         corner2.setBackground(Color.WHITE);
         scrollPaneReservations.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner2);
-        JPanel container2=new JPanel(new MigLayout("wrap 1,center", "push[65%,fill]push", "20[]10[]20"));
+        JPanel container2=new JPanel(new MigLayout("wrap 1,center", "push[85%,fill]push", "20[]10[]20"));
         container2.setBorder(BorderFactory.createTitledBorder("Reservations"));
+        container2.add(confirmPay, "center, w 40%!");
         container2.add(scrollPaneReservations, "push, grow");
         container2.setBackground(Color.WHITE);
         panelToScroll.add(container2, "push, grow");
+
+
+        Controller.addReservation(confirmReservation,requestsTable,reservationsTable,msg,panelToScroll,layout);
+        Controller.payReservation(confirmPay,reservationsTable);
+
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(panelToScroll);

@@ -118,6 +118,8 @@ public class Controller {
                             loginUser = getUserFromModel("Workers", "OasisMail", email);
                         } else {
                             loginUser = getUserFromModel("Guests", "email", email);
+                            if (loginUser == null)
+                                loginUser = getUserFromModel("Workers", "email", email);
                         }
 
                         if (loginUser == null) {
@@ -170,7 +172,6 @@ public class Controller {
                     }else if (Hotel.getGuests().isEmpty()) {
                        Document guestDoc=Database.findInDataBase(collectionName, researchBy, matchingField);
                           if (guestDoc!=null){
-                              System.out.println("Guest found in DB");
                               Document reservationsDocument = Document.parse(guestDoc.getString("Reservations"));
                               // Convert the Document back to a HashMap
                               HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
@@ -301,6 +302,10 @@ public class Controller {
                     row[index] = r.getChildren();
                     index++;
                     row[index] = r.getTotalCost();
+                    index++;
+                    row[index] = r.isPaid();
+                    index++;
+                    row[index]=r.isConfirmed();
                     table.addRow(row);
                 }
             }
@@ -355,7 +360,55 @@ public class Controller {
         if (managerGui!=null && Hotel.getUser() instanceof Manager)
             managerGui.getWelcomePage().updateCard("Workers",Hotel.getWorkers().size());
     }
+    public static void addReservation(OurButton btn,Table reqTable, Table resTable,Message msg, JPanel bg, MigLayout layout){
+        btn.addActionListener(e->{
+            int row = reqTable.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            boolean isConfirmed= (boolean) reqTable.getValueAt(row, 9);
+            if (!isConfirmed){
+                msg.displayMessage(Message.MessageType.ERROR, "Reservation is not confirmed", bg, layout);
+                return;
+            }
+            String roomNumber = (String) reqTable.getValueAt(row, 0);
+            String email = (String) reqTable.getValueAt(row, 1);
+            String phoneNumber = (String) reqTable.getValueAt(row, 2);
+            OurDate checkInDate = (OurDate) reqTable.getValueAt(row, 3);
+            OurDate checkOutDate = (OurDate) reqTable.getValueAt(row, 4);
+            int adults = (int) reqTable.getValueAt(row, 5);
+            int children = (int) reqTable.getValueAt(row, 6);
+            double totalCost = (double) reqTable.getValueAt(row, 7);
+            boolean isPaid = (boolean) reqTable.getValueAt(row, 8);
+            reqTable.remove(row);
+            try{
+                Guest user = (Guest) getUser();
+                user.getReservations().get(roomNumber + email + checkInDate.toString()).setConfirmed(true);
+            }catch (ClassCastException ex){
+                ex.printStackTrace();
+            }
+            resTable.addRow(new Object[]{roomNumber,email,phoneNumber,checkInDate,checkOutDate,adults,children,totalCost,isPaid});
+        });
+    }
+    public static void payReservation(OurButton btn, Table resTable){
+        btn.addActionListener(e->{
+            int row = resTable.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            String roomNumber = (String) resTable.getValueAt(row, 0);
+            String email = (String) resTable.getValueAt(row, 1);
+            OurDate checkInDate = (OurDate) resTable.getValueAt(row, 3);
+            resTable.setValueAt(true, row, 8);
+            try{
+                Guest user = (Guest) getUser();
+                user.getReservations().get(roomNumber + email + checkInDate.toString()).setPaid(true);
+            }catch (ClassCastException ex){
+                ex.printStackTrace();
+            }
+        });
 
+    }
     public static void handleUpdates(String entity,String roomNumber, String email, String key, Object updatedValue) throws AccessAppException {
 
         switch (entity) {

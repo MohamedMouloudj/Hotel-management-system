@@ -41,6 +41,7 @@ public class GuestUi extends UserGui<Guest> {
         ProfileUi profile = new ProfileUi(UserType.GUEST);
         profile.addFirstName(user.getFirstName());
         profile.addLastName(user.getLastName());
+        profile.addEmail(user.getEmail());
 
         WelcomePage welcomePage = new WelcomePage(UserType.GUEST);
 

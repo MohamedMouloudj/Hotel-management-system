@@ -165,7 +165,6 @@ public class Database {
      * */
     public static void addToDataBase(String collectionName, HashMap<String, String> fields) {
         try {
-
             MongoCollection<Document> clientCollection = Hotel.hotelDatabase.getCollection(collectionName);
             // Creating a document for the new guest
             Document document = new Document();
@@ -180,7 +179,6 @@ public class Database {
                     document.append(key, Double.parseDouble(value));
                     continue;
                 }
-
                 document.append(key, value);
             }
 
