@@ -2,12 +2,16 @@ package view.UserMangementGui;
 
 import controllers.Controller;
 import model.User;
+import model.supervisors.Manager;
 import view.components.Message;
 import view.components.items.MyTextField;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,10 +20,12 @@ import java.util.Random;
 public class ReceptionistsManagement extends UserManagement {
     private MyTextField txtOasisMail;
     private final Random random = new Random();
+
     public ReceptionistsManagement() {
         super("Receptionist");
         addOasisEmail(); // Add Oasis email field to user input panel
-        Controller.initiateTable("Workers",getColumnNames(),table);
+        Controller.initiateTable("Workers", getColumnNames(), table);
+        setupTableSelectionListener(); // Setup table selection listener
     }
 
     @Override
@@ -35,13 +41,16 @@ public class ReceptionistsManagement extends UserManagement {
             public void actionPerformed(ActionEvent e) {
                 try {
                     // Add a receptionist to the database
-                    Controller.addReceptionist(nameField.getText(), lastNameField.getText(), emailField.getText(),txtOasisMail.getText(),table);
+                    Controller.addReceptionist(nameField.getText(), lastNameField.getText(), emailField.getText(),
+                            txtOasisMail.getText(), table);
                     nameField.setText("");
                     lastNameField.setText("");
                     emailField.setText("");
-                    msg.displayMessage(Message.MessageType.SUCCESS, "Receptionist added successfully", (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                    msg.displayMessage(Message.MessageType.SUCCESS, "Receptionist added successfully",
+                            (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
                 } catch (Exception ex) {
-                    msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                    msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(),
+                            (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
                 }
             }
         };
@@ -52,9 +61,40 @@ public class ReceptionistsManagement extends UserManagement {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implementation for deleting a receptionist
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow >= 0) {
+                    // Get the email from the selected row
+                    String OasisEmail = (String) table.getValueAt(selectedRow, 3); // Assuming email is at index 2
 
-                throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+                    try {
+                        // Delete the guest/worker from the database
+                        // Database.deleteFromDataBase("Guests", "email", email);
+                        if (!emailField.getText().trim().isEmpty()) {
+
+                            Manager.removeWorkerFromDataBase(OasisEmail);
+
+                            // Remove the row from the table
+                            DefaultTableModel model = (DefaultTableModel) table.getModel();
+                            model.removeRow(selectedRow);
+
+                            // Clear the input fields
+                            nameField.setText("");
+                            lastNameField.setText("");
+                            emailField.setText("");
+
+                            // Display a success message
+                            msg.displayMessage(Message.MessageType.SUCCESS, "Guest deleted successfully",
+                                    (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                        } else {
+                            msg.displayMessage(Message.MessageType.SUCCESS, "All fields are required",
+                                    (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                        }
+                    } catch (Exception ex) {
+                        // Display an error message
+                        msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(),
+                                (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                    }
+                }
             }
         };
     }
@@ -109,13 +149,13 @@ public class ReceptionistsManagement extends UserManagement {
                     txtOasisMail.setText("");
                     return;
                 }
-                String oasisMail=name + lastName ;
+                String oasisMail = name + lastName;
                 User rs;
-                rs=Controller.getUserFromModel("Workers","OasisMail",(oasisMail+Controller.DOMAIN_RECEPTIONIST));
-                if (rs==null){
-                    txtOasisMail.setText((oasisMail+Controller.DOMAIN_RECEPTIONIST));
-                }else{
-                    txtOasisMail.setText((oasisMail+random.nextInt(100)+Controller.DOMAIN_RECEPTIONIST));
+                rs = Controller.getUserFromModel("Workers", "OasisMail", (oasisMail + Controller.DOMAIN_RECEPTIONIST));
+                if (rs == null) {
+                    txtOasisMail.setText((oasisMail + Controller.DOMAIN_RECEPTIONIST));
+                } else {
+                    txtOasisMail.setText((oasisMail + random.nextInt(100) + Controller.DOMAIN_RECEPTIONIST));
                 }
             }
         };
@@ -127,24 +167,23 @@ public class ReceptionistsManagement extends UserManagement {
         return txtOasisMail;
     }
 
-    // Method to add sample data to the table
-    public void add() {
-
-
-//        table.addRow(new Object[] { "Mike", "Bhand", "mikebhand@gmail.com", "MikeBhand@Oasis.dz" });
-//        table.addRow(new Object[] { "John", "Doe", "johndoe@example.com", "JohnDoe@oasis.dz", "15 May, 2019" });
-//        table.addRow(new Object[] { "Emily", "Smith", "emilysmith@example.com", "EmilySmith@oasis.dz" });
-//        table.addRow(new Object[] { "David", "Johnson", "davidjohnson@example.com", "DavidJohnson@oasis.dz" });
-//        table.addRow(new Object[] { "Sarah", "Brown", "sarahbrown@example.com", "SarahBrown@oasis.dz" });
-//        table.addRow(new Object[] { "Michael", "Williams", "michaelwilliams@example.com",
-//                "MichaelWilliams@oasis.dz" });
-//        table.addRow(new Object[] { "Jessica", "Taylor", "jessicataylor@example.com",
-//                "JessicaTaylor@oasis.dz" });
-//        table.addRow(new Object[] { "James", "Anderson", "jamesanderson@example.com",
-//                "JamesAnderson@oasis.dz" });
-//        table.addRow(new Object[] { "Emma", "Thomas", "emmathomas@example.com", "EmmaThomas@oasis.dz" });
-//        table.addRow(new Object[] { "William", "Martinez", "williammartinez@example.com",
-//                "WilliamMartinez@oasis.dz" });
-//        table.addRow(new Object[] { "Olivia", "Garcia", "oliviagarcia@example.com", "OliviaGarcia@oasis.dz" });
+    // Setup table selection listener
+    private void setupTableSelectionListener() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+                if (!event.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow >= 0) {
+                        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                        nameField.setText(model.getValueAt(selectedRow, 0).toString());
+                        lastNameField.setText(model.getValueAt(selectedRow, 1).toString());
+                        emailField.setText(model.getValueAt(selectedRow, 2).toString());
+                        txtOasisMail.setText(model.getValueAt(selectedRow, 3).toString());
+                    }
+                }
+            }
+        });
     }
+
 }
