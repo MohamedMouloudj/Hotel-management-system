@@ -1,18 +1,16 @@
 package view.UserGui;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-
-import javax.swing.JPanel;
-
 import controllers.Controller;
 import controllers.UserType;
 import model.Guest;
-import view.components.WelcomePage;
-import view.components.pagePanel;
 import view.components.ProfileUi;
-import view.components.roomComponents.RoomOnList;
+import view.components.WelcomePage;
+import view.components.reservationComponents.ReservationPanelGuest;
 import view.components.roomComponents.RoomsPanelGuest;
+
+import javax.swing.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GuestUi extends UserGui<Guest> {
     public GuestUi(Guest guest) {
@@ -37,16 +35,15 @@ public class GuestUi extends UserGui<Guest> {
 
         HashMap<Integer, JPanel> pagesMap = new HashMap<>();
         RoomsPanelGuest roomsPanel = new RoomsPanelGuest(Controller.roomsToRoomPanelGuest());
-
         ProfileUi profile = new ProfileUi(UserType.GUEST);
         profile.addFirstName(user.getFirstName());
         profile.addLastName(user.getLastName());
-
+        ReservationPanelGuest reservationPanel = new ReservationPanelGuest();
         WelcomePage welcomePage = new WelcomePage(UserType.GUEST);
 
         pagesMap.put(1, welcomePage);
         pagesMap.put(2, roomsPanel);
-        pagesMap.put(3, new pagePanel("Reservations"));
+        pagesMap.put(3,  reservationPanel);
         pagesMap.put(4, profile);
 
         return pagesMap;

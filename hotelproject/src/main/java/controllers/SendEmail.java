@@ -1,9 +1,8 @@
 package controllers;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.*;
 import javax.mail.internet.*;
 import java.io.IOException;
 import java.util.Properties;
@@ -11,8 +10,6 @@ import java.util.Properties;
 
 public class SendEmail
 {
-
-
 
     Session newSession = null;
     MimeMessage mimeMessage = null;
@@ -53,6 +50,51 @@ public class SendEmail
         multiPart.addBodyPart(bodyPart);
         mimeMessage.setContent(multiPart);
         return mimeMessage;
+    }
+    public boolean sendEmailWithAttachment(String email, String subject, String filePath) {
+        try {
+            // Create a default MimeMessage object.
+            MimeMessage message = new MimeMessage(newSession);
+
+            // Set From: header field of the header.
+            message.setFrom(new InternetAddress("your email"));
+
+            // Set To: header field of the header.
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+
+            // Set Subject: header field
+            message.setSubject(subject);
+
+            // Create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+            // Fill the message
+            messageBodyPart.setText("This is message body");
+
+            // Create a multipart message
+            Multipart multipart = new MimeMultipart();
+
+            // Set text message part
+            multipart.addBodyPart(messageBodyPart);
+
+            // Part two is attachment
+            messageBodyPart = new MimeBodyPart();
+            javax.activation.DataSource source = new FileDataSource(filePath);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(filePath);
+            multipart.addBodyPart(messageBodyPart);
+
+            // Send the complete message parts
+            message.setContent(multipart);
+
+            // Send message
+            Transport.send(message);
+            System.out.println("Sent message successfully with attachment...");
+            return true;
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+            return false;
+        }
     }
 
     public void setupServerProperties() {

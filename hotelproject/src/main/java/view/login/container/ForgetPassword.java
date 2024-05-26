@@ -91,16 +91,15 @@ public class ForgetPassword extends JPanel {
             }
             String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
             if (!email.matches(regex)) {
-                msg.displayMessage(Message.MessageType.ERROR, "Invalid email format",panel , layout);
+                msg.displayMessage(Message.MessageType.ERROR, "Invalid email format", panel, layout);
                 return;
             }
+
             Document loginUser = Database.findInDataBase("Guests", "email", email);
             if (loginUser == null) {
                 msg.displayMessage(Message.MessageType.ERROR, "Email doesent exist",panel , layout);
                 return;
             }
-
-
 
             String token = generateToken();
             tokens.put(token, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(expirationTime));
@@ -113,7 +112,6 @@ public class ForgetPassword extends JPanel {
                 boolean emailSent = sendEmail.sendEmail(email);
                 if (emailSent) {
                     msg.displayMessage(Message.MessageType.SUCCESS, "email sent successfully ",panel , layout);
-
                 } else {
                     msg.displayMessage(Message.MessageType.ERROR, "email has been sent , try again",panel , layout);
                     return;

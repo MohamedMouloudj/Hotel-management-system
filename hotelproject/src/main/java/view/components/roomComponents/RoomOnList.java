@@ -122,7 +122,7 @@ public class RoomOnList extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription, this.price);
+        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription, this.price );
         //get the parent that is the roomsPanel
         JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Roomr
 

@@ -1,5 +1,6 @@
 package view.components.reservationComponents;
 
+import controllers.Controller;
 import net.miginfocom.swing.MigLayout;
 import view.components.sacrollBar.ScrollBar;
 import view.components.table.Table;
@@ -33,6 +34,9 @@ public class ReservationPanelReceptionist extends JPanel {
             }
         });
 
+
+        Controller.initTableResReq(2,getColumnNames(),reservationsTable);
+
         scrollPaneRequests.setViewportView(requestsTable);
         scrollPaneRequests.setVerticalScrollBar(new ScrollBar());
         scrollPaneRequests.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -47,9 +51,11 @@ public class ReservationPanelReceptionist extends JPanel {
         container1.setBackground(Color.WHITE);
         panelToScroll.add(container1, "push, grow");
 
+        //request scroll pane
         JScrollPane scrollPaneReservations = new JScrollPane();
         reservationsTable = new Table();
         //TODO: use Controller.initTableResReq("Reservations",getReservationsColumnNames(),reservationsTable);
+
         reservationsTable.setModel(new DefaultTableModel(new Object[][] {}, getColumnNames()) {
             private final boolean[] canEdit = new boolean[getColumnNames().length];
             {
@@ -60,6 +66,9 @@ public class ReservationPanelReceptionist extends JPanel {
                 return canEdit[columnIndex];
             }
         });
+
+        Controller.initTableResReq(1,getColumnNames(),reservationsTable);
+
         scrollPaneReservations.setViewportView(reservationsTable);
         scrollPaneReservations.setVerticalScrollBar(new ScrollBar());
         scrollPaneReservations.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -87,8 +96,41 @@ public class ReservationPanelReceptionist extends JPanel {
         JPanel corner3 = new JPanel();
         corner3.setBackground(Color.WHITE);
         scrollPaneReservations.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner3);
+        //this one is for updating the tables
+
+
+        System.out.println(reservationsTable);
+
 
         setBackground(new Color(242, 242, 242));
         add(scrollPane, "push, grow");
     }
+
+//    public void updateReservationTables() {
+//        // Clear the tables
+//        DefaultTableModel requestsTableModel = (DefaultTableModel) requestsTable.getModel();
+//        requestsTableModel.setRowCount(0);
+//        DefaultTableModel reservationsTableModel = (DefaultTableModel) reservationsTable.getModel();
+//        reservationsTableModel.setRowCount(0);
+//
+//        // Iterate over the reservations in the Hotel class
+//        for (Map.Entry<String, Reservation> entry :  Hotel.getReservationRequests().entrySet()) {
+//            Reservation reservation = entry.getValue();
+//
+//            // Add the reservation to the requests table
+//            if (!entry.getValue().isConfirmed()){
+//                System.out.print("Adding reservation 1");
+//                requestsTableModel.addRow(new Object[] { reservation.getRoomNumber(), reservation.getGuestEmail(), reservation.getPhoneNumber(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getAdults(), reservation.getChildren(), reservation.getTotalCost() });
+//            }else{
+//                System.out.print("Adding reservation 2");
+//                reservationsTableModel.addRow(new Object[] { reservation.getRoomNumber(), reservation.getGuestEmail(), reservation.getPhoneNumber(), reservation.getCheckInDate(), reservation.getCheckOutDate(), reservation.getAdults(), reservation.getChildren(), reservation.getTotalCost() });
+//            }
+//        }
+//
+////        for (Map.Entry<String, Reservation> entry : Hotel.confirmedReservations.entrySet()) {
+////            Reservation reservation = entry.getValue();
+////            // Add the reservation to the reservations table
+////            reservationsTableModel.addRow(new Object[] { reservation.getRoomNumber(), reservation.getEmail(), reservation.getPhone(), reservation.getCheckIn(), reservation.getCheckOut(), reservation.getAdults(), reservation.getChildren(), reservation.getPrice() });
+////        }
+//    }
 }

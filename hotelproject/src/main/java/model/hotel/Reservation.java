@@ -9,8 +9,8 @@ public class Reservation {
     private final double CUTOFF_PERCENTAGE = 0.2;
     private final String reservationId;
     private double cutOffDays;
-    private int phoneNumber;
-    private int creditCardNumber;
+    private String phoneNumber;
+    private String creditCardNumber;
     private String roomNumber;
     private final String guestEmail;
     private OurDate checkInDate;
@@ -22,7 +22,7 @@ public class Reservation {
     private boolean isConfirmed;
 
     public Reservation(String roomNumber, String guestEmail, OurDate checkInDate, OurDate checkOutDate,
-                       int adults, int children, int phoneNumber, int creditCardNumber,double totalCost) {
+                       int adults, int children, String phoneNumber, String creditCardNumber,double totalCost) {
         this.roomNumber = roomNumber;
         this.guestEmail = guestEmail;
         this.checkInDate = checkInDate;
@@ -113,19 +113,19 @@ public class Reservation {
         isConfirmed = confirmed;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getCreditCardNumber() {
+    public String getCreditCardNumber() {
         return creditCardNumber;
     }
 
-    public void setCreditCardNumber(int creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
 
@@ -167,7 +167,7 @@ public class Reservation {
     /**
      * Coverts a Document object to a Reservation object
      * @param document Document
-     *                 The document to be converted
+     *   The document to be converted
      * @return The Reservation object or null if the conversion fails
      * */
     public static Reservation fromDocument(Document document) {
@@ -178,8 +178,8 @@ public class Reservation {
             OurDate checkOutDate = OurDate.parse(document.getString("checkOutDate"));
             int adults = document.getInteger("adults");
             int children = document.getInteger("children");
-            int phoneNumber = document.getInteger("phoneNumber");
-            int creditCardNumber = document.getInteger("creditCardNumber");
+            String phoneNumber = document.getString("phoneNumber");
+            String creditCardNumber = document.getString("creditCardNumber");
             double totalCost = document.getDouble("totalCost");
             boolean isPaid = document.getBoolean("isPaid");
             boolean isConfirmed = document.getBoolean("isConfirmed");

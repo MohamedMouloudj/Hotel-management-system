@@ -34,20 +34,29 @@ public class Hotel {
 
         switch (userType){
             case GUEST -> {
+                try{
+                    System.out.print("im inside Guest");
+                    Database.retrieveReservationsFromDB(reservationRequests);
 
+                }catch (Database.DBException e) {
+                    System.out.println(e.getMessage());
+                }
             }
             case RECEPTIONIST -> {
                try {
-                    Database.retrieveGuestsFromDB(guests);
+
+                   Database.retrieveGuestsFromDB(guests);
+                   Database.retrieveReservationsFromDB(reservationRequests);
+                   System.out.println(reservationRequests);
                     for (Guest guest : guests.values()) {
                         if (guest.getReservations().isEmpty()) {
                             continue;
                         }
-                        for (Reservation reservation : guest.getReservations().values()) {
-                            if (!reservation.isPaid())
-                                reservationRequests.put(reservation.getRoomNumber(), reservation);
-                        }
                     }
+                   for (Reservation reservation : reservationRequests.values()) {
+                       if (!reservation.isPaid())
+                           reservationRequests.put(reservation.getRoomNumber(), reservation);
+                   }
                }catch (Database.DBException e){
                     System.out.println(e.getMessage());
                }
@@ -56,6 +65,8 @@ public class Hotel {
                 try{
                     Database.retrieveGuestsFromDB(guests);
                     Database.retrieveWorkersFromDB(workers);
+                    Database.retrieveReservationsFromDB(reservationRequests);
+
                     for (Guest guest : guests.values()) {
                         if (guest.getReservations().isEmpty()) {
                             continue;

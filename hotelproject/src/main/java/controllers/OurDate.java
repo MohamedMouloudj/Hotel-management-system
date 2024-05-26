@@ -1,6 +1,5 @@
 package controllers;
 
-import java.util.Calendar;
 import java.time.LocalDate;
 class InvalidDateException extends Exception {
     public InvalidDateException(String message) {
@@ -47,9 +46,9 @@ public class OurDate {
 
 
     void validate() throws InvalidDateException{
-        if (this.year < currentYear ) {
-            throw new InvalidDateException("Invalid year : year  must be between 2024 and 2025 ");
-        }
+//        if (this.year < currentYear ) {
+//            throw new InvalidDateException("Invalid year : year  must be between 2024 and 2025 ");
+//        }
 
         if (this.month < 1 || this.month > 12) {
             throw new InvalidDateException("Invalid day: Day must be between 1 and  12 ");
@@ -205,14 +204,17 @@ public class OurDate {
      * @throws InvalidDateException if the date string is not in the expected format
      * */
     public static OurDate parse(String dateString) throws InvalidDateException {
-        String[] parts = dateString.split("/");
-        if (parts.length != 3) {
-            throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+        if (dateString != null) {
+            String[] parts = dateString.split("/");
+            if (parts.length != 3) {
+                throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+            }
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+            return new OurDate(day, month, year);
         }
-        int day = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        int year = Integer.parseInt(parts[2]);
-        return new OurDate(day, month, year);
+        return null;
     }
 
 

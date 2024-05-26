@@ -4,7 +4,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import controllers.PasswordHashing;
 import model.hotel.Hotel;
 import model.hotel.Reservation;
 import model.hotel.Room;
@@ -48,11 +47,9 @@ public class Database {
         if (roomCollection == null)
             return;
         try {
-            MongoCursor<Document> cursor = roomCollection.find().iterator();
-            while (cursor.hasNext()) {
-                Document roomDocument = cursor.next();
+            for (Document roomDocument : roomCollection.find()) {
                 Room room = new Room(RoomType.valueOf(roomDocument.getString("roomType")),
-                        roomDocument.getBoolean("isAvailable",false),
+                        roomDocument.getBoolean("isAvailable", false),
                         roomDocument.getDouble("price"));
                 room.setRoomNumber(roomDocument.getString("roomNumber"));
                 // Update the idCounter to the maximum room number (replaceAll("\\D+","") removes all non-digits)
@@ -67,6 +64,27 @@ public class Database {
         }
     }
 
+
+    public static void retrieveReservationsFromDB(HashMap<String, Reservation> reservations) throws DBException {
+        MongoCollection<Document> reservationCollection = retreiveCollectionFromDB("reservations");
+        System.out.println("maybe reservation");
+
+        if (reservationCollection == null)
+            return;
+        try {
+            MongoCursor<Document> cursor = reservationCollection.find().iterator();
+            while (cursor.hasNext()) {
+                Document reservationDocument = cursor.next();
+                Reservation reservation = Reservation.fromDocument(reservationDocument);
+                assert reservation != null;
+                reservations.put(reservation.getReservationId(), reservation);
+                System.out.println(reservation.getRoomNumber());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new DBException("Error occurred while retrieving reservations from the database");
+        }
+    }
     public static void retrieveGuestsFromDB(HashMap<String, Guest> guests) throws DBException{
         MongoCollection<Document> guestCollection = retreiveCollectionFromDB("Guests");
         if (guestCollection == null)
@@ -76,20 +94,20 @@ public class Database {
             while (cursor.hasNext()) {
                 Document guestDocument = cursor.next();
                 // Parse the JSON string back to a Document
-                Document reservationsDocument = Document.parse(guestDocument.getString("Reservations"));
+                //Document reservationsDocument = Document.parse(guestDocument.getString("Reservations"));
                 // Convert the Document back to a HashMap
-                HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
+//                HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
                 // Convert each Object in reservationsHashMap to a Reservation
-                HashMap<String, Reservation> reservations = new HashMap<>();
-                for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
-                    Document reservationDocument = (Document) entry.getValue();
-                    reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
-                }
+//                HashMap<String, Reservation> reservations = new HashMap<>();
+//                for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
+//                    Document reservationDocument = (Document) entry.getValue();
+//                    reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+//                }
                 Guest guest = new Guest(guestDocument.getString("firstName"),
                         guestDocument.getString("lastName"),
                         guestDocument.getString("email"),
                         guestDocument.getString("password"));
-                guest.setReservations(reservations);
+//                guest.setReservations(reservations);
                 // Add the guest to the guests HashMap
                 guests.put(guest.getEmail(), guest);
             }
@@ -227,6 +245,35 @@ public class Database {
         }catch (Exception e){
             e.printStackTrace();
             throw new DBException("Error occurred while updating the document");
+        }
+    }
+    public static void addReservationToUser(String email, Reservation reservation) {
+        try {
+            // Get the user collection
+            MongoCollection<Document> userCollection = Hotel.hotelDatabase.getCollection("Guests");
+
+            // Build the query to find the user
+            Document query = new Document("email", email);
+
+            // Convert the Reservation object to a Document
+            Document reservationDocument = new Document();
+            reservationDocument.append("roomNumber", reservation.getRoomNumber());
+            reservationDocument.append("email", reservation.getGuestEmail());
+            reservationDocument.append("phone", reservation.getPhoneNumber());
+            reservationDocument.append("checkIn", reservation.getCheckInDate());
+            reservationDocument.append("checkOut", reservation.getCheckOutDate());
+            reservationDocument.append("adults", reservation.getAdults());
+            reservationDocument.append("children", reservation.getChildren());
+            reservationDocument.append("price", reservation.getTotalCost());
+
+            // Build the update document
+            Document update = new Document("$push", new Document("Reservations", reservationDocument));
+
+            // Update the user document
+            userCollection.updateOne(query, update);
+            System.out.println("Reservation added successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -24,14 +24,13 @@ import view.components.table.Table;
 import view.login.container.ForgetPassword;
 
 
+import javax.mail.MessagingException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,10 +42,12 @@ public class Controller {
     private final static String MANAGER_EMAIL="admin";
     private final static String MANAGER_PASSWORD="admin12345#";
     public final static String DOMAIN_RECEPTIONIST = "@Oasis.dz";
+
     /**
      * This method is used to set the user data in the Model and open the appropriate UI
      * @param user The user to be set
-     * */
+     **/
+
     public static void  setHotelUserAndOpenUI(User user){
         Hotel.setUser(user);
         if (user instanceof Guest){
@@ -171,20 +172,20 @@ public class Controller {
                        Document guestDoc=Database.findInDataBase(collectionName, researchBy, matchingField);
                           if (guestDoc!=null){
                               System.out.println("Guest found in DB");
-                              Document reservationsDocument = Document.parse(guestDoc.getString("Reservations"));
+//                              Document reservationsDocument = Document.parse(guestDoc.getString("Reservations"));
                               // Convert the Document back to a HashMap
-                              HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
+//                              HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
                               // Convert each Object in reservationsHashMap to a Reservation
-                              HashMap<String, Reservation> reservations = new HashMap<>();
-                              for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
-                                  Document reservationDocument = (Document) entry.getValue();
-                                  reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
-                              }
+//                              HashMap<String, Reservation> reservations = new HashMap<>();
+//                              for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
+//                                  Document reservationDocument = (Document) entry.getValue();
+//                                  reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+//                              }
                               Guest guest=new Guest(guestDoc.getString("firstName"),
                                       guestDoc.getString("lastName"),
                                       guestDoc.getString("email"),
                                       guestDoc.getString("password"));
-                                guest.setReservations(reservations);
+//                                guest.setReservations(reservations);
                               return guest;
                           }
                     }
@@ -277,18 +278,50 @@ public class Controller {
      * @param columnNames The names of the columns
      * @param table The table to be initialized
      *  */
-    public void initTableResReq(int tableType, String[] columnNames, Table table){
+//    public static void initiateTable(String tableName, String[] columnNames, Table table, List<Reservation> reservations) {
+//        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+//            private final boolean[] canEdit = new boolean[columnNames.length];
+//            {
+//                Arrays.fill(canEdit, false);
+//            }
+//            @Override
+//            public boolean isCellEditable(int rowIndex, int columnIndex) {
+//                return canEdit[columnIndex];
+//            }
+//        };
+//
+//        for (Reservation reservation : reservations) {
+//            Object[] rowData = new Object[] {
+//                    reservation.getRoomNumber(),
+//                    reservation.getEmail(),
+//                    reservation.getPhone(),
+//                    reservation.getCheckIn(),
+//                    reservation.getCheckOut(),
+//                    reservation.getAdults(),
+//                    reservation.getChildren(),
+//                    reservation.getPrice()
+//            };
+//
+//            if (reservation.isConfirmed() && tableName.equals("Reservations")) {
+//                model.addRow(rowData);
+//            } else if (!reservation.isConfirmed() && tableName.equals("Requests")) {
+//                model.addRow(rowData);
+//            }
+//        }
+//
+//        table.setModel(model);
+//    }
+    public static void initTableResReq(int tableType, String[] columnNames, Table table){
         try{
             int index;
-            for (Guest g : Hotel.getGuests().values()) {
-                for (Reservation r : g.getReservations().values()) {
+            for (Reservation r : Hotel.getReservationRequests().values()) {
                     index=0;
                     Object[] row = new Object[columnNames.length];
                     if(tableType==2) {
                         row[index] = r.getRoomNumber();
                         index++;
                     }
-                    row[index] = g.getEmail();
+                    row[index] = r.getGuestEmail();
                     index++;
                     row[index] = r.getPhoneNumber();
                     index++;
@@ -303,7 +336,7 @@ public class Controller {
                     row[index] = r.getTotalCost();
                     table.addRow(row);
                 }
-            }
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -454,13 +487,14 @@ public class Controller {
     public static void openBookingUI(OurButton bookButton, double price,
                                      CounterPanel AdultsCounter , CounterPanel ChildrenCounter,
                                      JXDatePicker checkIn, JXDatePicker checkOut, JTextField creditCardField,
-                                     JTextField phoneNumberField,Message msg,JPanel bg, MigLayout layout){
+                                     JTextField phoneNumberField,Message msg, JPanel bg,JLabel reserved,  MigLayout layout){
 
         bookButton.addActionListener(e -> {
             int adults = AdultsCounter.getCount();
             int children = ChildrenCounter.getCount();
             String creditCard = creditCardField.getText();
             String phoneNumber = phoneNumberField.getText();
+
             if (checkIn.getDate() == null || checkOut.getDate() == null || creditCardField.getText().isEmpty() || phoneNumberField.getText().isEmpty()){
                 msg.displayMessage(Message.MessageType.ERROR, "Please fill all the data", bg, layout);
                 return;
@@ -485,7 +519,81 @@ public class Controller {
                     "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (response == JOptionPane.YES_OPTION) {
-                // Handle the booking confirmation here
+                System.out.println("yes to it ");
+
+                User user = Controller.getUser();
+                //transform the checkin date to  checkin OurDate
+                Date checkIndate =   checkIn.getDate();
+                OurDate OurCheckIn = new OurDate(checkIndate.getDay(),checkIndate.getMonth(),checkIndate.getYear());
+
+                //transform the checkout date to  checkin OurDate
+                Date checkout = checkOut.getDate();
+                OurDate OurCheckOut = new OurDate(checkout.getDay(),checkout.getMonth(),checkout.getYear());
+
+                //create a reservation for the user
+                Reservation reservation = new Reservation("12", user.getEmail(),OurCheckIn , OurCheckOut , adults , children  , phoneNumber , creditCard , CalculatedPrice );
+
+                //change the ui to confirmed
+                // Disable all inputs
+                AdultsCounter.setEnabled(false);
+                ChildrenCounter.setEnabled(false);
+                checkIn.setEnabled(false);
+                checkOut.setEnabled(false);
+                creditCardField.setEnabled(false);
+                phoneNumberField.setEnabled(false);
+
+                // Display a message
+                msg.displayMessage(Message.MessageType.SUCCESS, "Reservation sent", bg, layout);
+
+                // Set the text of the reserved label
+                 reserved.setText("Demande sent");
+
+                 //add reservation to DB
+                //dont know if it works
+
+                HashMap<String, String> reservationFields = new HashMap<>();
+
+                reservationFields.put("roomNumber", reservation.getRoomNumber());
+                reservationFields.put("email", reservation.getGuestEmail());
+                reservationFields.put("phone", String.valueOf(reservation.getPhoneNumber()));
+                reservationFields.put("checkIn", reservation.getCheckInDate().toString());
+                reservationFields.put("checkOut", reservation.getCheckOutDate().toString());
+                reservationFields.put("adults", String.valueOf(reservation.getAdults()));
+                reservationFields.put("children", String.valueOf(reservation.getChildren()));
+                reservationFields.put("price", String.valueOf(reservation.getTotalCost()));
+                reservationFields.put("isConfirmed", String.valueOf(reservation.isConfirmed()));
+                reservationFields.put("isPaid", String.valueOf(reservation.isPaid()));
+
+                Database.addToDataBase("reservations" , reservationFields );
+
+
+//                 QrCode qrCode = new QrCode();
+//
+//                    // User information
+//                    String username = user.getFirstName() + user.getLastName() ;
+//                    String email = user.getEmail();
+//
+//
+//                    // Encode user information into a string
+//                    String userInfo = "Username: " + username + "\nEmail: " + email + "\nPhone: " + phoneNumber;
+//
+//                    // Path to save the QR code image
+//                    String filePath = "user_qr_code.png";
+//
+////                  Generate QR code that has these informations
+//                    qrCode.generateQRCode(username, email, phoneNumber, filePath);
+//                    try{
+//                        System.out.println("The QR code has been saved to: " + filePath);
+//                        SendEmail emailService = new SendEmail();
+//                        emailService.setupServerProperties();
+//                        emailService.draftEmail(email , "Here is your QR code: Please present this QR code when checking in at the hotel." + "\n" + "Thank you!" + "\n" + "Best regards," + "\n" + "Hotel Management" + "\n", "");
+//                        emailService.sendEmailWithAttachment(email,"Oasis QrCode" ,filePath );
+//                    }catch (MessagingException | IOException exception){
+//                        exception.printStackTrace();
+//                    }
+
+
+
                 System.out.println("Booking confirmed");
             } else {
                 System.out.println("Booking cancelled");

@@ -11,13 +11,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 
-
 public class RoomUI extends JPanel {
     private final double imageWidth = 45;
     private final Message msg = new Message();
     private final MigLayout layout=new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]");
 
-    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price){
+    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price ){
 
         setLayout(layout);
         setBackground(new Color(242, 242, 242));
@@ -55,6 +54,7 @@ public class RoomUI extends JPanel {
 
         JPanel infoCollect = new JPanel(new MigLayout("wrap 2,inset 10 15 5 20"));
         infoCollect.setBackground(new Color(242, 242, 242));
+
         //Counter panel for counting adults and children
         CounterPanel AdultsCounter = new CounterPanel("adults");
         CounterPanel ChildrenCounter = new CounterPanel("Children");
@@ -126,14 +126,23 @@ public class RoomUI extends JPanel {
         bookButton.setButtonBgColor(new Color(0x0377FF));
         bookButton.setButtonSize(new Dimension(140,40));
         roomDetailedInfo.add(bookButton , "gap 15 0 0 0");
+//        bookButton.addActionListener(e->{
+//
+//                   });
 
 
         //back buttonor cancel button
-        OurButton backButton = new OurButton("cancel");
+        OurButton backButton = new OurButton("back");
         backButton.setButtonSize(new Dimension(140,40));
         backButton.setBackground(Color.white);
         backButton.setBorder(BorderFactory.createLineBorder(new Color(0x0377FF), 2));
         backButton.setForeground(new Color(0x0377FF));
+
+        JLabel reserved = new JLabel();
+        reserved.setFont(new Font("Inter",Font.BOLD,12));
+        reserved.setForeground(new Color(0x0377FF));
+
+
 
 
         backButton.setOpaque(false);
@@ -156,9 +165,10 @@ public class RoomUI extends JPanel {
             roomsPanel.revalidate();
         });
 
-         roomDetailedInfo.add(backButton ,"wrap");
+        roomDetailedInfo.add(backButton ,"wrap");
+        roomDetailedInfo.add(reserved , " center , span 2 ,  wrap , gap 15 0 0 0");
 
-        Controller.openBookingUI(bookButton,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,layout);
+        Controller.openBookingUI(bookButton,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,reserved,layout);
 
     }
 

@@ -199,7 +199,7 @@ class ProfileEdit extends JPanel {
                 boolean isUpdated=false;
                 try {
                     if (!firstName.isEmpty()) {
-                        if (profilePanel.userType==UserType.GUEST){
+                        if (profilePanel.userType==UserType.GUEST ){
                             Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"firstName",firstName);
                         }else{
                             Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"firstName",firstName);
