@@ -35,7 +35,15 @@ abstract public class Manager extends Worker {
     public static void removeWorkerFromDataBase(String OasisEmail) {
         try {
             Database.removeFromDataBase("Workers", "OasisMail", OasisEmail);
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void removeGuestFromDataBase(String email) {
+        try {
+            Database.removeFromDataBase("Guests", "email", email);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

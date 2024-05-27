@@ -30,10 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -637,16 +634,14 @@ public class Controller {
                 msg.displayMessage(Message.MessageType.ERROR, "Invalid phone number", bg, layout);
                 return;
             }
-            //this calculated price will have a different value depending on the children number and adults number
-//            double time= (double) (checkOut.getDate().getTime() - checkIn.getDate().getTime()) /(1000*60*60*24);//time in days
+
             double CalculatedPrice = (price+ 0.2*adults*price + 0.15*children*price);
             int response = JOptionPane.showConfirmDialog(null,
                     "The price is " + CalculatedPrice + " DZD/Night. Do you want to confirm the booking?",
                     "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (response == JOptionPane.YES_OPTION) {
-                // Handle the booking confirmation here
-                System.out.println("Booking confirmed");
+                Reservation reservation=new Reservation(roomNumber,getUser().getEmail(),checkIn)
             } else {
                 System.out.println("Booking cancelled");
             }
