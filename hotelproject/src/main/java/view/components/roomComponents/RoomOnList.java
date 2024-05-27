@@ -19,15 +19,16 @@ public class RoomOnList extends JPanel implements ActionListener {
     private String roomDescription;
     private JLabel isAvailableLabel;
     private OurButton bookButton=new OurButton("Book now");
+    private String roomNumber;
 
 
-    public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, boolean available){
+    public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, Integer available,String roomNumber){
 
         this.roomType = roomType;
         this.roomPicture = roomPicture;
         this.roomDescription = roomDescription;
         this.price=price;
-
+        this.roomNumber= roomNumber;
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200),2);
         setBorder(border);
         setBackground(new Color(242, 242, 242));
@@ -51,7 +52,7 @@ public class RoomOnList extends JPanel implements ActionListener {
 
         isAvailableLabel = new JLabel();
         isAvailableLabel.setFont(new Font("Inter",Font.PLAIN,15));
-        if (available) {
+        if (available>0) {
             isAvailableLabel.setText("Available");
             isAvailableLabel.setForeground(new Color(0x00A000));
             bookButton.setEnabled(true);
@@ -122,7 +123,7 @@ public class RoomOnList extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription, this.price);
+        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription, this.price,this.roomNumber);
         //get the parent that is the roomsPanel
         JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Roomr
 

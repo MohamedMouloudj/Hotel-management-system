@@ -18,6 +18,7 @@ import view.UserGui.ManagerGui;
 import view.UserGui.ReceptionistGui;
 import view.components.Message;
 import view.components.OurButton;
+import view.components.items.MyTextField;
 import view.components.roomComponents.CounterPanel;
 import view.components.roomComponents.RoomOnList;
 import view.components.table.Table;
@@ -25,6 +26,7 @@ import view.login.container.ForgetPassword;
 
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -474,6 +476,39 @@ public class Controller {
         });
 
     }
+
+    public static void addRoom(OurButton btn,RoomType type, MyTextField price,JCheckBox available,Message msg, JPanel bg, MigLayout layout,Table table){
+        btn.addActionListener(e->{
+            boolean isAvailable=available.isSelected();
+            try{
+                if (price.getText().isEmpty() || !price.getText().matches("[0-9]+") ){
+                    throw new AccessAppException("Price is required, and must be a  number!");
+                }
+                double roomPrice=Double.parseDouble(price.getText());
+                Room rm=Manager.addRoom(type,isAvailable,roomPrice);
+                table.addRow(new Object[]{rm.getRoomNumber(),rm.getRoomPrice(),rm.availability()});
+                msg.displayMessage(Message.MessageType.SUCCESS, "Room added successfully", bg, layout);
+            }catch (AccessAppException ex) {
+                msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout);
+            }
+        });
+    }
+    public static  void deleteRoom(OurButton btn, MyTextField price,JCheckBox available,Table table){
+        btn.addActionListener(e->{
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            price.setText(model.getValueAt(row, 1).toString());
+            boolean isAvailable = (boolean) model.getValueAt(row, 2);
+            available.setSelected(isAvailable);
+            String roomNumber = model.getValueAt(row, 0).toString();
+            table.remove(row);
+            Manager.removeRoomFromDataBase(roomNumber);
+        });
+    }
+
     public static void handleUpdates(String entity,String roomNumber, String email, String key, Object updatedValue) throws AccessAppException {
 
         switch (entity) {
@@ -558,18 +593,25 @@ public class Controller {
                 roomPriceCount.put(price, counter);
             }
             for (Double price : roomPriceCount.keySet()) {
+                String roomNumber=null;
+                if(roomPriceCount.get(price)==1)
+                    for (Room r: allRooms.values()){
+                        if (r.getRoomType().equals(roomType) && r.getRoomPrice()== price)
+                            roomNumber=r.getRoomNumber();
+                    }
+
                 RoomOnList roomOnList = new RoomOnList(roomType,
                         "hotelproject/src/main/java/view/icons/"+ roomType.toString() + "Room.png",
                         description,
                         price,
-                        roomPriceCount.get(price)>0);
+                        roomPriceCount.get(price),roomNumber);
                 roomsUiList.put(roomType.toString() + price, roomOnList);
             }
         }
         return roomsUiList;
     }
 
-    public static void openBookingUI(OurButton bookButton, double price,
+    public static void openBookingUI(OurButton bookButton,String roomNumber, double price,
                                      CounterPanel AdultsCounter , CounterPanel ChildrenCounter,
                                      JXDatePicker checkIn, JXDatePicker checkOut, JTextField creditCardField,
                                      JTextField phoneNumberField,Message msg,JPanel bg, MigLayout layout){

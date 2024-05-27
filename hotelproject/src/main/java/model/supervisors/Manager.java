@@ -62,14 +62,16 @@ abstract public class Manager extends Worker {
     }
 
     ////////////////////////////Rooms Management////////////////////////////
-    public static void addRoom(RoomType roomType, boolean isAvailable, double price){
+    public static Room addRoom(RoomType roomType, boolean isAvailable, double price){
         Room room = new Room(roomType, isAvailable, price);
         Hotel.getRooms().put(room.getRoomNumber(), room);
         addRoomToDataBase(room);
+        return room;
     }
     public static void removeRoomFromDataBase(String roomNumber){
         try{
             Database.removeFromDataBase("Rooms", "roomNumber", roomNumber);
+            Hotel.getRooms().remove(roomNumber);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

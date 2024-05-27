@@ -17,7 +17,7 @@ public class RoomUI extends JPanel {
     private final Message msg = new Message();
     private final MigLayout layout=new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]");
 
-    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price){
+    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price,String roomNumber){
 
         setLayout(layout);
         setBackground(new Color(242, 242, 242));
@@ -160,7 +160,7 @@ public class RoomUI extends JPanel {
 
          roomDetailedInfo.add(backButton ,"wrap");
 
-        Controller.openBookingUI(bookButton,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,layout);
+        Controller.openBookingUI(bookButton,roomNumber,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,layout);
 
     }
 
