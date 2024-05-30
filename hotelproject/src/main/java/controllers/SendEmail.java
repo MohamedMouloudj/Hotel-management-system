@@ -13,10 +13,11 @@ public class SendEmail
 
     Session newSession = null;
     MimeMessage mimeMessage = null;
+//NOTE: if you want to send emails replace Email@gmail.com with the email you want to send to , and the password for the low security apps 
 
     public boolean sendEmail(String Email) {
         String fromUser = "hermezabderrahim568@gmail.com";
-        String fromUserPassword = "pwqo zsea tqgl epre";
+        String fromUserPassword = "password for low secrity apps";
         String emailHost = "smtp.gmail.com";
         try {
             Transport transport = newSession.getTransport("smtp");
@@ -31,7 +32,7 @@ public class SendEmail
             return false; // Return false if there was an error sending the email
         }
     }
-//NOTE: if you want to send emails replace Email@gmail.com with the email you want to send to 
+
     public MimeMessage draftEmail(String Email , String message , String token) throws AddressException, MessagingException, IOException {
         String[] emailReceipients = {"Email@gmail.com",Email};  //Enter list of email recepients
         String emailSubject = "L oasis hotel token";
