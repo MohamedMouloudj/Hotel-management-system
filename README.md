@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Hotel Management System is a comprehensive Java-based application developed using Swing and AWT for the user interface. It follows the MVC (Model-View-Controller) design pattern and leverages Java collections and exception handling to ensure robust and efficient operations. MongoDB, a NoSQL database, is used for data storage, providing flexibility and scalability.
+Hotel Management System is a comprehensive Java-based application developed using Swing and AWT for the user interface. It follows the MVC (Model-View-Controller) design pattern and leverages Java collections and exception handling to ensure robust and efficient operations. MongoDB, a NoSQL database, is used for data storage, providing flexibility and scalability.
 
 ## Features
 
@@ -17,7 +17,7 @@ The Hotel Management System is a comprehensive Java-based application developed 
 
    - Can be added by the manager.
    - Manages reservations.
-   - Updates room status (occupied, available).
+   - Also manages guest accounts.
 
 3. **Guest**
    - Can sign up for an account.
@@ -49,6 +49,7 @@ Example classes:
 - `Manager`
 - `Room`
 - `Reservation`
+- `Database`
 
 ## View
 
@@ -60,6 +61,7 @@ Example classes:
 - `ManagerView`
 - `ReceptionistView`
 - `GuestView`
+- `Components Classes`
 
 ## Controller
 
@@ -67,10 +69,10 @@ Handles the user inputs and updates the model and view accordingly. Processes us
 
 Example classes:
 
-- `LoginController`
-- `ManagerController`
-- `ReceptionistController`
-- `GuestController`
+- `Controller` (Main controller class)
+- `PasswordHashing`
+- `QrCode`
+- `SendEmail`
 
 ## Installation and Setup
 
