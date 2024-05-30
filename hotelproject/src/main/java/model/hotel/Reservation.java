@@ -6,11 +6,11 @@ import org.bson.Document;
 import java.util.Iterator;
 
 public class Reservation {
-    private final double CUTOFF_PERCENTAGE = 0.2;
+    private static final double CUTOFF_PERCENTAGE = 0.2;
     private final String reservationId;
     private double cutOffDays;
-    private int phoneNumber;
-    private int creditCardNumber;
+    private String phoneNumber;
+    private String creditCardNumber;
     private String roomNumber;
     private final String guestEmail;
     private OurDate checkInDate;
@@ -23,17 +23,17 @@ public class Reservation {
     private boolean isReservation;
 
     public Reservation(String roomNumber, String guestEmail, OurDate checkInDate, OurDate checkOutDate,
-                       int adults, int children, int phoneNumber, int creditCardNumber,double totalCost) {
+                       int adults, int children, String phoneNumber, String creditCardNumber,double totalCost) {
         this.roomNumber = roomNumber;
         this.guestEmail = guestEmail;
         this.checkInDate = checkInDate;
-//        calculateCutoffDays();
+        calculateCutoffDays();
         this.checkOutDate = checkOutDate;
         this.adults = adults;
         this.children = children;
         this.phoneNumber = phoneNumber;
         this.creditCardNumber = creditCardNumber;
-        this.reservationId = roomNumber + guestEmail + checkInDate.toString();
+        this.reservationId = roomNumber + guestEmail + checkInDate.getDay()+"/"+checkInDate.getMonth()+"/"+checkInDate.getYear();
         this.totalCost = totalCost;
         this.isPaid = false;
         this.isConfirmed = false;
@@ -62,12 +62,12 @@ public class Reservation {
 
     public void setCheckInDate(OurDate checkInDate) {
         this.checkInDate = checkInDate;
-//        calculateCutoffDays();
+        calculateCutoffDays();
 
     }
     public void setCheckOutDate(OurDate checkOutDate) {
         this.checkOutDate = checkOutDate;
-//        calculateCutoffDays();
+        calculateCutoffDays();
     }
 
     public boolean isReservation() {
@@ -90,14 +90,14 @@ public class Reservation {
         this.totalCost = totalCost;
     }
 
-//    private void calculateCutoffDays(){
-//        OurDate today = new OurDate();
-//        try {
-//            cutOffDays = OurDate.getDaysBetweenDates(today, checkInDate) * CUTOFF_PERCENTAGE;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//    }
+    private void calculateCutoffDays(){
+        OurDate today = new OurDate();
+        try {
+            cutOffDays = OurDate.getDaysBetweenDates(today, checkInDate) * CUTOFF_PERCENTAGE;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * @return the number of days (20%) before the check in date that the guest can
@@ -123,19 +123,19 @@ public class Reservation {
         isConfirmed = confirmed;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getCreditCardNumber() {
+    public String getCreditCardNumber() {
         return creditCardNumber;
     }
 
-    public void setCreditCardNumber(int creditCardNumber) {
+    public void setCreditCardNumber(String creditCardNumber) {
         this.creditCardNumber = creditCardNumber;
     }
 
@@ -153,6 +153,10 @@ public class Reservation {
 
     public void setChildren(int children) {
         this.children = children;
+    }
+
+    public static double getCUTOFF_PERCENTAGE() {
+        return CUTOFF_PERCENTAGE;
     }
 
     /**
@@ -177,7 +181,7 @@ public class Reservation {
     /**
      * Coverts a Document object to a Reservation object
      * @param document Document
-     *                 The document to be converted
+     *   The document to be converted
      * @return The Reservation object or null if the conversion fails
      * */
     public static Reservation fromDocument(Document document) {
@@ -188,8 +192,8 @@ public class Reservation {
             OurDate checkOutDate = OurDate.parse(document.getString("checkOutDate"));
             int adults = document.getInteger("adults");
             int children = document.getInteger("children");
-            int phoneNumber = document.getInteger("phoneNumber");
-            int creditCardNumber = document.getInteger("creditCardNumber");
+            String phoneNumber = document.getString("phoneNumber");
+            String creditCardNumber = document.getString("creditCardNumber");
             double totalCost = document.getDouble("totalCost");
             boolean isPaid = document.getBoolean("isPaid");
             boolean isConfirmed = document.getBoolean("isConfirmed");
@@ -203,5 +207,25 @@ public class Reservation {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "reservationId='" + reservationId + '\'' +
+                ", cutOffDays=" + cutOffDays +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", creditCardNumber='" + creditCardNumber + '\'' +
+                ", roomNumber='" + roomNumber + '\'' +
+                ", guestEmail='" + guestEmail + '\'' +
+                ", checkInDate=" + checkInDate +
+                ", checkOutDate=" + checkOutDate +
+                ", adults=" + adults +
+                ", children=" + children +
+                ", totalCost=" + totalCost +
+                ", isPaid=" + isPaid +
+                ", isConfirmed=" + isConfirmed +
+                ", isReservation=" + isReservation +
+                '}';
     }
 }

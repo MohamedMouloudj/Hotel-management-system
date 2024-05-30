@@ -4,7 +4,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import controllers.PasswordHashing;
+import com.mongodb.util.JSON;
+import controllers.OurDate;
 import model.hotel.Hotel;
 import model.hotel.Reservation;
 import model.hotel.Room;
@@ -48,11 +49,9 @@ public class Database {
         if (roomCollection == null)
             return;
         try {
-            MongoCursor<Document> cursor = roomCollection.find().iterator();
-            while (cursor.hasNext()) {
-                Document roomDocument = cursor.next();
+            for (Document roomDocument : roomCollection.find()) {
                 Room room = new Room(RoomType.valueOf(roomDocument.getString("roomType")),
-                        roomDocument.getBoolean("isAvailable",false),
+                        roomDocument.getBoolean("isAvailable", false),
                         roomDocument.getDouble("price"));
                 room.setRoomNumber(roomDocument.getString("roomNumber"));
                 // Update the idCounter to the maximum room number (replaceAll("\\D+","") removes all non-digits)
@@ -75,15 +74,11 @@ public class Database {
             MongoCursor<Document> cursor = guestCollection.find().iterator();
             while (cursor.hasNext()) {
                 Document guestDocument = cursor.next();
-                // Parse the JSON string back to a Document
-                Document reservationsDocument = Document.parse(guestDocument.getString("Reservations"));
-                // Convert the Document back to a HashMap
-                HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
-                // Convert each Object in reservationsHashMap to a Reservation
+                Document reservationsDocument = (Document) guestDocument.get("Reservations");
                 HashMap<String, Reservation> reservations = new HashMap<>();
-                for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
+                for (Map.Entry<String, Object> entry : reservationsDocument.entrySet()) {
                     Document reservationDocument = (Document) entry.getValue();
-                    reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+                    reservations.put(entry.getKey().replaceAll("-","."), Reservation.fromDocument(reservationDocument));
                 }
                 Guest guest = new Guest(guestDocument.getString("firstName"),
                         guestDocument.getString("lastName"),
@@ -122,6 +117,7 @@ public class Database {
                             workerDocument.getString("lastName"),
                             workerDocument.getString("email"));
                     receptionist.setOasisMail(workerDocument.getString("OasisMail"));
+                    receptionist.setPassword(workerDocument.getString("password"));
 //                    receptionist.setReservations(reservations);
                     workers.put(receptionist.getOasisMail(), receptionist);
                 }
@@ -179,6 +175,10 @@ public class Database {
                     document.append(key, Double.parseDouble(value));
                     continue;
                 }
+                if (key.equals("Reservations")){
+                    document.append(key, Document.parse(value));
+                    continue;
+                }
                 document.append(key, value);
             }
 
@@ -225,6 +225,62 @@ public class Database {
         }catch (Exception e){
             e.printStackTrace();
             throw new DBException("Error occurred while updating the document");
+        }
+    }
+
+    public static void dropCollection(String collectionName) {
+        try {
+            Hotel.hotelDatabase.getCollection(collectionName).drop();
+            System.out.println("Collection dropped successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void addReservationToUser(String email, Reservation reservation) {
+        try {
+            // Get the user collection
+            MongoCollection<Document> userCollection = Hotel.hotelDatabase.getCollection("Guests");
+            // Build the query to find the user
+            Document query = new Document("email", email);
+
+            // Convert the Reservation object to a Document
+            Document reservationDocument = new Document();
+            reservationDocument.append("roomNumber", reservation.getRoomNumber());
+            reservationDocument.append("guestEmail", reservation.getGuestEmail());
+            reservationDocument.append("phoneNumber", reservation.getPhoneNumber());
+            reservationDocument.append("checkInDate", reservation.getCheckInDate().getDay()+"/"+reservation.getCheckInDate().getMonth()+"/"+reservation.getCheckInDate().getYear());
+            reservationDocument.append("checkOutDate", reservation.getCheckOutDate().getDay()+"/"+reservation.getCheckOutDate().getMonth()+"/"+reservation.getCheckOutDate().getYear());
+            reservationDocument.append("adults", reservation.getAdults());
+            reservationDocument.append("children", reservation.getChildren());
+            reservationDocument.append("totalCost", reservation.getTotalCost());
+            reservationDocument.append("isPaid", reservation.isPaid());
+            reservationDocument.append("isConfirmed", reservation.isConfirmed());
+            reservationDocument.append("isReservation", reservation.isReservation());
+
+            String modifiedString = reservation.getGuestEmail().replace(".", "-");
+            String reservationKey = reservation.getRoomNumber() + modifiedString + reservation.getCheckInDate().toString();
+            Document update = new Document("$set", new Document("Reservations." + reservationKey, reservationDocument));
+
+            // Update the user document
+            userCollection.updateOne(query, update);
+            System.out.println("Reservation added successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void removeReservationFromGuest(String email, String reservationKey) {
+        try {
+            // Get the user collection
+            MongoCollection<Document> userCollection = Hotel.hotelDatabase.getCollection("Guests");
+            // Build the query to find the user
+            Document query = new Document("email", email);
+            Document update = new Document("$unset", new Document("Reservations." + reservationKey.replaceFirst(".","-"), ""));
+
+            // Update the user document
+            userCollection.updateOne(query, update);
+            System.out.println("Reservation removed successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

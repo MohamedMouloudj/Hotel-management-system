@@ -43,4 +43,18 @@ public class Room {
         this.roomNumber = roomNumber;
         idCounter--;
     }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomNumber='" + roomNumber + '\'' +
+                ", roomType=" + roomType +
+                ", price=" + price +
+                ", isAvailable=" + isAvailable +
+                '}';
+    }
 }

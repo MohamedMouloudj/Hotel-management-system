@@ -48,8 +48,8 @@ public class ManagerGui extends UserGui<Manager> {
         welcomePage.addCard("hotelproject/src/main/java/view/icons/hammer.png", "Workers", workersNumber+" workers", new Color(200, 0, 255),new Color(0x7D3CFF) );
         welcomePage.addCard("hotelproject/src/main/java/view/icons/user.png", "Guests", guestsNumber+" guests", new Color(0xA2FF00), new Color(76, 211, 0));
         pagesMap.put(1, welcomePage);
-        pagesMap.put(2, new ReceptionistsManagement());
-        pagesMap.put(3, new GuestManagement());
+        pagesMap.put(2, new ReceptionistsManagement(user));
+        pagesMap.put(3, new GuestManagement(user));
         pagesMap.put(4, new RoomsPanelManager());
 
         return pagesMap;

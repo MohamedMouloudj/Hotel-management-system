@@ -3,6 +3,7 @@ package view.components.table;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -56,5 +57,12 @@ public class Table extends JTable {
     public void deleteRow(int i) {
         DefaultTableModel tableModel=(DefaultTableModel) getModel();
         tableModel.removeRow(i);
+    }
+    public void clearTable() {
+        DefaultTableModel tableModel = (DefaultTableModel) getModel();
+        tableModel.setRowCount(0); // Clear all rows from the table model
+    }
+    public void addRowSelectionListener(ListSelectionListener listener) {
+        getSelectionModel().addListSelectionListener(listener);
     }
 }

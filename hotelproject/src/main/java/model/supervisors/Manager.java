@@ -35,39 +35,34 @@ abstract public class Manager extends Worker {
     public static void removeWorkerFromDataBase(String OasisEmail) {
         try {
             Database.removeFromDataBase("Workers", "OasisMail", OasisEmail);
+            Hotel.getWorkers().remove(OasisEmail);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public static void removeGuestFromDataBase(String email) {
-        try {
-            Database.removeFromDataBase("Guests", "email", email);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    public static void updateWorkerInDataBase(String OasisEmail, String key, Object updatedValue) {
-        try {
-            if (key.equals("OasisMail")) {
-                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
-            }
-            if (key.equals("firstName")) {
-                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
-            }
-            if (key.equals("lastName")) {
-                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
-            }
-            if (key.equals("password")) {
-                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
-            }
-            if (key.equals("role")) {
-                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+
+//    public static void updateWorkerInDataBase(String OasisEmail, String key, Object updatedValue) {
+//        try {
+//            if (key.equals("OasisMail")) {
+//                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
+//            }
+//            if (key.equals("firstName")) {
+//                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
+//            }
+//            if (key.equals("lastName")) {
+//                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
+//            }
+//            if (key.equals("password")) {
+//                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
+//            }
+//            if (key.equals("role")) {
+//                Database.updateFieldInDataBase("Workers", "OasisMail", OasisEmail, key, (String) updatedValue);
+//            }
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
     ////////////////////////////Rooms Management////////////////////////////
     public static Room addRoom(RoomType roomType, boolean isAvailable, double price){
@@ -84,24 +79,6 @@ abstract public class Manager extends Worker {
             System.out.println(e.getMessage());
         }
     }
-    public static void updateRoomInDataBase(String roomNumber,String key, Object updatedValue){
-        try {
-            if(key.equals("roomNumber")){
-                Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(String) updatedValue);
-            }
-            if (key.equals("roomType")){
-                Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(String) updatedValue);
-            }
-            if (key.equals("price")){
-                Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(String) updatedValue);
-            }
-            if (key.equals("isAvailable")){
-                Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(boolean) updatedValue);
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
     private static void addRoomToDataBase(Room room) {
         HashMap<String,String> roomDocument = new HashMap<>();
         roomDocument.put("roomNumber", room.getRoomNumber());
@@ -109,5 +86,23 @@ abstract public class Manager extends Worker {
         roomDocument.put("price", String.valueOf(room.getRoomPrice()));
         roomDocument.put("isAvailable", String.valueOf(room.availability()));
         Database.addToDataBase("Rooms", roomDocument);
+    }
+
+    ///////////////////////////////////
+    public static void clearData(String collection,boolean isConfirmed){
+        if (!isConfirmed){
+            return;
+        }
+        try{
+            switch (collection){
+                case "Guests" -> Hotel.getGuests().clear();
+                case "Workers" -> Hotel.getWorkers().clear();
+                case "Rooms" -> Hotel.getRooms().clear();
+            }
+            Database.dropCollection(collection);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }

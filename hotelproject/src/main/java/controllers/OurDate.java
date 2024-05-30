@@ -1,12 +1,6 @@
 package controllers;
 
-import java.util.Calendar;
 import java.time.LocalDate;
-class InvalidDateException extends Exception {
-    public InvalidDateException(String message) {
-        super(message);
-    }
-}
 
 public class OurDate {
     private int year ;
@@ -47,8 +41,8 @@ public class OurDate {
 
 
     void validate() throws InvalidDateException{
-        if (this.year < currentYear ) {
-            throw new InvalidDateException("Invalid year : year  must be between 2024 and 2025 ");
+        if (String.valueOf(this.year).length()!=4) {
+            throw new InvalidDateException("Invalid year");
         }
 
         if (this.month < 1 || this.month > 12) {
@@ -73,13 +67,14 @@ public class OurDate {
             return daysInMonthLookup[this.month - 1];
         }
     }
-
+    /**
+    *  verify the input year if it is leap or not <s
+    *  to treat the all cases
+    */
     boolean  isLeapYear() {
         return (this.year % 4 == 0 && this.year % 100 != 0) || (this.year % 400 == 0);
     }
-    /* verify the input year if it is leap or not <s
-    /*to treat the all cases
-     */
+
 
     public int getDay(){
         return this.day;
@@ -113,7 +108,10 @@ public class OurDate {
         return  this.day + "/" + this.month + "/" + this.year;
     }
 
-    static  boolean Compare(OurDate date1 , OurDate date2){
+    /**
+     * Compare if date1 is before date2
+     * */
+    public static  boolean Compare(OurDate date1 , OurDate date2){
 
         // Compare years
         if (date1.year < date2.year) {
@@ -129,15 +127,19 @@ public class OurDate {
             return false;
         }
 
-
         return date1.day < date2.day;
     }
 
-
+    public boolean equals(OurDate date) {
+        if (date == null) return false;
+        if (this == date) return true;
+        if (this.getClass() != date.getClass()) return false;
+        return this.day == date.day && this.month == date.month && this.year == date.year;
+    }
 
     public static long getDaysBetweenDates(OurDate date1 , OurDate date2 ) throws  InvalidDateException {
 
-        if (date1.month < 1 || date1.month > 12 || date2.month < 1 || date2.month > 12) {
+        if (date1.getMonth() < 1 || date1.getMonth() > 12 || date2.getMonth() < 1 || date2.getMonth() > 12) {
             throw new InvalidDateException("Invalid date") ;
         }
 
@@ -159,7 +161,7 @@ public class OurDate {
         long totalDays = 0;
 
         // Handle year difference (including leap years)
-        for (int y = date1.year; y < date2.year; y++) {
+        for (int y = date1.getYear(); y < date2.getYear(); y++) {
             totalDays += (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0) ? 366 : 365;
         }
 
@@ -192,7 +194,7 @@ public class OurDate {
         }
 
         // Handle day difference within the same month
-        totalDays += date2.day - date1.day;
+        totalDays += date2.getDay() - date1.getDay();
 
         return totalDays;
     }
@@ -205,26 +207,21 @@ public class OurDate {
      * @throws InvalidDateException if the date string is not in the expected format
      * */
     public static OurDate parse(String dateString) throws InvalidDateException {
-        String[] parts = dateString.split("/");
-        if (parts.length != 3) {
-            throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+        if (dateString != null) {
+            String[] parts = dateString.split("/");
+            if (parts.length != 3) {
+                throw new InvalidDateException("Invalid date format. Expected format is day/month/year");
+            }
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+            return new OurDate(day, month, year);
         }
-        int day = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        int year = Integer.parseInt(parts[2]);
-        return new OurDate(day, month, year);
+        return null;
     }
 
-
-    public static void main(String[] args) {
-        OurDate a = new OurDate();
-        OurDate b = new OurDate(30,5,2024);
-        try{
-            System.out.println("the difference is " + OurDate.getDaysBetweenDates(a,b) );
-        }catch (InvalidDateException e) {
-            System.out.println(e.getMessage());
-        }
-
-
+    @Override
+    public String toString() {
+        return day + "/" + month + "/" + year;
     }
 }

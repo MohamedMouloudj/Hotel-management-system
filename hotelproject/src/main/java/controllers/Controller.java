@@ -21,15 +21,16 @@ import view.components.OurButton;
 import view.components.items.MyTextField;
 import view.components.roomComponents.CounterPanel;
 import view.components.roomComponents.RoomOnList;
+import view.components.roomComponents.RoomUI;
 import view.components.table.Table;
 import view.login.container.ForgetPassword;
-
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,7 @@ import java.util.regex.Pattern;
  * */
 public class Controller {
     private static ManagerGui managerGui;
+    private static GuestUi guestUi=null;
     private final static String MANAGER_EMAIL="admin";
     private final static String MANAGER_PASSWORD="admin12345#";
     public final static String DOMAIN_RECEPTIONIST = "@Oasis.dz";
@@ -50,7 +52,8 @@ public class Controller {
         Hotel.setUser(user);
         if (user instanceof Guest){
             Hotel.initHotelModel(UserType.GUEST);
-            GuestUi.run(new GuestUi((Guest) user));
+            guestUi=new GuestUi((Guest) user);
+            GuestUi.run(guestUi);
         }
         if (user instanceof Worker){
             if (((Worker) user).getRole().equals(Role.RECEPTIONIST)){
@@ -106,32 +109,33 @@ public class Controller {
                 try{
                     if (email.isEmpty() || password.isEmpty()) {
                         throw new AccessAppException("All the Fields Are Required");
-                    } else if (email.equals(MANAGER_EMAIL) && password.equals(MANAGER_PASSWORD)) {
+                    }
+                    if (email.equals(MANAGER_EMAIL) && password.equals(MANAGER_PASSWORD)) {
                         setHotelUserAndOpenUI(null);
                         SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
                         return;
-                    } else if (!isValidEmail(email)) {
+                    }
+                    if (!email.endsWith(DOMAIN_RECEPTIONIST) && !isValidEmail(email)) {
                         throw new AccessAppException("Invalid Email");
-                    } else {
-                        if (email.endsWith(DOMAIN_RECEPTIONIST)) { // Receptionist
+                    }
+                    if (email.endsWith(DOMAIN_RECEPTIONIST)) { // Receptionist
                             loginUser = getUserFromModel("Workers", "OasisMail", email);
-                        } else {
+                    } else {
                             loginUser = getUserFromModel("Guests", "email", email);
                             if (loginUser == null)
                                 loginUser = getUserFromModel("Workers", "email", email);
-                        }
+                    }
 
-                        if (loginUser == null) {
-                            throw new AccessAppException("User not found");
+                    if (loginUser == null) {
+                        throw new AccessAppException("User not found");
+                    } else {
+                        String truePassword = loginUser.getPassword();
+                        if (!PasswordHashing.verifyPassword(password, truePassword)) {
+                            throw new AccessAppException("Incorrect Password");
                         } else {
-                            String truePassword = loginUser.getPassword();
-                            if (!PasswordHashing.verifyPassword(password, truePassword)) {
-                                throw new AccessAppException("Incorrect Password");
-                            } else {
-                                setHotelUserAndOpenUI(loginUser);
-                            }
-                            SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
+                            setHotelUserAndOpenUI(loginUser);
                         }
+                        SwingUtilities.getWindowAncestor(bg).dispose(); // Close the login form
                     }
                 }catch (AccessAppException ex){
                     msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout); // Display error message
@@ -149,10 +153,10 @@ public class Controller {
             parentContainer.repaint();
         });
     }
-    private static Guest addGuestFromInputs(String firstName, String lastName, String email, String password) {
+    private static void addGuestFromInputs(String firstName, String lastName, String email, String password) {
         Guest guest = new Guest(firstName, lastName, email, PasswordHashing.hashPassword(password));
         Receptionist.addGuestToDataBase(guest);
-        return guest;
+        Hotel.getGuests().put(email, guest);
     }
 
     /**
@@ -171,14 +175,14 @@ public class Controller {
                     }else if (Hotel.getGuests().isEmpty()) {
                        Document guestDoc=Database.findInDataBase(collectionName, researchBy, matchingField);
                           if (guestDoc!=null){
-                              Document reservationsDocument = Document.parse(guestDoc.getString("Reservations"));
+                              Document reservationsDocument = (Document) guestDoc.get("Reservations");
                               // Convert the Document back to a HashMap
                               HashMap<String, Object> reservationsHashMap = new HashMap<>(reservationsDocument);
                               // Convert each Object in reservationsHashMap to a Reservation
                               HashMap<String, Reservation> reservations = new HashMap<>();
                               for (Map.Entry<String, Object> entry : reservationsHashMap.entrySet()) {
                                   Document reservationDocument = (Document) entry.getValue();
-                                  reservations.put(entry.getKey(), Reservation.fromDocument(reservationDocument));
+                                  reservations.put(entry.getKey().replaceAll("-","."), Reservation.fromDocument(reservationDocument));
                               }
                               Guest guest=new Guest(guestDoc.getString("firstName"),
                                       guestDoc.getString("lastName"),
@@ -216,7 +220,7 @@ public class Controller {
                 if (researchBy.equals("email")) {
                     if (!Hotel.getWorkers().isEmpty()) {
                         for (Worker receptionist : Hotel.getWorkers().values()) {
-                            if (receptionist.getOasisMail().equals(matchingField)) {
+                            if (receptionist.getEmail().equals(matchingField)) {
                                 return receptionist;
                             }
                         }
@@ -271,13 +275,8 @@ public class Controller {
             e.printStackTrace();
         }
     }
-    /**
-     * initTable, reservations requests version
-     * @param reqColumnNames The names of the columns
-     * @param reqTable The table to be initialized
-     * @param resTable The table to be initialized
-     *  */
-    public static void initTableResReqRecV(String[] reqColumnNames, Table reqTable,String[] resColumnNames,Table resTable){
+
+    public static void initTableResReq(String[] reqColumnNames, Table reqTable, String[] resColumnNames, Table resTable){
         if (getUser() instanceof Guest){
             try{
                 Guest user = (Guest) getUser();
@@ -288,7 +287,7 @@ public class Controller {
                         row[1] = user.getEmail();
                         row[2] = r.getPhoneNumber();
                         row[3] = r.getCheckInDate();
-                        row[4] = r.getCheckInDate();
+                        row[4] = r.getCheckOutDate();
                         row[5] = r.getAdults();
                         row[6] = r.getChildren();
                         row[7] = r.getTotalCost();
@@ -301,7 +300,7 @@ public class Controller {
                         row[1] = user.getEmail();
                         row[2] = r.getPhoneNumber();
                         row[3] = r.getCheckInDate();
-                        row[4] = r.getCheckInDate();
+                        row[4] = r.getCheckOutDate();
                         row[5] = r.getAdults();
                         row[6] = r.getChildren();
                         row[7] = r.getTotalCost();
@@ -314,54 +313,32 @@ public class Controller {
             }
         }else{
             try{
-                int index;
-                for (Guest g : Hotel.getGuests().values()) {
-                    for (Reservation r : g.getReservations().values()) {
-                        if(!r.isReservation()){
-                            index = 0;
-                            Object[] row = new Object[reqColumnNames.length];
-                            row[index] = r.getRoomNumber();
-                            index++;
-                            row[index] = g.getEmail();
-                            index++;
-                            row[index] = r.getPhoneNumber();
-                            index++;
-                            row[index] = r.getCheckInDate();
-                            index++;
-                            row[index] = r.getCheckInDate();
-                            index++;
-                            row[index] = r.getAdults();
-                            index++;
-                            row[index] = r.getChildren();
-                            index++;
-                            row[index] = r.getTotalCost();
-                            index++;
-                            row[index] = r.isPaid();
-                            index++;
-                            row[index] = r.isConfirmed();
-                            reqTable.addRow(row);
-                        }else {
-                            index = 0;
-                            Object[] row = new Object[resColumnNames.length];
-                            row[index] = r.getRoomNumber();
-                            index++;
-                            row[index] = g.getEmail();
-                            index++;
-                            row[index] = r.getPhoneNumber();
-                            index++;
-                            row[index] = r.getCheckInDate();
-                            index++;
-                            row[index] = r.getCheckInDate();
-                            index++;
-                            row[index] = r.getAdults();
-                            index++;
-                            row[index] = r.getChildren();
-                            index++;
-                            row[index] = r.getTotalCost();
-                            index++;
-                            row[index] = r.isPaid();
-                            resTable.addRow(row);
-                        }
+                for (Reservation r : Hotel.getReservationRequests().values()) {
+                    if(!r.isReservation()){
+                        Object[] row = new Object[reqColumnNames.length];
+                        row[0] = r.getRoomNumber();
+                        row[1] = r.getGuestEmail();
+                        row[2] = r.getPhoneNumber();
+                        row[3] = r.getCheckInDate();
+                        row[4] = r.getCheckOutDate();
+                        row[5] = r.getAdults();
+                        row[6] = r.getChildren();
+                        row[7] = r.getTotalCost();
+                        row[8] = r.isPaid();
+                        row[9] = r.isConfirmed();
+                        reqTable.addRow(row);
+                    }else {
+                        Object[] row = new Object[resColumnNames.length];
+                        row[0] = r.getRoomNumber();
+                        row[1] = r.getGuestEmail();
+                        row[2] = r.getPhoneNumber();
+                        row[3] = r.getCheckInDate();
+                        row[4] = r.getCheckOutDate();
+                        row[5] = r.getAdults();
+                        row[6] = r.getChildren();
+                        row[7] = r.getTotalCost();
+                        row[8] = r.isPaid();
+                        resTable.addRow(row);
                     }
                 }
             }catch (Exception e){
@@ -371,7 +348,7 @@ public class Controller {
     }
     public static void addGuest(String firstName, String lastName, String email,Table table) throws AccessAppException {
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
-            throw new AccessAppException("All the Fields Are Required");
+            throw new AccessAppException("All the fields are required");
         } else if (!isValidEmail(email)) {
             throw new AccessAppException("Invalid Email");
         }
@@ -379,10 +356,37 @@ public class Controller {
         if (guest!=null) {
             throw new AccessAppException("Email already exists");
         }
-        guest=addGuestFromInputs(firstName,lastName,email,firstName + lastName+ "123");
-        Hotel.getGuests().put(email, guest);
+        addGuestFromInputs(firstName,lastName,email,firstName + lastName+ "123");
         table.addRow(new Object[]{firstName,lastName,email});
-        if (managerGui!=null && Hotel.getUser() instanceof Manager)
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+            managerGui.getWelcomePage().updateCard("Guests",Hotel.getGuests().size());
+    }
+    public static void removeGuest(String email,Table table) throws AccessAppException {
+        int row = table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        if (email.isEmpty()) {
+            throw new AccessAppException("Email field is required");
+        } else if (!isValidEmail(email)) {
+            throw new AccessAppException("Invalid Email");
+        }
+        if (!Hotel.getGuests().containsKey(email)) {
+            throw new AccessAppException("Email does not exist!");
+        }
+        table.deleteRow(row);
+        Receptionist.removeGuestFromDataBase(email);
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+            managerGui.getWelcomePage().updateCard("Guests",Hotel.getGuests().size());
+    }
+    public static void clearGuests(Table table){
+        int ans=JOptionPane.showOptionDialog(null,
+                "Are you sure you want to delete all guests?", "WARNING",
+                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
+        Manager.clearData("Guests",ans==0);
+        if (ans==0)
+            table.clearTable();
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
             managerGui.getWelcomePage().updateCard("Guests",Hotel.getGuests().size());
     }
     public static void addReceptionist(String firstName, String lastName, String email, String oasisMail,Table table) throws AccessAppException {
@@ -413,10 +417,36 @@ public class Controller {
         Manager.addWorkerToDataBase(receptionist);
         Hotel.getWorkers().put(oasisMail,receptionist);
         table.addRow(new Object[]{firstName,lastName,email,oasisMail});
-        if (managerGui!=null && Hotel.getUser() instanceof Manager)
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
             managerGui.getWelcomePage().updateCard("Workers",Hotel.getWorkers().size());
     }
-    public static void addReservationRecV(OurButton btn, Table reqTable, Table resTable, Message msg, JPanel bg, MigLayout layout){
+    public static void removeReceptionist(String oasisMail, Table table) throws AccessAppException {
+        int row =table.getSelectedRow();
+        if (row == -1) {
+            return;
+        }
+        if (oasisMail.isEmpty()) {
+            throw new AccessAppException("Email field is required");
+        }
+        if (!Hotel.getWorkers().containsKey(oasisMail)) {
+            throw new AccessAppException("Email does not exist!");
+        }
+        table.deleteRow(row);
+        Manager.removeWorkerFromDataBase(oasisMail);
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+            managerGui.getWelcomePage().updateCard("Workers",Hotel.getWorkers().size());
+    }
+    public static void clearReceptionists(Table table){
+        int ans=JOptionPane.showOptionDialog(null,
+                "Are you sure you want to delete all receptionists?", "WARNING",
+                JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, null, null);
+        Manager.clearData("Workers",ans==0);
+        if (ans==0)
+            table.clearTable();
+        if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+            managerGui.getWelcomePage().updateCard("Workers",Hotel.getWorkers().size());
+    }
+    public static void addReservationReceptionistVersion(OurButton btn, Table reqTable, Table resTable, Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             int row = reqTable.getSelectedRow();
             if (row == -1) {
@@ -436,22 +466,20 @@ public class Controller {
             int children = (int) reqTable.getValueAt(row, 6);
             double totalCost = (double) reqTable.getValueAt(row, 7);
             boolean isPaid = (boolean) reqTable.getValueAt(row, 8);
-            reqTable.remove(row);
+            reqTable.deleteRow(row);
             try{
-                Guest user = (Guest) getUser();
-                Reservation res=user.getReservations().get(roomNumber + email + checkInDate.toString());
-                res.setConfirmed(true);
+                Reservation res=Hotel.getGuests().get(email).getReservations().get(roomNumber + email + checkInDate.getDay()+"/"+checkInDate.getMonth()+"/"+checkInDate.getYear());
                 res.setReservation(true);
-                handleUpdates("Guest",roomNumber,email,"Reservations",user.getReservations());
+                handleUpdates("Guest",roomNumber,email,"Reservations",res,null);
             }catch (ClassCastException ex){
                 ex.printStackTrace();
             } catch (AccessAppException ex) {
-                System.out.println("In addReservationRecV: "+ex.getMessage());
+                System.out.println(ex.getMessage());
             }
             resTable.addRow(new Object[]{roomNumber,email,phoneNumber,checkInDate,checkOutDate,adults,children,totalCost,isPaid});
         });
     }
-    public static void payReservation(OurButton btn, Table resTable){
+    public static void payReservation(OurButton btn, Table resTable,Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             int row = resTable.getSelectedRow();
             if (row == -1) {
@@ -462,51 +490,244 @@ public class Controller {
             OurDate checkInDate = (OurDate) resTable.getValueAt(row, 3);
             resTable.setValueAt(true, row, 8);
             try{
-                Guest user = (Guest) getUser();
-                user.getReservations().get(roomNumber + email + checkInDate.toString()).setPaid(true);
-                handleUpdates("Guest",roomNumber,email,"Reservations",user.getReservations());
+                Reservation res=Hotel.getGuests().get(email).getReservations().get(roomNumber + email + checkInDate.getDay()+"/"+checkInDate.getMonth()+"/"+checkInDate.getYear());
+                res.setPaid(true);
+                handleUpdates("Guest",roomNumber,email,"Reservations",res,null);
+                msg.displayMessage(Message.MessageType.SUCCESS, "Reservation paid !", bg, layout);
             }catch (ClassCastException ex){
                 ex.printStackTrace();
             } catch (AccessAppException ex) {
-                System.out.println("In payReservation: "+ex.getMessage());
+                System.out.println("Error in payReservation: "+ex.getMessage());
             }
         });
-
     }
+    public static void confirmReservation(OurButton btn, Table reqTable, Message msg, JPanel bg, MigLayout layout,LinkedList<String> confirmedReservations){
+        btn.addActionListener(e->{
+            int row = reqTable.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            String roomNumber = (String) reqTable.getValueAt(row, 0);
+            String email = (String) reqTable.getValueAt(row, 1);
+            OurDate checkInDate = (OurDate) reqTable.getValueAt(row, 3);
+            try{
+                Guest user = (Guest) getUser();
+                Reservation res=user.getReservations().get(roomNumber + email + checkInDate.toString());
+                res.setConfirmed(true);
+                handleUpdates("Guest",roomNumber,email,"Reservations",res,null);
+                reqTable.setValueAt(true, row, 9);
+                msg.displayMessage(Message.MessageType.SUCCESS, "Reservation confirmed successfully, wait for response", bg, layout);
+                confirmedReservations.add(roomNumber+email+checkInDate.toString());
+            }catch (ClassCastException ex){
+                msg.displayMessage(Message.MessageType.ERROR,"An error occurred while confirming request!",bg,layout);
+            } catch (AccessAppException ex) {
+                msg.displayMessage(Message.MessageType.ERROR, "Error accessing th app", bg, layout);
+            }
+        });
+    }
+    public static void cancelReservation(OurButton btn, Table resTable,Message msg, JPanel bg, MigLayout layout){
+        btn.addActionListener(e->{
+            try{
+                int row = resTable.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+                String roomNumber = (String) resTable.getValueAt(row, 0);
+                OurDate checkInDate = (OurDate) resTable.getValueAt(row, 3);
+                resTable.deleteRow(row);
 
+                Guest user = (Guest) getUser();
+                user.getReservations().remove(roomNumber + user.getEmail() + checkInDate.toString());
+                Database.removeReservationFromGuest(user.getEmail(),roomNumber+user.getEmail()+checkInDate.getDay()+"/"+checkInDate.getMonth()+"/"+checkInDate.getYear());
+
+                Collection<RoomOnList> roomsOnList = guestUi.getRoomsPanel().getRooms().values();
+                for (RoomOnList roomOnList : roomsOnList) {
+                    if (roomOnList.getUsedRoomNumbers().contains(roomNumber)) {
+                        roomOnList.getUsedRoomNumbers().remove(roomNumber);
+                        roomOnList.getRoomNumbers().add(roomNumber);
+                        break;
+                    }
+                }
+                msg.displayMessage(Message.MessageType.SUCCESS, "Reservation canceled successfully", bg, layout);
+            }catch (ClassCastException ex){
+                msg.displayMessage(Message.MessageType.ERROR,"An error occurred while cancelling request!",bg,layout);
+            }
+        });
+    }
+    public static void updateReservation(OurButton btn, Table reqTable, JXDatePicker checkIn, JXDatePicker checkOut,
+                                         CounterPanel adults, CounterPanel children, MyTextField phoneNumber,
+                                         MyTextField totalCost,Message msg, JPanel bg, MigLayout layout,OurButton deleteBtn,OurButton confirmBtn,
+                                         LinkedList<String> confirmedRequests){
+        btn.addActionListener(e-> {
+            int row = reqTable.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+
+            String roomNumber = (String) reqTable.getValueAt(row, 0);
+            String email = (String) reqTable.getValueAt(row, 1);
+
+            String[] tmpDate1=reqTable.getValueAt(row, 3).toString().split("/");
+            OurDate oldCheckInDate = new OurDate(Integer.parseInt(tmpDate1[0]),Integer.parseInt(tmpDate1[1]),Integer.parseInt(tmpDate1[2]));
+
+            String[] tmpDate2=reqTable.getValueAt(row, 4).toString().split("/");
+            OurDate oldCheckOutDate = new OurDate(Integer.parseInt(tmpDate2[0]),Integer.parseInt(tmpDate2[1]),Integer.parseInt(tmpDate2[2]));
+
+            int oldAdults = (int) reqTable.getValueAt(row, 5);
+            int oldChildren = (int) reqTable.getValueAt(row, 6);
+
+            if (confirmedRequests.contains(roomNumber+email+oldCheckInDate.toString())){
+                msg.displayMessage(Message.MessageType.ERROR, "Reservation is confirmed, you can't edit it", bg, layout);
+                return;
+            }
+
+            if (btn.getText().equals("Edit")){
+                btn.setText("Confirm edit");
+                confirmBtn.setEnabled(false);
+                confirmBtn.setButtonBgColor(Color.GRAY);
+                deleteBtn.setEnabled(false);
+                deleteBtn.setButtonBgColor(Color.GRAY);
+                checkIn.setEnabled(true);
+                checkOut.setEnabled(true);
+                adults.getIncrementButton().setEnabled(true);
+                children.getIncrementButton().setEnabled(true);
+                adults.getDecrementButton().setEnabled(true);
+                children.getDecrementButton().setEnabled(true);
+                phoneNumber.setEnabled(true);
+                return;
+            }else{
+                btn.setText("Edit");
+                confirmBtn.setEnabled(true);
+                confirmBtn.setButtonBgColor(new Color(0, 112, 255));
+                deleteBtn.setEnabled(true);
+                deleteBtn.setButtonBgColor(new Color(0xED1B24));
+                checkIn.setEnabled(false);
+                checkOut.setEnabled(false);
+                adults.getIncrementButton().setEnabled(false);
+                children.getIncrementButton().setEnabled(false);
+                adults.getDecrementButton().setEnabled(false);
+                children.getDecrementButton().setEnabled(false);
+                phoneNumber.setEnabled(false);
+            }
+            try {
+                if (checkIn.getDate() == null || checkOut.getDate() == null || phoneNumber.getText().isEmpty() || !phoneNumber.getText().matches("[0-9]+") || phoneNumber.getText().length()!=10 ) {
+                    throw new AccessAppException("All the fields are required");
+                }
+                Date checkInDate = checkIn.getDate();
+                Calendar checkInCalender=Calendar.getInstance();
+                checkInCalender.setTime(checkInDate);
+                OurDate ourCheckIn = new OurDate(checkInCalender.get(Calendar.DAY_OF_MONTH),checkInCalender.get(Calendar.MONTH)+1,checkInCalender.get(Calendar.YEAR));
+
+                Date checkOutDate = checkOut.getDate();
+                Calendar checkOutCalender=Calendar.getInstance();
+                checkOutCalender.setTime(checkOutDate);
+                OurDate ourCheckOut = new OurDate(checkOutCalender.get(Calendar.DAY_OF_MONTH),checkOutCalender.get(Calendar.MONTH)+1,checkOutCalender.get(Calendar.YEAR));
+                int newAdults = adults.getCount();
+                int newChildren = children.getCount();
+
+                if (ourCheckIn.equals(oldCheckInDate) && ourCheckOut.equals(oldCheckOutDate) && newAdults == oldAdults && newChildren == oldChildren) {
+                    throw new AccessAppException("No changes were made");
+                }
+                Guest user = (Guest) getUser();
+                Reservation oldReservation=user.getReservations().remove(roomNumber + email + oldCheckInDate.toString());
+
+                double price=Hotel.getRooms().get(roomNumber).getRoomPrice();
+                double newTotalCost=(price+ 0.2*newAdults*price + 0.15*newChildren*price);
+                totalCost.setText(String.valueOf(newTotalCost));
+
+                Reservation reservation = new Reservation(roomNumber, email, ourCheckIn, ourCheckOut, newAdults, newChildren, phoneNumber.getText(), null, newTotalCost);
+
+                user.getReservations().put(roomNumber + email + ourCheckIn.toString(), reservation);
+                handleUpdates("Guest",roomNumber,email,"Reservations",reservation,oldReservation);
+
+                reqTable.setValueAt(ourCheckIn, row, 3);
+                reqTable.setValueAt(ourCheckOut, row, 4);
+                reqTable.setValueAt(newAdults, row, 5);
+                reqTable.setValueAt(newChildren, row, 6);
+                reqTable.setValueAt(phoneNumber.getText(), row, 2);
+                reqTable.setValueAt(newTotalCost, row, 7);
+
+                checkIn.setDate(null);
+                checkOut.setDate(null);
+                adults.setCounter(0);
+                children.setCounter(0);
+                phoneNumber.setText("");
+
+                msg.displayMessage(Message.MessageType.SUCCESS, "Reservation updated successfully", bg, layout);
+            } catch (AccessAppException ex) {
+                msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout);
+            }
+        });
+    }
+    public static void initRoomTable(RoomType type, Table table){
+        for (Room room : Hotel.getRooms().values()) {
+            if (room.getRoomType().equals(type)) {
+                table.addRow(new Object[]{room.getRoomNumber(), room.getRoomPrice(), room.availability()});
+            }
+        }
+    }
     public static void addRoom(OurButton btn,RoomType type, MyTextField price,JCheckBox available,Message msg, JPanel bg, MigLayout layout,Table table){
         btn.addActionListener(e->{
             boolean isAvailable=available.isSelected();
             try{
-                if (price.getText().isEmpty() || !price.getText().matches("[0-9]+") ){
+                if (price.getText().isEmpty() || !price.getText().matches("[0-9]+\\.[0-9]+") ){
                     throw new AccessAppException("Price is required, and must be a  number!");
                 }
                 double roomPrice=Double.parseDouble(price.getText());
                 Room rm=Manager.addRoom(type,isAvailable,roomPrice);
                 table.addRow(new Object[]{rm.getRoomNumber(),rm.getRoomPrice(),rm.availability()});
                 msg.displayMessage(Message.MessageType.SUCCESS, "Room added successfully", bg, layout);
+                if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+                    managerGui.getWelcomePage().updateCard("Rooms",Hotel.getRooms().size());
             }catch (AccessAppException ex) {
                 msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout);
             }
         });
     }
-    public static  void deleteRoom(OurButton btn, MyTextField price,JCheckBox available,Table table){
+    public static  void deleteRoom(OurButton btn,Table table){
         btn.addActionListener(e->{
             int row = table.getSelectedRow();
             if (row == -1) {
                 return;
             }
             DefaultTableModel model = (DefaultTableModel) table.getModel();
-            price.setText(model.getValueAt(row, 1).toString());
-            boolean isAvailable = (boolean) model.getValueAt(row, 2);
-            available.setSelected(isAvailable);
             String roomNumber = model.getValueAt(row, 0).toString();
-            table.remove(row);
-            Manager.removeRoomFromDataBase(roomNumber);
+            if(JOptionPane.showConfirmDialog(null,
+                    "Are you sure you want to delete the room with the number "+roomNumber+" ?", "WARNING",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                table.deleteRow(row);
+                Manager.removeRoomFromDataBase(roomNumber);
+                if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
+                    managerGui.getWelcomePage().updateCard("Rooms",Hotel.getRooms().size());
+            }
+        });
+    }
+    public static void updateRoom(OurButton btn,MyTextField priceInput,JCheckBox availableBox,Table table){
+        btn.addActionListener(e->{
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                return;
+            }
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            String roomNumber = model.getValueAt(row, 0).toString();
+            String price = priceInput.getText();
+            boolean isAvailable = availableBox.isSelected();
+            try{
+                if (price.isEmpty() || !price.matches("[0-9]+\\.[0-9]+") ){
+                    throw new AccessAppException("Price is required, and must be a number!");
+                }
+                double roomPrice=Double.parseDouble(price);
+                handleUpdates("Room",roomNumber,null,"price",roomPrice,null);
+                handleUpdates("Room",roomNumber,null,"isAvailable",isAvailable,null);
+                model.setValueAt(roomPrice,row,1);
+                model.setValueAt(isAvailable,row,2);
+            }catch (AccessAppException ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
-    public static void handleUpdates(String entity,String roomNumber, String email, String key, Object updatedValue) throws AccessAppException {
+    public static void handleUpdates(String entity,String roomNumber, String email, String key, Object updatedValue,Reservation withOldCheckIn) throws AccessAppException {
 
         switch (entity) {
             case "Guest" -> {
@@ -515,9 +736,13 @@ public class Controller {
                         Database.updateFieldInDataBase("Guests", "email", email, key, (String) updatedValue);
                     }
                     if (Objects.equals(key, "Reservations")){
-                        HashMap<String, Object> objectHashMap = new HashMap<>((HashMap<String, Object>) updatedValue);
-                        Document tmpDocument = new Document(objectHashMap);
-                        Database.updateFieldInDataBase("Guests", "email", email, key, tmpDocument.toJson());
+                        if (withOldCheckIn!=null){
+                            Database.removeReservationFromGuest(email,roomNumber+email+withOldCheckIn.getCheckInDate().getDay()+"/"+withOldCheckIn.getCheckInDate().getMonth()+"/"+withOldCheckIn.getCheckInDate().getYear());
+                            Database.addReservationToUser(email,(Reservation) updatedValue);
+                            return;
+                        }
+                        Database.removeReservationFromGuest(email,roomNumber+email+((Reservation) updatedValue).getCheckInDate().getDay()+"/"+((Reservation) updatedValue).getCheckInDate().getMonth()+"/"+((Reservation) updatedValue).getCheckInDate().getYear());
+                        Database.addReservationToUser(email,(Reservation) updatedValue);
                     }
                 }catch (Exception e){
                     throw new AccessAppException(e.getMessage());
@@ -536,16 +761,33 @@ public class Controller {
                     if(!Objects.equals(key, "Reservations")){
                         Database.updateFieldInDataBase("Workers", "OasisMail", email, key, (String) updatedValue);
                     }
-                    if (Objects.equals(key, "Reservations")){
-                        HashMap<String, Object> objectHashMap = new HashMap<>((HashMap<String, Object>) updatedValue);
-                        Document tmpDocument = new Document(objectHashMap);
-                        Database.updateFieldInDataBase("Workers", "OasisMail", email, key, tmpDocument.toJson());
-                    }
+//                    if (Objects.equals(key, "Reservations")){
+//                        HashMap<String, Object> objectHashMap = new HashMap<>((HashMap<String, Object>) updatedValue);
+//                        Document tmpDocument = new Document(objectHashMap);
+//                        Database.updateFieldInDataBase("Workers", "OasisMail", email, key, tmpDocument.toJson());
+//                    }
                 }catch (Exception e){
                     throw new AccessAppException(e.getMessage());
                 }
             }
-            // TODO case "Rooms" -> updateRoom(email, key, updatedValue);
+            case "Room" -> {
+                try {
+                    if(key.equals("roomNumber")){
+                        Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(String) updatedValue);
+                    }
+                    if (key.equals("roomType")){
+                        Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(String) updatedValue);
+                    }
+                    if (key.equals("price")){
+                        Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(double) updatedValue);
+                    }
+                    if (key.equals("isAvailable")){
+                        Database.updateFieldInDataBase("Rooms", "roomNumber", roomNumber, key,(boolean) updatedValue);
+                    }
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            }
             default -> throw new AccessAppException("Unexpected value: " + entity);
         }
     }
@@ -583,37 +825,44 @@ public class Controller {
             counter = 0;
             for (Double price : prices) {
                 for (Room room : allRooms.values()) {
-                    if (room.getRoomType().equals(roomType) && room.getRoomPrice() == price) {
+                    if (room.getRoomType().equals(roomType) && room.getRoomPrice() == price && room.availability()) {
                         counter++;
                     }
                 }
                 roomPriceCount.put(price, counter);
             }
             for (Double price : roomPriceCount.keySet()) {
-                String roomNumber=null;
-                if(roomPriceCount.get(price)==1)
-                    for (Room r: allRooms.values()){
-                        if (r.getRoomType().equals(roomType) && r.getRoomPrice()== price)
-                            roomNumber=r.getRoomNumber();
-                    }
-
+                LinkedList<String> roomNumbers=new LinkedList<>();
+                for (Room r: allRooms.values()){
+                    if (r.getRoomType().equals(roomType) && r.getRoomPrice()== price)
+                        roomNumbers.add(r.getRoomNumber());
+                }
                 RoomOnList roomOnList = new RoomOnList(roomType,
                         "hotelproject/src/main/java/view/icons/"+ roomType.toString() + "Room.png",
                         description,
                         price,
-                        roomPriceCount.get(price),roomNumber);
+                        roomPriceCount.get(price),roomNumbers,null);
                 roomsUiList.put(roomType.toString() + price, roomOnList);
             }
         }
         return roomsUiList;
     }
 
-    public static void openBookingUI(OurButton bookButton,String roomNumber, double price,
+    public static void openBookingUI(OurButton bookButton, LinkedList<String> roomNumbers,LinkedList<String> usedRoomNumbers, double price,
                                      CounterPanel AdultsCounter , CounterPanel ChildrenCounter,
                                      JXDatePicker checkIn, JXDatePicker checkOut, JTextField creditCardField,
-                                     JTextField phoneNumberField,Message msg,JPanel bg, MigLayout layout){
+                                     JTextField phoneNumberField, RoomOnList roomOnList, RoomUI roomUi, Message msg, JPanel bg, MigLayout layout){
 
         bookButton.addActionListener(e -> {
+            User user = getUser();
+            if (user instanceof Worker){
+                msg.displayMessage(Message.MessageType.ERROR, "You can't book a room as a worker", bg, layout);
+                return;
+            }
+            if (roomNumbers.isEmpty()){
+                msg.displayMessage(Message.MessageType.ERROR, "No available rooms", bg, layout);
+                return;
+            }
             int adults = AdultsCounter.getCount();
             int children = ChildrenCounter.getCount();
             String creditCard = creditCardField.getText();
@@ -641,7 +890,70 @@ public class Controller {
                     "Confirm Booking", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
             if (response == JOptionPane.YES_OPTION) {
-                Reservation reservation=new Reservation(roomNumber,getUser().getEmail(),checkIn)
+
+                Date checkInDate = checkIn.getDate();
+                Calendar checkInCalender=Calendar.getInstance();
+                checkInCalender.setTime(checkInDate);
+                OurDate OurCheckIn = new OurDate(checkInCalender.get(Calendar.DAY_OF_MONTH),checkInCalender.get(Calendar.MONTH)+1,checkInCalender.get(Calendar.YEAR));
+
+                Date checkOutDate = checkOut.getDate();
+                Calendar checkOutCalender=Calendar.getInstance();
+                checkOutCalender.setTime(checkOutDate);
+                OurDate OurCheckOut = new OurDate(checkOutCalender.get(Calendar.DAY_OF_MONTH),checkOutCalender.get(Calendar.MONTH)+1,checkOutCalender.get(Calendar.YEAR));
+
+                Reservation reservation=new Reservation(roomNumbers.getFirst(),user.getEmail(),OurCheckIn,OurCheckOut,adults,children,phoneNumber,creditCard,CalculatedPrice); ;
+                ((Guest) user).getReservations().put(reservation.getReservationId(), reservation);
+                Database.addReservationToUser(user.getEmail(),reservation);
+
+                Table[] tables=guestUi.getReservationPanel().getTables();
+                tables[0].addRow(new Object[]{roomNumbers.getFirst(),user.getEmail(),phoneNumber,OurCheckIn,OurCheckOut,adults,children,CalculatedPrice,false,false});
+
+                String removedRoomNumber=roomNumbers.removeFirst();
+                Hotel.getRooms().get(removedRoomNumber).setAvailable(false);
+                try {
+                    handleUpdates("Room",removedRoomNumber,null,"isAvailable",false,null);
+                } catch (AccessAppException ex) {
+                    msg.displayMessage(Message.MessageType.ERROR, "Access app error!", bg, layout);
+                }
+                usedRoomNumbers.add(removedRoomNumber);
+                if (roomNumbers.isEmpty() || roomNumbers.stream().noneMatch(val->Hotel.getRooms().get(val).availability())){
+                    roomOnList.setAvailable(false);
+                    roomOnList.repaint();
+                    roomOnList.revalidate();
+                    roomUi.setAvailable(false);
+                    roomUi.repaint();
+                    roomUi.revalidate();
+                    guestUi.revalidate();
+                }
+                msg.displayMessage(Message.MessageType.SUCCESS, "Request is sent", bg, layout);
+
+//                 QrCode qrCode = new QrCode();
+//
+//                    // User information
+//                    String username = user.getFirstName() + user.getLastName() ;
+//                    String email = user.getEmail();
+//
+//
+//                    // Encode user information into a string
+//                    String userInfo = "Username: " + username + "\nEmail: " + email + "\nPhone: " + phoneNumber;
+//
+//                    // Path to save the QR code image
+//                    String filePath = "user_qr_code.png";
+//
+////                  Generate QR code that has these informations
+//                    qrCode.generateQRCode(username, email, phoneNumber, filePath);
+//                    try{
+//                        System.out.println("The QR code has been saved to: " + filePath);
+//                        SendEmail emailService = new SendEmail();
+//                        emailService.setupServerProperties();
+//                        emailService.draftEmail(email , "Here is your QR code: Please present this QR code when checking in at the hotel." + "\n" + "Thank you!" + "\n" + "Best regards," + "\n" + "Hotel Management" + "\n", "");
+//                        emailService.sendEmailWithAttachment(email,"Oasis QrCode" ,filePath );
+//                    }catch (MessagingException | IOException exception){
+//                        exception.printStackTrace();
+//                    }
+
+
+                System.out.println("Booking confirmed");
             } else {
                 System.out.println("Booking cancelled");
             }
@@ -662,7 +974,7 @@ public class Controller {
         mainContentPanel.revalidate(); // Revalidate the layout of the main content panel
     }
 
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:gmail\\.com|yahoo\\.com|yahoo\\.fr|hotmail\\.com|hotmail\\.fr|hotmail\\.co\\.uk|aol\\.com|etu-usthb\\.dz)$";
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX);
     public static boolean isValidEmail(String email) {
         Matcher matcher = pattern.matcher(email);

@@ -199,10 +199,10 @@ class ProfileEdit extends JPanel {
                 boolean isUpdated=false;
                 try {
                     if (!firstName.isEmpty()) {
-                        if (profilePanel.userType==UserType.GUEST){
-                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"firstName",firstName);
+                        if (profilePanel.userType==UserType.GUEST ){
+                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"firstName",firstName,null);
                         }else{
-                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"firstName",firstName);
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"firstName",firstName,null);
                         }
                         isUpdated=true;
                         firstNameField.setText("");
@@ -210,9 +210,9 @@ class ProfileEdit extends JPanel {
                     }
                     if (!lastName.isEmpty()) {
                         if (profilePanel.userType==UserType.GUEST){
-                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"lastName",lastName);
+                            Controller.handleUpdates("Guest",null,Controller.getUser().getEmail(),"lastName",lastName,null);
                         }else{
-                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"lastName",lastName);
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"lastName",lastName,null);
                         }
                         isUpdated=true;
                         lastNameField.setText("");
@@ -220,7 +220,7 @@ class ProfileEdit extends JPanel {
                     }
                     if (!email.isEmpty()) {
                         if (profilePanel.userType!=UserType.GUEST){
-                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"email",email);
+                            Controller.handleUpdates("Worker",null,((Receptionist)Controller.getUser()).getOasisMail(),"email",email,null);
                         }
                         isUpdated=true;
                         emailField.setText("");

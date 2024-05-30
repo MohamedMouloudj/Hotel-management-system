@@ -10,6 +10,8 @@ import view.components.sacrollBar.ScrollBar;
 import view.components.table.Table;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +21,6 @@ import java.util.LinkedHashMap;
 
 public  class  RoomsPanelManager extends JPanel {
     private final Message msg=new Message();
-    protected Table table;
     public String[] getColumnNames() {
         return new String[] { "RoomNumber","Price", "Available" };
     }
@@ -67,7 +68,6 @@ public  class  RoomsPanelManager extends JPanel {
             JLabel roomAvailabilityLb = new JLabel("Availability:");
             roomAvailabilityLb.setFont(new Font("SansSerif", Font.BOLD, 14)); // Setting font for roomAvailabilityLb
 
-
             MyTextField roomPriceInput = new MyTextField("Price", "/view/icons/user.png");
             roomPriceInput.setPreferredSize(new Dimension(100, 30));
             JCheckBox roomAvailabilityCheckBox = new JCheckBox();
@@ -91,8 +91,7 @@ public  class  RoomsPanelManager extends JPanel {
 
             JScrollPane spTable = new JScrollPane();
             // Creating table
-            table = new Table();
-
+            Table table = new Table();
 
             // Setting border for the scroll pane
             spTable.setBorder(null);
@@ -108,9 +107,10 @@ public  class  RoomsPanelManager extends JPanel {
                     return canEdit[columnIndex];
                 }
             });
+            Controller.initRoomTable(roomType,table);
+
             // Setting table view in the scroll pane
             spTable.setViewportView(table);
-
 
             // Setting vertical scrollbar for the table
             spTable.setVerticalScrollBar(new ScrollBar());
@@ -123,22 +123,39 @@ public  class  RoomsPanelManager extends JPanel {
             corner.setBackground(Color.WHITE);
             spTable.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner);
             spTable.setBorder(BorderFactory.createEmptyBorder());
-            spTable.setVisible(true);
+            spTable.setVisible(false);
 
             // Creating and configuring add button
             OurButton addButton = new OurButton("Add");
             addButton.setButtonBgColor(new Color(0, 112, 255));
             buttonPanel.add(addButton, "w 50%, h 34");
             Controller.addRoom(addButton,roomType,roomPriceInput,roomAvailabilityCheckBox,msg,roomPanel,layout,table);
+
+            table.addRowSelectionListener(
+                    new ListSelectionListener() {
+                         @Override
+                         public void valueChanged(ListSelectionEvent event) {
+                             if (!event.getValueIsAdjusting()) {
+                                 int selectedRow = table.getSelectedRow();
+                                 if (selectedRow >= 0) {
+                                     DefaultTableModel model = (DefaultTableModel) table.getModel();
+                                     roomPriceInput.setText(model.getValueAt(selectedRow, 1).toString());
+                                     roomAvailabilityCheckBox.setSelected((boolean) model.getValueAt(selectedRow, 2));
+                                 }
+                             }
+                         }
+                    });
+
             // Creating and configuring update button
-//            OurButton updateButton = new OurButton("Update");
-//            updateButton.setButtonBgColor(new Color(0, 112, 255));
-////        updateButton.addActionListener(updateActionListener());
-//            buttonPanel.add(updateButton, "w 50%, h 34");
+            OurButton updateButton = new OurButton("Update");
+            updateButton.setButtonBgColor(new Color(0, 112, 255));
+            Controller.updateRoom(updateButton,roomPriceInput,roomAvailabilityCheckBox,table);
+            buttonPanel.add(updateButton, "w 50%, h 34");
+
             // Creating and configuring delete button
             OurButton deleteButton = new OurButton("Delete");
             deleteButton.setButtonBgColor(new Color(0xED1B24));
-            Controller.deleteRoom(deleteButton,roomPriceInput,roomAvailabilityCheckBox,table);
+            Controller.deleteRoom(deleteButton,table);
             buttonPanel.add(deleteButton, "w 50%, h 34");
 
             roomPanel.add(buttonPanel, "center,pushx, growx");
@@ -157,10 +174,10 @@ public  class  RoomsPanelManager extends JPanel {
                         public void actionPerformed(ActionEvent e) {
                             if(spTable.isVisible()){
                                 spTable.setVisible(false);
-                                HideTableButton.setText("Show");
                                 container.remove(spTable);
                                 container.revalidate();
                                 container.repaint();
+                                HideTableButton.setText("Show");
                             }else{
                                 spTable.setVisible(true);
                                 container.add(spTable, "push, grow, gap 60 10 10 10");
@@ -191,6 +208,7 @@ public  class  RoomsPanelManager extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         add(scrollPane, "push, grow");
+
     }
 
 }

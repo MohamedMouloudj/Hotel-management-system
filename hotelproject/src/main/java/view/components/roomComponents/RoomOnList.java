@@ -9,6 +9,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 public class RoomOnList extends JPanel implements ActionListener {
 
@@ -19,16 +20,28 @@ public class RoomOnList extends JPanel implements ActionListener {
     private String roomDescription;
     private JLabel isAvailableLabel;
     private OurButton bookButton=new OurButton("Book now");
-    private String roomNumber;
+    private LinkedList<String> roomNumbers;
+    private final LinkedList<String> usedRoomNumbers=new LinkedList<>();
 
+    public double getPrice() {
+        return price;
+    }
 
-    public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, Integer available,String roomNumber){
+    public JLabel getIsAvailableLabel() {
+        return isAvailableLabel;
+    }
+
+    public OurButton getBookButton() {
+        return bookButton;
+    }
+
+    public RoomOnList(RoomType roomType, String roomPicture, String roomDescription, double price, Integer available, LinkedList<String> roomNumber, LinkedList<String> usedRoomNumbers){
 
         this.roomType = roomType;
         this.roomPicture = roomPicture;
         this.roomDescription = roomDescription;
         this.price=price;
-        this.roomNumber= roomNumber;
+        this.roomNumbers = roomNumber;
         Border border= BorderFactory.createLineBorder(new Color(0xC1A200),2);
         setBorder(border);
         setBackground(new Color(242, 242, 242));
@@ -123,10 +136,9 @@ public class RoomOnList extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        roomDetail = new RoomUI(this.roomType,this.roomPicture , this.roomDescription, this.price,this.roomNumber);
+        roomDetail = new RoomUI(this);
         //get the parent that is the roomsPanel
         JPanel rooms = (JPanel) getComponent(0).getParent().getParent(); // Assuming RoomsPanel is the parent of Roomr
-
         // remove all other RoomOnList panels
         rooms.removeAll();
 
@@ -137,6 +149,14 @@ public class RoomOnList extends JPanel implements ActionListener {
         rooms.revalidate();
         rooms.repaint();
 
+    }
+
+    public LinkedList<String> getRoomNumbers() {
+        return roomNumbers;
+    }
+
+    public LinkedList<String> getUsedRoomNumbers() {
+        return usedRoomNumbers;
     }
 
     public void addActionListener(ActionListener actionListener) {

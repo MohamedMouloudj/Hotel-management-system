@@ -1,5 +1,7 @@
 package view.UserMangementGui;
 
+import model.User;
+import model.supervisors.Receptionist;
 import net.miginfocom.swing.MigLayout;
 import view.components.Message;
 import view.components.OurButton;
@@ -28,10 +30,11 @@ public abstract class UserManagement extends JPanel {
         protected MyTextField emailField;
         protected Table table;
         protected MigLayout layout;
-
+        private User user;
         // Constructor
-        public UserManagement(String collectionName) {
+        public UserManagement(String collectionName, User user) {
                 this.collectionName = collectionName;
+                this.user=user;
                 initComponents(); // Initialize UI components
         }
 
@@ -181,12 +184,14 @@ public abstract class UserManagement extends JPanel {
                 // Adding delete button to the button panel
                 buttonPanel.add(deleteButton, "w 50%, h 34");
 
-                // Creating and configuring clear button
-                OurButton clearButton = new OurButton("Clear");
-                clearButton.setButtonBgColor(new Color(0xED1B24));
-                clearButton.addActionListener(clearActionListener());
-                // Adding clear button to the button panel
-                buttonPanel.add(clearButton, "w 50%, h 34");
+                if(!(this.user instanceof Receptionist)) {
+                        // Creating and configuring clear button
+                        OurButton clearButton = new OurButton("Clear");
+                        clearButton.setButtonBgColor(new Color(0xED1B24));
+                        clearButton.addActionListener(clearActionListener());
+                        // Adding clear button to the button panel
+                        buttonPanel.add(clearButton, "w 50%, h 34");
+                }
 
                 buttonPanel.setBackground(Color.WHITE);
 

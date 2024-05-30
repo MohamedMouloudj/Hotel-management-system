@@ -104,7 +104,6 @@ public class RoomsPanelGuest extends JPanel {
                     }
                     //remove all the rooms and add those who have the same type as the selected one
                     panel.removeAll();
-                    add(filter , "center");
                     if (!roomsToAdd.isEmpty()) {
                         for (RoomOnList roomOnList : roomsToAdd) {
                             panel.add(roomOnList, "center");
@@ -174,5 +173,9 @@ public class RoomsPanelGuest extends JPanel {
 
         add(scrollPane, "grow, growy, push");
 
+    }
+
+    public HashMap<String, RoomOnList> getRooms() {
+        return rooms;
     }
 }

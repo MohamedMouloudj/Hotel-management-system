@@ -1,6 +1,7 @@
 package view.components.roomComponents;
 
 import controllers.Controller;
+import model.hotel.Hotel;
 import model.hotel.RoomType;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
@@ -10,25 +11,26 @@ import view.components.OurButton;
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 
 
 public class RoomUI extends JPanel {
     private final double imageWidth = 45;
+    private JLabel isAvailableLabel;
+    private OurButton bookButton;
     private final Message msg = new Message();
     private final MigLayout layout=new MigLayout("wrap 2, center, insets 0 20 20 40,gap 5% 5%","[][]","[grow,fill]");
 
-    RoomUI(RoomType roomType, String roomPicture, String roomDescription, double price,String roomNumber){
-
+    RoomUI(RoomOnList roomOnList){
         setLayout(layout);
         setBackground(new Color(242, 242, 242));
 
         //// room photo ////
-        ImageIcon icon =new ImageIcon(roomPicture);
+        ImageIcon icon =new ImageIcon(roomOnList.getRoomPicture());
         JLabel imageLabel = new JLabel();
         imageLabel.setIcon(icon);
         imageLabel.setPreferredSize(new Dimension(250,200));
         add(imageLabel , "cell 0 0");
-
 
         JPanel roomDetailedInfo = new JPanel(new MigLayout("wrap 2,inset 20 15 5 20"));
 
@@ -38,18 +40,23 @@ public class RoomUI extends JPanel {
 
 
         /////////// RoomOnList Info //////////
-        JLabel roomTypeLabel = new JLabel(roomType.toString());
+        JLabel roomTypeLabel = new JLabel(roomOnList.getRoomType().toString());
         roomTypeLabel.setFont(new Font("Lucida Handwriting",Font.PLAIN,30));
 
         roomDetailedInfo.add(roomTypeLabel , "gap 0 0 0 10" );
 
-        JLabel isAvailableLabel = new JLabel("Available");
+        if (!roomOnList.getRoomNumbers().isEmpty() && roomOnList.getRoomNumbers().stream().anyMatch(val->Hotel.getRooms().get(val).availability())) {
+            isAvailableLabel = new JLabel("Available");
+            isAvailableLabel.setForeground(new Color(0x00A000));
+        }else {
+            isAvailableLabel = new JLabel("Not available");
+            isAvailableLabel.setForeground(new Color(0xA00000));
+        }
         isAvailableLabel.setFont(new Font("",Font.PLAIN,14));
-        isAvailableLabel.setForeground(new Color(0x00A000));
         roomDetailedInfo.add(isAvailableLabel , "gap 10 0 20 10" );
 
 
-        JLabel roomDescriptionLabel = new JLabel(roomDescription);
+        JLabel roomDescriptionLabel = new JLabel(roomOnList.getRoomDescription());
         roomDescriptionLabel.setFont(new Font("Inter",Font.ITALIC,13));
         roomDetailedInfo.add(roomDescriptionLabel , "span 2 , wrap " );
 
@@ -91,7 +98,6 @@ public class RoomUI extends JPanel {
         infoCollect.add(checkOut);
 
 
-// Create JLabel and JTextField for phone number
         JLabel phoneNumberLabel = new JLabel("Phone Number");
         JTextField phoneNumberField = new JTextField(20); // 20 columns wide
         phoneNumberField.setBorder(null); // Remove border
@@ -117,12 +123,12 @@ public class RoomUI extends JPanel {
 
 
         //price label
-        JLabel priceLabel = new JLabel("Price: "+price+"DZD/Night");
+        JLabel priceLabel = new JLabel("Price: "+roomOnList.getPrice()+"DZD/Night");
         priceLabel.setFont(new Font("Inter",Font.BOLD,12));
         roomDetailedInfo.add(priceLabel , "span 2 ,  wrap , gap 15 0 0 0");
 
         //the main book button
-        OurButton bookButton = new OurButton("Book now");
+        bookButton = new OurButton("Book now");
         bookButton.setButtonBgColor(new Color(0x0377FF));
         bookButton.setButtonSize(new Dimension(140,40));
         roomDetailedInfo.add(bookButton , "gap 15 0 0 0");
@@ -135,6 +141,10 @@ public class RoomUI extends JPanel {
         backButton.setBorder(BorderFactory.createLineBorder(new Color(0x0377FF), 2));
         backButton.setForeground(new Color(0x0377FF));
 
+        JLabel reserved = new JLabel();
+        reserved.setFont(new Font("Inter",Font.BOLD,12));
+        reserved.setForeground(new Color(0x0377FF));
+
 
         backButton.setOpaque(false);
         backButton.addActionListener(e -> {
@@ -142,26 +152,38 @@ public class RoomUI extends JPanel {
             this.removeAll();
             // Show the RoomsPanel again
             RoomsPanelGuest roomsPanel = (RoomsPanelGuest) this.getParent().getParent().getParent().getParent();
-            JPanel filter = roomsPanel.filter;
+
+            this.getParent().getParent().getParent().setBackground(Color.GREEN);
             roomsPanel.panel.removeAll();
-            roomsPanel.remove(filter);
-            roomsPanel.panel.add(filter, "center");
+
             for (Component component : roomsPanel.rooms.values()) {
                 if (component instanceof RoomOnList) {
                     roomsPanel.panel.add(component , "center");
                 }
             }
-            // Revalidate and repaint the RoomsPanel for layout updates
-            roomsPanel.panel.revalidate();
-            roomsPanel.panel.repaint();
+
             roomsPanel.repaint();
             roomsPanel.revalidate();
         });
 
-         roomDetailedInfo.add(backButton ,"wrap");
+        roomDetailedInfo.add(backButton ,"wrap");
+        roomDetailedInfo.add(reserved , " center , span 2 ,  wrap , gap 15 0 0 0");
 
-        Controller.openBookingUI(bookButton,roomNumber,price,AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,msg,this,layout);
 
+        Controller.openBookingUI(bookButton,roomOnList.getRoomNumbers(),roomOnList.getUsedRoomNumbers(), roomOnList.getPrice(), AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,roomOnList,this,msg,this,layout);
+
+    }
+
+    public void setAvailable(boolean available){
+        if(available){
+            isAvailableLabel.setText("Available");
+            isAvailableLabel.setForeground(new Color(0x00A000));
+            bookButton.setEnabled(true);
+        }else{
+            isAvailableLabel.setText("Not Available");
+            isAvailableLabel.setForeground(new Color(0xA00000));
+            bookButton.setEnabled(false);
+        }
     }
 
 }

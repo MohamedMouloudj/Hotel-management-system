@@ -2,7 +2,6 @@ package view.UserMangementGui;
 
 import controllers.Controller;
 import model.User;
-import model.supervisors.Manager;
 import view.components.Message;
 import view.components.items.MyTextField;
 
@@ -21,8 +20,8 @@ public class ReceptionistsManagement extends UserManagement {
     private MyTextField txtOasisMail;
     private final Random random = new Random();
 
-    public ReceptionistsManagement() {
-        super("Receptionist");
+    public ReceptionistsManagement(User user) {
+        super("Receptionist",user);
         addOasisEmail(); // Add Oasis email field to user input panel
         Controller.initiateTable("Workers", getColumnNames(), table);
         setupTableSelectionListener(); // Setup table selection listener
@@ -61,39 +60,18 @@ public class ReceptionistsManagement extends UserManagement {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selectedRow = table.getSelectedRow();
-                if (selectedRow >= 0) {
-                    // Get the email from the selected row
-                    String OasisEmail = (String) table.getValueAt(selectedRow, 3); // Assuming email is at index 2
-
-                    try {
-                        // Delete the guest/worker from the database
-                        // Database.deleteFromDataBase("Guests", "email", email);
-                        if (!emailField.getText().trim().isEmpty()) {
-
-                            Manager.removeWorkerFromDataBase(OasisEmail);
-
-                            // Remove the row from the table
-                            DefaultTableModel model = (DefaultTableModel) table.getModel();
-                            model.removeRow(selectedRow);
-
-                            // Clear the input fields
-                            nameField.setText("");
-                            lastNameField.setText("");
-                            emailField.setText("");
-
-                            // Display a success message
-                            msg.displayMessage(Message.MessageType.SUCCESS, "Guest deleted successfully",
-                                    (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
-                        } else {
-                            msg.displayMessage(Message.MessageType.SUCCESS, "All fields are required",
-                                    (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
-                        }
-                    } catch (Exception ex) {
-                        // Display an error message
-                        msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(),
-                                (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
-                    }
+                try {
+                    // Add a receptionist to the database
+                    Controller.removeReceptionist(txtOasisMail.getText(), table);
+                    nameField.setText("");
+                    lastNameField.setText("");
+                    emailField.setText("");
+                    txtOasisMail.setText("");
+                    msg.displayMessage(Message.MessageType.SUCCESS, "Receptionist added successfully",
+                            (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
+                } catch (Exception ex) {
+                    msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(),
+                            (JPanel) userInputPanel.getParent().getParent().getParent(), layout);
                 }
             }
         };
@@ -105,10 +83,11 @@ public class ReceptionistsManagement extends UserManagement {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Clear text fields
+                Controller.clearReceptionists(table);
                 nameField.setText("");
                 lastNameField.setText("");
                 emailField.setText("");
+                txtOasisMail.setText("");
             }
         };
     }
@@ -169,7 +148,7 @@ public class ReceptionistsManagement extends UserManagement {
 
     // Setup table selection listener
     private void setupTableSelectionListener() {
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table.addRowSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting()) {

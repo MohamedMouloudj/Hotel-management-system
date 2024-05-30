@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class ReservationPanelReceptionist extends JPanel {
     private final Table requestsTable;
@@ -83,7 +84,7 @@ public class ReservationPanelReceptionist extends JPanel {
         });
         scrollPaneReservations.setViewportView(reservationsTable);
 
-        Controller.initTableResReqRecV(getRequestColumnNames(),requestsTable,getReservationColumnNames(),reservationsTable);
+        Controller.initTableResReq(getRequestColumnNames(),requestsTable,getReservationColumnNames(),reservationsTable);
 
         scrollPaneReservations.setVerticalScrollBar(new ScrollBar());
         scrollPaneReservations.getVerticalScrollBar().setBackground(Color.WHITE);
@@ -92,15 +93,16 @@ public class ReservationPanelReceptionist extends JPanel {
         JPanel corner2 = new JPanel();
         corner2.setBackground(Color.WHITE);
         scrollPaneReservations.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner2);
-        JPanel container2=new JPanel(new MigLayout("wrap 1,center", "push[85%,fill]push", "20[]10[]20"));
+        MigLayout layout1=new MigLayout("wrap 1,center", "push[85%,fill]push", "20[]10[]20");
+        JPanel container2=new JPanel(layout1);
         container2.setBorder(BorderFactory.createTitledBorder("Reservations"));
         container2.add(confirmPay, "center, w 40%!");
         container2.add(scrollPaneReservations, "push, grow");
         container2.setBackground(Color.WHITE);
         panelToScroll.add(container2, "push, grow");
 
-        Controller.addReservationRecV(confirmReservation,requestsTable,reservationsTable,msg,panelToScroll,layout);
-        Controller.payReservation(confirmPay,reservationsTable);
+        Controller.addReservationReceptionistVersion(confirmReservation,requestsTable,reservationsTable,msg,container1,layout);
+        Controller.payReservation(confirmPay,reservationsTable,msg,container2,layout1);
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setViewportView(panelToScroll);

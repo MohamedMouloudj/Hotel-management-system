@@ -3,6 +3,7 @@ package model.supervisors;
 import controllers.Controller;
 import model.Database;
 import model.Guest;
+import model.hotel.Hotel;
 import model.hotel.Reservation;
 import org.bson.Document;
 import view.components.table.Table;
@@ -18,14 +19,6 @@ public class Receptionist extends Worker {
         this.role = Role.RECEPTIONIST;
     }
 
-//    public HashMap<String, Reservation> getReservations() {
-//        return reservations;
-//    }
-
-//    public void setReservations(HashMap<String, Reservation> reservations) {
-//        this.reservations = reservations;
-//    }
-
     public static void addGuestToDataBase(Guest guest){
         HashMap<String,String> guestDocument = new HashMap<>();
         guestDocument.put("firstName", guest.getFirstName());
@@ -35,9 +28,16 @@ public class Receptionist extends Worker {
 
         HashMap<String, Object> objectHashMap = new HashMap<>(guest.getReservations());
         Document tmpDocument = new Document(objectHashMap);
-        System.out.println(tmpDocument.toJson());
         guestDocument.put("Reservations", tmpDocument.toJson());
 
         Database.addToDataBase("Guests", guestDocument);
+    }
+    public static void removeGuestFromDataBase(String email){
+        try {
+            Database.removeFromDataBase("Guests", "email", email);
+            Hotel.getGuests().remove(email);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

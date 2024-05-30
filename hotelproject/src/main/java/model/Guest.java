@@ -44,10 +44,6 @@ public class Guest extends User {
         this.reservations = reservations;
     }
 
-    public void payReservation(String roomNumber) {
-        reservations.get(roomNumber).setPaid(true);
-    }
-
     public void addReservation(Reservation reservation) {
         reservations.put(reservation.getRoomNumber(), reservation);
     }

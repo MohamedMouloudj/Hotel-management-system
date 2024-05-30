@@ -1,14 +1,13 @@
 package view.login.container;
 
 import controllers.Controller;
-import controllers.PasswordHashing;
-import model.User;
 import net.miginfocom.swing.MigLayout;
 import view.components.Message;
 import view.components.Message.MessageType;
 import view.components.items.MyButton;
 import view.components.items.MyPasswordField;
 import view.components.items.MyTextField;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
