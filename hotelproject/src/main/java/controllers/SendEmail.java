@@ -31,9 +31,9 @@ public class SendEmail
             return false; // Return false if there was an error sending the email
         }
     }
-
+//NOTE: if you want to send emails replace Email@gmail.com with the email you want to send to 
     public MimeMessage draftEmail(String Email , String message , String token) throws AddressException, MessagingException, IOException {
-        String[] emailReceipients = {"hermezabderrahim568@gmail.com",Email};  //Enter list of email recepients
+        String[] emailReceipients = {"Email@gmail.com",Email};  //Enter list of email recepients
         String emailSubject = "L oasis hotel token";
         String emailBody = message + token + " " + emailReceipients[1];
         mimeMessage = new MimeMessage(newSession);
