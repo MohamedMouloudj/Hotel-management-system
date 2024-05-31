@@ -149,13 +149,13 @@ public  class  RoomsPanelManager extends JPanel {
             // Creating and configuring update button
             OurButton updateButton = new OurButton("Update");
             updateButton.setButtonBgColor(new Color(0, 112, 255));
-            Controller.updateRoom(updateButton,roomPriceInput,roomAvailabilityCheckBox,table);
+            Controller.updateRoom(updateButton,roomPriceInput,roomAvailabilityCheckBox,table,msg,roomPanel,layout);
             buttonPanel.add(updateButton, "w 50%, h 34");
 
             // Creating and configuring delete button
             OurButton deleteButton = new OurButton("Delete");
             deleteButton.setButtonBgColor(new Color(0xED1B24));
-            Controller.deleteRoom(deleteButton,table);
+            Controller.deleteRoom(deleteButton,table,msg,roomPanel,layout);
             buttonPanel.add(deleteButton, "w 50%, h 34");
 
             roomPanel.add(buttonPanel, "center,pushx, growx");

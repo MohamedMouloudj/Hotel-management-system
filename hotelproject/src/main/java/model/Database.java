@@ -272,9 +272,10 @@ public class Database {
         try {
             // Get the user collection
             MongoCollection<Document> userCollection = Hotel.hotelDatabase.getCollection("Guests");
+            String newKey=reservationKey.replace(".","-");
             // Build the query to find the user
             Document query = new Document("email", email);
-            Document update = new Document("$unset", new Document("Reservations." + reservationKey.replaceFirst(".","-"), ""));
+            Document update = new Document("$unset", new Document("Reservations." + newKey, ""));
 
             // Update the user document
             userCollection.updateOne(query, update);

@@ -525,16 +525,16 @@ public class Controller {
             }
         });
     }
-    public static void cancelReservation(OurButton btn, Table resTable,Message msg, JPanel bg, MigLayout layout){
+    public static void cancelReservation(OurButton btn, Table reqTable,Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             try{
-                int row = resTable.getSelectedRow();
+                int row = reqTable.getSelectedRow();
                 if (row == -1) {
                     return;
                 }
-                String roomNumber = (String) resTable.getValueAt(row, 0);
-                OurDate checkInDate = (OurDate) resTable.getValueAt(row, 3);
-                resTable.deleteRow(row);
+                String roomNumber = (String) reqTable.getValueAt(row, 0);
+                OurDate checkInDate = (OurDate) reqTable.getValueAt(row, 3);
+                reqTable.deleteRow(row);
 
                 Guest user = (Guest) getUser();
                 user.getReservations().remove(roomNumber + user.getEmail() + checkInDate.toString());
@@ -545,11 +545,19 @@ public class Controller {
                     if (roomOnList.getUsedRoomNumbers().contains(roomNumber)) {
                         roomOnList.getUsedRoomNumbers().remove(roomNumber);
                         roomOnList.getRoomNumbers().add(roomNumber);
+
+                        //TODO make room details shows "Available"
+                        roomOnList.setAvailable(true);
+                        roomOnList.repaint();
+                        roomOnList.revalidate();
+                        roomOnList.getRoomDetail().setAvailable(true);
+                        guestUi.revalidate();
                         break;
                     }
                 }
+                handleUpdates("Room",roomNumber,null,"isAvailable",true,null);
                 msg.displayMessage(Message.MessageType.SUCCESS, "Reservation canceled successfully", bg, layout);
-            }catch (ClassCastException ex){
+            }catch (ClassCastException | AccessAppException ex){
                 msg.displayMessage(Message.MessageType.ERROR,"An error occurred while cancelling request!",bg,layout);
             }
         });
@@ -628,6 +636,9 @@ public class Controller {
                 if (ourCheckIn.equals(oldCheckInDate) && ourCheckOut.equals(oldCheckOutDate) && newAdults == oldAdults && newChildren == oldChildren) {
                     throw new AccessAppException("No changes were made");
                 }
+                if(ourCheckIn.equals(ourCheckOut)){
+                    throw new AccessAppException("Check-out date must be after check-in date");
+                }
                 Guest user = (Guest) getUser();
                 Reservation oldReservation=user.getReservations().remove(roomNumber + email + oldCheckInDate.toString());
 
@@ -670,7 +681,7 @@ public class Controller {
         btn.addActionListener(e->{
             boolean isAvailable=available.isSelected();
             try{
-                if (price.getText().isEmpty() || !price.getText().matches("[0-9]+\\.[0-9]+") ){
+                if (price.getText().isEmpty() || !price.getText().matches("[0-9]+(\\.[0-9]+)*") ){
                     throw new AccessAppException("Price is required, and must be a  number!");
                 }
                 double roomPrice=Double.parseDouble(price.getText());
@@ -684,7 +695,7 @@ public class Controller {
             }
         });
     }
-    public static  void deleteRoom(OurButton btn,Table table){
+    public static  void deleteRoom(OurButton btn,Table table,Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             int row = table.getSelectedRow();
             if (row == -1) {
@@ -697,12 +708,13 @@ public class Controller {
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 table.deleteRow(row);
                 Manager.removeRoomFromDataBase(roomNumber);
+                msg.displayMessage(Message.MessageType.SUCCESS, "Room deleted successfully", bg, layout);
                 if (managerGui!=null && !(Hotel.getUser() instanceof Receptionist))
                     managerGui.getWelcomePage().updateCard("Rooms",Hotel.getRooms().size());
             }
         });
     }
-    public static void updateRoom(OurButton btn,MyTextField priceInput,JCheckBox availableBox,Table table){
+    public static void updateRoom(OurButton btn,MyTextField priceInput,JCheckBox availableBox,Table table,Message msg, JPanel bg, MigLayout layout){
         btn.addActionListener(e->{
             int row = table.getSelectedRow();
             if (row == -1) {
@@ -710,19 +722,26 @@ public class Controller {
             }
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             String roomNumber = model.getValueAt(row, 0).toString();
+            Double roomPriceInTable = (Double) model.getValueAt(row, 1);
+            Boolean isAvailableInTable = (Boolean) model.getValueAt(row, 2);
             String price = priceInput.getText();
+            double roomPrice=Double.parseDouble(price);
             boolean isAvailable = availableBox.isSelected();
+            if (roomPrice == roomPriceInTable && isAvailable == isAvailableInTable) {
+                return;
+            }
             try{
-                if (price.isEmpty() || !price.matches("[0-9]+\\.[0-9]+") ){
+                if (price.isEmpty() || !price.matches("[0-9]+(\\.[0-9]+)*") ){
                     throw new AccessAppException("Price is required, and must be a number!");
                 }
-                double roomPrice=Double.parseDouble(price);
+
                 handleUpdates("Room",roomNumber,null,"price",roomPrice,null);
                 handleUpdates("Room",roomNumber,null,"isAvailable",isAvailable,null);
                 model.setValueAt(roomPrice,row,1);
                 model.setValueAt(isAvailable,row,2);
+                msg.displayMessage(Message.MessageType.SUCCESS, "Room updated successfully", bg, layout);
             }catch (AccessAppException ex) {
-                ex.printStackTrace();
+                msg.displayMessage(Message.MessageType.ERROR, ex.getMessage(), bg, layout);
             }
         });
     }
@@ -737,7 +756,7 @@ public class Controller {
                     }
                     if (Objects.equals(key, "Reservations")){
                         if (withOldCheckIn!=null){
-                            Database.removeReservationFromGuest(email,roomNumber+email+withOldCheckIn.getCheckInDate().getDay()+"/"+withOldCheckIn.getCheckInDate().getMonth()+"/"+withOldCheckIn.getCheckInDate().getYear());
+                            Database.removeReservationFromGuest(email,withOldCheckIn.getReservationId());
                             Database.addReservationToUser(email,(Reservation) updatedValue);
                             return;
                         }
@@ -910,6 +929,8 @@ public class Controller {
 
                 String removedRoomNumber=roomNumbers.removeFirst();
                 Hotel.getRooms().get(removedRoomNumber).setAvailable(false);
+                roomOnList.getRoomNumbers().remove(removedRoomNumber);
+                roomOnList.getUsedRoomNumbers().add(removedRoomNumber);
                 try {
                     handleUpdates("Room",removedRoomNumber,null,"isAvailable",false,null);
                 } catch (AccessAppException ex) {
@@ -921,10 +942,9 @@ public class Controller {
                     roomOnList.repaint();
                     roomOnList.revalidate();
                     roomUi.setAvailable(false);
-                    roomUi.repaint();
-                    roomUi.revalidate();
                     guestUi.revalidate();
                 }
+
                 msg.displayMessage(Message.MessageType.SUCCESS, "Request is sent", bg, layout);
 
 //                 QrCode qrCode = new QrCode();

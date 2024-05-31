@@ -170,7 +170,9 @@ public class RoomUI extends JPanel {
         roomDetailedInfo.add(reserved , " center , span 2 ,  wrap , gap 15 0 0 0");
 
 
-        Controller.openBookingUI(bookButton,roomOnList.getRoomNumbers(),roomOnList.getUsedRoomNumbers(), roomOnList.getPrice(), AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,phoneNumberField,roomOnList,this,msg,this,layout);
+        Controller.openBookingUI(bookButton,roomOnList.getRoomNumbers(),roomOnList.getUsedRoomNumbers(),
+                roomOnList.getPrice(), AdultsCounter,ChildrenCounter,checkIn,checkOut,creditCardField,
+                phoneNumberField,roomOnList,this,msg,this,layout);
 
     }
 
@@ -179,10 +181,14 @@ public class RoomUI extends JPanel {
             isAvailableLabel.setText("Available");
             isAvailableLabel.setForeground(new Color(0x00A000));
             bookButton.setEnabled(true);
+            repaint();
+            revalidate();
         }else{
             isAvailableLabel.setText("Not Available");
             isAvailableLabel.setForeground(new Color(0xA00000));
             bookButton.setEnabled(false);
+            repaint();
+            revalidate();
         }
     }
 

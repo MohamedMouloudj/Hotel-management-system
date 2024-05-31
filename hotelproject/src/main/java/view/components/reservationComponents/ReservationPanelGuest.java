@@ -163,8 +163,8 @@ public class ReservationPanelGuest extends JPanel {
                                     msg.displayMessage(Message.MessageType.ERROR, "Error parsing date", panelToScroll, layout);
                                 }
                                 checkOut.setDate(dateCheckOut);
-                                adultsField.getCounterLabel().setText(model.getValueAt(selectedRow, 5).toString());
-                                childrenField.getCounterLabel().setText(model.getValueAt(selectedRow, 6).toString());
+                                adultsField.setCounter((int) model.getValueAt(selectedRow, 5));
+                                childrenField.setCounter((int) model.getValueAt(selectedRow, 6));
                                 priceField.setText(model.getValueAt(selectedRow, 7).toString());
                             }
                         }

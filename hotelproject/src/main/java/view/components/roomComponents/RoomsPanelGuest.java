@@ -149,7 +149,7 @@ public class RoomsPanelGuest extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                         // Find the clicked roomOnList's corresponding RoomUI panel
                         RoomOnList clickedRoomOnList = (RoomOnList) e.getSource();
-                        RoomUI clickedRoomUI = clickedRoomOnList.roomDetail;
+                        RoomUI clickedRoomUI = clickedRoomOnList.getRoomDetail();
                         clickedRoomUI.setVisible(true); // Make the clicked roomOnList's detail panel visible
                     }
                 });

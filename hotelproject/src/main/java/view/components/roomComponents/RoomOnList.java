@@ -13,7 +13,12 @@ import java.util.LinkedList;
 
 public class RoomOnList extends JPanel implements ActionListener {
 
-    public RoomUI roomDetail;
+    private RoomUI roomDetail;
+
+    public RoomUI getRoomDetail() {
+        return roomDetail;
+    }
+
     private RoomType roomType;
     private double price;
     private String roomPicture;
